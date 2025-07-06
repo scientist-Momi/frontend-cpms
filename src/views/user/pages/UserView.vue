@@ -23,7 +23,7 @@ const userPermissions = ref([])
 const permissionsLoading = ref(false)
 
 // Find the user from the auth store
-// const user = computed(() => {
+// const user = computed(() => 
 //   return auth.users.find((u) => u.id === userId.value)
 // })
 

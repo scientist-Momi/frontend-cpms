@@ -2,6 +2,9 @@
 import { ref, computed, watch } from 'vue'
 import { useCustomerStore } from '@/stores/customerStore'
 import ReusableFilter from '@/components/ReusableFilter.vue'
+import { useFunction } from '@/composables/useFunction'
+
+const { formatDate, formatCurrency } = useFunction()
 
 const customerStore = useCustomerStore()
 const search = ref('')
@@ -125,41 +128,24 @@ function onRowsPerPageChange(e) {
   currentPage.value = 1
 }
 
-function toggleAll(e) {
-  if (e.target.checked) {
-    selected.value = paginatedCustomers.value.map((c) => c.customerId)
-  } else {
-    selected.value = []
-  }
-}
-function toggleRow(id) {
-  if (selected.value.includes(id)) {
-    selected.value = selected.value.filter((cid) => cid !== id)
-  } else {
-    selected.value.push(id)
-  }
-}
+// function toggleAll(e) {
+//   if (e.target.checked) {
+//     selected.value = paginatedCustomers.value.map((c) => c.customerId)
+//   } else {
+//     selected.value = []
+//   }
+// }
+// function toggleRow(id) {
+//   if (selected.value.includes(id)) {
+//     selected.value = selected.value.filter((cid) => cid !== id)
+//   } else {
+//     selected.value.push(id)
+//   }
+// }
 
 watch([statusFilter, search], () => {
   currentPage.value = 1
 })
-
-function formatDate(dateString) {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return new Intl.DateTimeFormat('en-GB', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(date)
-}
-
-function formatCurrency(value) {
-  const num = typeof value === 'string' ? parseFloat(value) : value
-  return '£' + num.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-}
 </script>
 
 <template>
@@ -198,11 +184,11 @@ function formatCurrency(value) {
         </button>
       </div>
     </div>
-    <div class="max-h-[30rem] overflow-y-auto">
-      <table class="w-full text-left text-sm">
-        <thead>
+    <div class="max-h-[30rem] overflow-y-auto px-4">
+      <table class="w-full text-left">
+        <thead class="text-xs">
           <tr class="border-b border-gray-100 text-gray-500">
-            <th class="sticky top-0 bg-white z-10 px-2 py-2">
+            <!-- <th class="sticky top-0 bg-white z-10 px-2 py-2">
               <input
                 type="checkbox"
                 :checked="
@@ -211,39 +197,39 @@ function formatCurrency(value) {
                 "
                 @change="toggleAll"
               />
-            </th>
-            <th class="sticky top-0 bg-white z-10 px-2 py-2">#</th>
-            <th class="sticky top-0 bg-white z-10 px-2 py-2">Name</th>
-            <th class="sticky top-0 bg-white z-10 px-2 py-2">Email</th>
-            <th class="sticky top-0 bg-white z-10 px-2 py-2">Phone</th>
-            <th class="sticky top-0 bg-white z-10 px-2 py-2">Type</th>
-            <th class="sticky top-0 bg-white z-10 px-2 py-2">Status</th>
-            <th class="sticky top-0 bg-white z-10 px-2 py-2">Wallet Balance</th>
-            <th class="sticky top-0 bg-white z-10 px-2 py-2">Created At</th>
+            </th> -->
+            <!-- <th class="sticky top-0 bg-white z-10 px-2 py-2">#</th> -->
+            <th class="sticky top-0 bg-white z-10 px-2 py-2 font-medium">Name</th>
+            <th class="sticky top-0 bg-white z-10 px-2 py-2 font-medium">Email</th>
+            <th class="sticky top-0 bg-white z-10 px-2 py-2 font-medium">Phone</th>
+            <th class="sticky top-0 bg-white z-10 px-2 py-2 font-medium">Type</th>
+            <th class="sticky top-0 bg-white z-10 px-2 py-2 font-medium">Status</th>
+            <th class="sticky top-0 bg-white z-10 px-2 py-2 font-medium">Wallet Balance</th>
+            <th class="sticky top-0 bg-white z-10 px-2 py-2 font-medium">Created At</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="text-sm">
           <tr
-            v-for="(customer, idx) in paginatedCustomers"
+            v-for="(customer, ) in paginatedCustomers"
             :key="customer.customerId"
             class="border-b border-gray-100 hover:bg-gray-50 transition"
           >
-            <td class="px-2 py-2">
+            <!-- <td class="px-2 py-2">
               <input
                 type="checkbox"
                 :checked="selected.includes(customer.customerId)"
                 @change="() => toggleRow(customer.customerId)"
               />
-            </td>
-            <td class="px-2 py-2 font-semibold text-gray-700">
+            </td> -->
+            <!-- <td class="px-2 py-2 font-semibold text-gray-700">
               {{ (currentPage - 1) * rowsPerPage + idx + 1 }}
-            </td>
+            </td> -->
             <router-link :to="{ name: 'CustomerView', params: { id: customer.customerId } }">
-              <td class="px-2 py-2 font-medium">{{ customer.name }}</td>
+              <td class="px-2 py-2">{{ customer.name }}</td>
             </router-link>
             <td class="px-2 py-2">{{ customer.email }}</td>
             <td class="px-2 py-2">{{ customer.phone }}</td>
-            <td class="px-2 py-2">
+            <td class="px-2 py-2 text-xs">
               <div
                 v-if="customer.customerType === 'RETAILER'"
                 class="px-2 rounded-md text-orange-600 py-1 flex items-center gap-1 shadow bg-orange-200 w-fit"

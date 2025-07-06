@@ -3,10 +3,11 @@ import { ref } from 'vue'
 import SecondaryStatsCard from '@/components/SecondaryStatsCard.vue'
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
-import CustomerChart from '@/components/charts/CustomerChart.vue'
+// import CustomerChart from '@/components/charts/CustomerChart.vue'
 import CustomersTable from '../components/CustomersTable.vue'
 import { useCustomerStore } from '@/stores/customerStore'
 import { useRouter } from 'vue-router'
+import BaseChart from '@/components/charts/BaseChart.vue'
 const router = useRouter()
 
 const customers = useCustomerStore()
@@ -25,24 +26,24 @@ const formatCurrency = (value) => {
   )
 }
 
-const chartSeries = [
-  {
-    name: 'Revenue',
-    data: [12000, 11000, 13000, 12500, 13500, 14000, 15000],
-    color: '#1A56DB',
-  },
-  {
-    name: 'Payments',
-    data: [9000, 9500, 10000, 9800, 10500, 11000, 12000],
-    color: '#7E3BF2',
-  },
-  {
-    name: 'Debts',
-    data: [3000, 2800, 2500, 2700, 2300, 2000, 1800],
-    color: '#FF4560',
-  },
-]
-const chartCategories = ['01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb']
+// const chartSeries = [
+//   {
+//     name: 'Revenue',
+//     data: [12000, 11000, 13000, 12500, 13500, 14000, 15000],
+//     color: '#1A56DB',
+//   },
+//   {
+//     name: 'Payments',
+//     data: [9000, 9500, 10000, 9800, 10500, 11000, 12000],
+//     color: '#7E3BF2',
+//   },
+//   {
+//     name: 'Debts',
+//     data: [3000, 2800, 2500, 2700, 2300, 2000, 1800],
+//     color: '#FF4560',
+//   },
+// ]
+// const chartCategories = ['01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb']
 </script>
 
 <template>
@@ -83,12 +84,16 @@ const chartCategories = ['01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 F
           icon="paid"
         />
       </div>
-      <CustomerChart class="mb-4" :series="chartSeries" :categories="chartCategories">
+      <!-- <CustomerChart class="mb-4" :series="chartSeries" :categories="chartCategories">
         <template #summary-value>{{ formatCurrency(totalRevenue) }}</template>
         <template #summary-label>Revenue This Week</template>
         <template #trend-indicator>23%</template></CustomerChart
-      >
+      > -->
+      <div class="border-gray-200 border rounded p-2 mb-4">
+          <BaseChart />
+        </div>
       <CustomersTable />
+
     </div>
     <router-view />
   </div>

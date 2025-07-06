@@ -32,7 +32,7 @@ const filteredRole = computed(() => {
 
 <template>
   <aside
-    :class="['transition-all duration-300', ui.sidebarCollapsed ? 'w-16' : 'w-72']"
+    :class="['transition-all duration-300', ui.sidebarCollapsed ? 'w-16' : 'w-64']"
     class="flex flex-col min-h-screen pt-2 px-4"
   >
     <div class="flex items-center h-16 mb-4 border-b border-gray-200 gap-2">
@@ -60,10 +60,10 @@ const filteredRole = computed(() => {
           'bg-white shadow': route.path.startsWith(item.route),
         }"
       >
-        <span class="material-symbols-outlined text-xl">{{ item.icon }}</span>
+        <span class="material-symbols-outlined">{{ item.icon }}</span>
         <span
           v-if="!ui.sidebarCollapsed"
-          class="font-medium whitespace-nowrap transition-opacity duration-200"
+          class="font-medium whitespace-nowrap text-[0.9rem] transition-opacity duration-200"
         >
           {{ item.title }}
         </span>
@@ -77,7 +77,7 @@ const filteredRole = computed(() => {
 
 <style scoped>
 .material-symbols-outlined {
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .logo {

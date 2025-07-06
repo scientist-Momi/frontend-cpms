@@ -1,5 +1,5 @@
 import { useCustomerStore } from '@/stores/customerStore'
-import { fetchAllCustomers, createNewCustomer } from '@/api/customer'
+import { fetchAllCustomers, createNewCustomer, fetchCustomerById } from '@/api/customer'
 
 export const useCustomer = () => {
   const customerStore = useCustomerStore()
@@ -33,8 +33,23 @@ export const useCustomer = () => {
     }
   }
 
+  const fetchCustomerId = async (payload) => {
+    try {
+      const res = await fetchCustomerById(payload)
+      console.log(res)
+      return { success: true, data: res.data.data }
+    } catch (err) {
+      console.log('Customer fetch failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Customer fetch failed',
+      }
+    }
+  };
+
   return {
     fetchCustomers,
     createCustomer,
+    fetchCustomerId
   }
 }

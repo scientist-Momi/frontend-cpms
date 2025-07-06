@@ -17,13 +17,13 @@ const chartOptions = {
     toolbar: { show: false },
   },
   tooltip: { enabled: true, x: { show: false } },
-  legend: { show: true },
+  legend: { show: false },
   fill: {
     type: 'gradient',
     gradient: { opacityFrom: 0.55, opacityTo: 0, shade: '#1C64F2', gradientToColors: ['#1C64F2'] }
   },
   dataLabels: { enabled: true },
-  stroke: { width: 6 },
+  stroke: { width: 2 },
   grid: { show: false, strokeDashArray: 4, padding: { left: 2, right: 2, top: -26 } },
   xaxis: {
     categories: props.categories,
