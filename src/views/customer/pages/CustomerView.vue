@@ -49,6 +49,30 @@ const chartSeries = computed(() => {
   ]
 })
 
+const walletTotals = computed(() => {
+  let totalDeposits = 0
+  let totalPurchases = 0
+
+  if (
+    customer.value &&
+    customer.value.customerWallet &&
+    Array.isArray(customer.value.customerWallet.transactions)
+  ) {
+    customer.value.customerWallet.transactions.forEach(tx => {
+      if (tx.transactionType === 'DEPOSIT') {
+        totalDeposits += Number(tx.amount)
+      }
+      if (tx.transactionType === 'PURCHASE') {
+        totalPurchases += Math.abs(Number(tx.amount))
+      }
+    })
+  }
+
+  return {
+    totalDeposits,
+    totalPurchases
+  }
+})
 </script>
 
 <template>
@@ -109,7 +133,7 @@ const chartSeries = computed(() => {
           </div>
         </div>
         <div class="border-gray-200 border rounded p-2">
-          <BaseChart :series="chartSeries" />
+          <BaseChart :series="chartSeries" title="Purchases" />
         </div>
       </div>
       <div class="w-[30%]">
@@ -142,11 +166,19 @@ const chartSeries = computed(() => {
             >
           </div>
         </div>
-        <div class="border border-gray-200 bg-white p-4">
+        <div class="border border-gray-200 bg-white p-4 mb-4">
           <div class="">
             <small class="mb-4">Total Overtime Deposit</small>
             <p class="text-3xl">
-              {{ customer ? formatCurrency(customer.creditLimit) : 'N/A' }}
+              {{ formatCurrency(walletTotals.totalDeposits) }}
+            </p>
+          </div>
+        </div>
+        <div class="border border-gray-200 bg-white p-4">
+          <div class="">
+            <small class="mb-4">Total Overtime Purchases</small>
+            <p class="text-3xl">
+              {{ formatCurrency(walletTotals.totalPurchases) }}
             </p>
           </div>
         </div>

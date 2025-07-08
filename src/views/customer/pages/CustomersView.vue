@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import SecondaryStatsCard from '@/components/SecondaryStatsCard.vue'
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
@@ -11,9 +11,11 @@ import BaseChart from '@/components/charts/BaseChart.vue'
 const router = useRouter()
 
 const customers = useCustomerStore()
-const totalRevenue = ref(12000)
-const totalDebts = ref(2000)
-const totalPayments = ref(10000)
+const summary = customers.financialSummary
+const totalRevenue = ref(summary.totalRevenue)
+const totalDebts = ref(summary.outstandingDebts)
+const totalPayments = ref(summary.totalPaymentsReceived)
+
 
 const formatCurrency = (value) => {
   const num = typeof value === 'string' ? parseFloat(value) : value
@@ -25,6 +27,33 @@ const formatCurrency = (value) => {
     })
   )
 }
+
+const series = computed(() => {
+  const sorted = customers.customers
+    .slice()
+    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+  const dateCounts = {}
+  sorted.forEach((cust) => {
+    const date = cust.createdAt.slice(0, 10)
+    dateCounts[date] = (dateCounts[date] || 0) + 1
+  })
+
+  const cumulative = []
+  let total = 0
+  Object.keys(dateCounts)
+    .sort()
+    .forEach((date) => {
+      total += dateCounts[date]
+      cumulative.push([new Date(date).getTime(), total])
+    })
+
+  return [
+    {
+      name: 'Customers',
+      data: cumulative,
+    },
+  ]
+})
 
 // const chartSeries = [
 //   {
@@ -56,7 +85,10 @@ const formatCurrency = (value) => {
             <span class="material-symbols-outlined"> file_save </span>
             <p>Export</p>
           </SecondaryButton>
-          <PrimaryButton @click="router.push({ name: 'NewCustomer' })" class="flex items-center gap-2">
+          <PrimaryButton
+            @click="router.push({ name: 'NewCustomer' })"
+            class="flex items-center gap-2"
+          >
             <span class="material-symbols-outlined"> person_add </span>
             <p>New Customer</p>
           </PrimaryButton>
@@ -90,10 +122,9 @@ const formatCurrency = (value) => {
         <template #trend-indicator>23%</template></CustomerChart
       > -->
       <div class="border-gray-200 border rounded p-2 mb-4">
-          <BaseChart />
-        </div>
+        <BaseChart :series="series" title="Customers"/>
+      </div>
       <CustomersTable />
-
     </div>
     <router-view />
   </div>
