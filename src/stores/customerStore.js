@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 export const useCustomerStore = defineStore('customer', {
   state: () => ({
     customers: [],
+    transactions: [],
     customerStats: null,
   }),
   getters: {},
@@ -12,5 +13,9 @@ export const useCustomerStore = defineStore('customer', {
       this.customers = customers
       localStorage.setItem('customers', JSON.stringify(customers))
     },
+    setTransactions(transactions){
+      this.transactions = transactions
+      localStorage.setItem('transactions', JSON.stringify(transactions))
+    }
   },
 })

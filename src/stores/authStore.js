@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', {
     },
     loadStoredAuth() {
       const { fetchUserInfo, fetchUsers } = useAuth()
-      const {fetchCustomers} = useCustomer()
+      const {fetchCustomers, fetchCustomerTransactions} = useCustomer()
       const token = localStorage.getItem('token')
       const permissions = JSON.parse(localStorage.getItem('permissions')) || []
       const user = this.user
@@ -46,6 +46,7 @@ export const useAuthStore = defineStore('auth', {
           fetchUserInfo()
           fetchUsers()
           fetchCustomers()
+          fetchCustomerTransactions()
         }
       }
     },

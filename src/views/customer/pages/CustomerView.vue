@@ -8,20 +8,24 @@ import { useFunction } from '@/composables/useFunction'
 import BaseChart from '@/components/charts/BaseChart.vue'
 import PurchasesTable from '../components/PurchasesTable.vue'
 import WalletTransactionsTable from '../components/WalletTransactionsTable.vue'
+import { useModalStore } from '@/stores/modalStore'
 
 const { formatDate, formatCurrency } = useFunction()
-
-const { fetchCustomerId } = useCustomer()
+const { fetchCustomerId, fetchAllTransactions } = useCustomer()
+const modal = useModalStore()
 const route = useRoute()
 const customerId = computed(() => route.params.id)
 
 const customer = ref(null)
+const allTransactions = ref(null)
 
 onMounted(async () => {
   await new Promise((resolve) => setTimeout(resolve, 2500))
   const res = await fetchCustomerId(customerId.value)
+  const res2 = await fetchAllTransactions(customerId.value)
   // await retrievePermissions()
   customer.value = res.data
+  allTransactions.value = res2.data
 })
 
 function getCustomerInitials(name) {
@@ -32,6 +36,19 @@ function getCustomerInitials(name) {
 }
 
 const activeTab = ref('product')
+
+const chartSeries = computed(() => {
+  if (!allTransactions.value) return [{ data: [] }]
+  return [
+    {
+      data: allTransactions.value.map(tx => [
+        new Date(tx.createdAt).getTime(),
+        tx.totalAmount
+      ])
+    }
+  ]
+})
+
 </script>
 
 <template>
@@ -92,7 +109,7 @@ const activeTab = ref('product')
           </div>
         </div>
         <div class="border-gray-200 border rounded p-2">
-          <BaseChart />
+          <BaseChart :series="chartSeries" />
         </div>
       </div>
       <div class="w-[30%]">
@@ -106,7 +123,7 @@ const activeTab = ref('product')
             </p>
           </div>
           <div class="">
-            <SecondaryButton class="flex items-center gap-2"
+            <SecondaryButton @click="modal.open('new_deposit', customer.customerWallet.balance, customer)" class="flex items-center gap-2"
               ><span class="material-symbols-outlined"> mintmark </span>New Deposit</SecondaryButton
             >
           </div>
@@ -166,10 +183,10 @@ const activeTab = ref('product')
         <!-- Tab content -->
         <div class="border border-gray-200 rounded bg-white p-6">
           <div v-if="activeTab === 'product'">
-            <PurchasesTable />
+            <PurchasesTable :purchase-transactions="allTransactions" />
           </div>
           <div v-else>
-            <WalletTransactionsTable />
+            <WalletTransactionsTable :wallet-transactions="customer.customerWallet.transactions"/>
           </div>
         </div>
       </div>
