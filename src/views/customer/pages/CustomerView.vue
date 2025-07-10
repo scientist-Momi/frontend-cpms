@@ -126,7 +126,7 @@ const walletTotals = computed(() => {
           <div class="w-[10%] flex items-center justify-center">
             <router-link :to="{ name: 'EditCustomer', params: { id: customer.customerId } }">
               <SecondaryButton
-                
+
                 class="flex items-center gap-2"
                 ><span class="material-symbols-outlined"> edit_square </span>
                 Edit
@@ -164,7 +164,7 @@ const walletTotals = computed(() => {
             </p>
           </div>
           <div class="">
-            <SecondaryButton class="flex items-center gap-2"
+            <SecondaryButton @click="modal.open('credit_limit', null, customer)" class="flex items-center gap-2"
               ><span class="material-symbols-outlined"> edit_square </span>Update
               Limit</SecondaryButton
             >

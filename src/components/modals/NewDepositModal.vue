@@ -16,14 +16,12 @@ const modal = useModalStore()
 const toast = useToastStore()
 const note = ref('')
 
-// Assuming modal.data holds current balance as a number
 const currentBalance = ref(modal.data)
 const customerId = ref(modal.user.customerId)
 const balanceAfterDeposit = ref('')
 const showOptions = ref(false)
 const loading = ref(false)
 
-// Watch amount input to update balanceAfterDeposit
 watch(amount, (newVal) => {
   const amt = parseFloat(newVal)
   if (!isNaN(amt)) {
@@ -33,7 +31,6 @@ watch(amount, (newVal) => {
   }
 })
 
-// Watch balanceAfterDeposit input to update amount needed
 watch(balanceAfterDeposit, (newVal) => {
   const bal = parseFloat(newVal)
   if (!isNaN(bal)) {
@@ -58,25 +55,7 @@ const submitDeposit = async() => {
   }else {
     toast.showToast({ message: res.message || 'Deposit failed.', type: 'error' })
   }
-
 }
-
-// const handleUpdateProfile = async () => {
-//   const payload = {
-//     fullName: form.fullName,
-//     phone: form.phone
-//   }
-//   const res = await updateUserProfileById(modal.user.id, payload)
-//   if (res.success) {
-
-//     window.location.reload()
-
-//     toast.showToast({ message: 'Profile updated!', type: 'success' })
-//     modal.close()
-//   } else {
-//     toast.showToast({ message: res.message || 'Update failed.', type: 'error' })
-//   }
-// }
 
 function resetForm() {
   amount.value = ''
@@ -108,17 +87,6 @@ function setNoteFromTag(tag) {
     </div>
     <div v-else class="p-6">
       <div class="mb-6">
-      {{ customerId.customerId }}
-        <!-- <label for="depositAmount" class="block mb-2 text-sm font-medium text-gray-900">
-          Deposit Amount
-        </label>
-        <input
-          type="number"
-          id="depositAmount"
-          v-model="amount"
-          placeholder="Enter deposit amount"
-          class="block w-full text-gray-900 border border-gray-300 rounded-xs p-2 px-3 text-sm focus:ring-gray-400 focus:outline-none"
-        /> -->
         <div class="border border-gray-200 p-2 w-full">
           <small>Deposit Amount</small>
           <input
@@ -181,7 +149,3 @@ function setNoteFromTag(tag) {
     </div>
   </div>
 </template>
-
-<style scoped>
-/* Add any custom styles here if needed */
-</style>

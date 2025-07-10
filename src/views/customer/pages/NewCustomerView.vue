@@ -11,8 +11,8 @@ const router = useRouter()
 const toast = useToastStore()
 const { createCustomer, fetchCustomers, fetchCustomerId, updateCustomer } = useCustomer()
 
-const isEditMode = ref(false);
-const customerId = ref(null);
+const isEditMode = ref(false)
+const customerId = ref(null)
 const email = ref('')
 const firstName = ref('')
 const lastName = ref('')
@@ -21,7 +21,6 @@ const alias = ref('')
 const address = ref('')
 const customerNotes = ref('New Customer...')
 const customerType = ref('')
-
 
 const populateField = (data) => {
   email.value = data.email || ''
@@ -48,7 +47,6 @@ onMounted(async () => {
     populateField(res.data)
   }
 })
-
 
 function validateForm() {
   if (
@@ -82,11 +80,11 @@ const handleSave = async () => {
   }
 
   // const res = await createCustomer(payload)
-  let res;
+  let res
   if (isEditMode.value) {
-    res = await updateCustomer(customerId.value, payload);
+    res = await updateCustomer(customerId.value, payload)
   } else {
-    res = await createCustomer(payload);
+    res = await createCustomer(payload)
   }
   if (res.success) {
     await fetchCustomers()
@@ -119,7 +117,9 @@ function clearForm() {
   <div class="mb-4 bg-white rounded">
     <div class="flex items-center p-4 border-b border-gray-200 gap-2">
       <span class="material-symbols-outlined"> group </span>
-      <p class="font-semibold">New Customer Form</p>
+      <p class="font-semibold">
+        {{ isEditMode ? 'Edit Customer Form' : 'New Customer Form' }}
+      </p>
     </div>
     <div class="p-4">
       <div class="mb-6 flex items-center gap-2">
@@ -177,7 +177,7 @@ function clearForm() {
           <p class="text-sm text-gray-400 mt-2">Other names the customer is known as.</p>
         </div>
       </div>
-      <div class="mb-6 ">
+      <div class="mb-6">
         <!--  -->
         <h3 class="block mb-2 text-sm font-medium text-gray-900">Choose Customer Type:</h3>
         <ul class="flex gap-2">
@@ -196,7 +196,9 @@ function clearForm() {
               class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded cursor-pointer peer-checked:border-red-600 peer-checked:text-gray-600 hover:text-gray-600 hover:bg-gray-50"
             >
               <div class="block">
-                <div class="rounded-md text-blue-600 p-1.5 mb-2 flex items-center shadow bg-blue-200 w-fit">
+                <div
+                  class="rounded-md text-blue-600 p-1.5 mb-2 flex items-center shadow bg-blue-200 w-fit"
+                >
                   <span class="material-symbols-outlined"> local_mall </span>
                 </div>
                 <div class="w-full text-lg font-semibold">Consumer</div>
@@ -205,13 +207,22 @@ function clearForm() {
             </label>
           </li>
           <li class="w-full">
-            <input type="radio" id="retailer" name="customerType" value="RETAILER" class="hidden peer" v-model="customerType" />
+            <input
+              type="radio"
+              id="retailer"
+              name="customerType"
+              value="RETAILER"
+              class="hidden peer"
+              v-model="customerType"
+            />
             <label
               for="retailer"
               class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded cursor-pointer peer-checked:border-red-600 peer-checked:text-gray-600 hover:text-gray-600 hover:bg-gray-50"
             >
               <div class="block">
-                <div class="rounded-md text-orange-600 p-1.5 flex items-center shadow bg-orange-200 w-fit mb-2">
+                <div
+                  class="rounded-md text-orange-600 p-1.5 flex items-center shadow bg-orange-200 w-fit mb-2"
+                >
                   <span class="material-symbols-outlined"> trolley </span>
                 </div>
                 <div class="w-full text-lg font-semibold">Retailer</div>
@@ -235,7 +246,9 @@ function clearForm() {
               class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded cursor-pointer peer-checked:border-red-600 peer-checked:text-gray-600 hover:text-gray-600 hover:bg-gray-50"
             >
               <div class="block">
-                <div class="rounded-md text-purple-600 p-1.5 flex items-center shadow bg-purple-200 w-fit mb-2">
+                <div
+                  class="rounded-md text-purple-600 p-1.5 flex items-center shadow bg-purple-200 w-fit mb-2"
+                >
                   <span class="material-symbols-outlined"> delivery_truck_speed </span>
                 </div>
                 <div class="w-full text-lg font-semibold">Wholesaler</div>
