@@ -13,6 +13,7 @@ import DeleteUserModal from '@/components/modals/DeleteUserModal.vue'
 import PrimaryModal from '@/components/PrimaryModal.vue'
 import SettingsModal from '@/views/user/pages/SettingsModal.vue'
 import NewDepositModal from '@/components/modals/NewDepositModal.vue'
+import EditCustomerModal from '@/components/modals/EditCustomerModal.vue'
 import { useAuthStore } from '@/stores/authStore'
 import SidebarSkeleton from '@/components/sidebar/SidebarSkeleton.vue'
 
@@ -74,6 +75,10 @@ const auth = useAuthStore()
         <PrimaryModal v-if="modal.type === 'new_deposit'">
           <template #header>New Deposit</template>
           <NewDepositModal />
+        </PrimaryModal>
+        <PrimaryModal v-if="modal.type === 'customer_profile'">
+          <template #header>Edit Customer Profile</template>
+          <EditCustomerModal />
         </PrimaryModal>
       </main>
     </div>

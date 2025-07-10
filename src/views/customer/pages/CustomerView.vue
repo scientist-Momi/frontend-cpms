@@ -127,7 +127,7 @@ const walletTotals = computed(() => {
             </div>
           </div>
           <div class="w-[10%] flex items-center justify-center">
-            <SecondaryButton class="flex items-center gap-2"
+            <SecondaryButton @click="modal.open('customer_profile')" class="flex items-center gap-2"
               ><span class="material-symbols-outlined"> edit_square </span>Edit</SecondaryButton
             >
           </div>
