@@ -41,11 +41,8 @@ const chartSeries = computed(() => {
   if (!allTransactions.value) return [{ data: [] }]
   return [
     {
-      data: allTransactions.value.map(tx => [
-        new Date(tx.createdAt).getTime(),
-        tx.totalAmount
-      ])
-    }
+      data: allTransactions.value.map((tx) => [new Date(tx.createdAt).getTime(), tx.totalAmount]),
+    },
   ]
 })
 
@@ -58,7 +55,7 @@ const walletTotals = computed(() => {
     customer.value.customerWallet &&
     Array.isArray(customer.value.customerWallet.transactions)
   ) {
-    customer.value.customerWallet.transactions.forEach(tx => {
+    customer.value.customerWallet.transactions.forEach((tx) => {
       if (tx.transactionType === 'DEPOSIT') {
         totalDeposits += Number(tx.amount)
       }
@@ -70,7 +67,7 @@ const walletTotals = computed(() => {
 
   return {
     totalDeposits,
-    totalPurchases
+    totalPurchases,
   }
 })
 </script>
@@ -127,9 +124,14 @@ const walletTotals = computed(() => {
             </div>
           </div>
           <div class="w-[10%] flex items-center justify-center">
-            <SecondaryButton @click="modal.open('customer_profile')" class="flex items-center gap-2"
-              ><span class="material-symbols-outlined"> edit_square </span>Edit</SecondaryButton
-            >
+            <router-link :to="{ name: 'EditCustomer', params: { id: customer.customerId } }">
+              <SecondaryButton
+                
+                class="flex items-center gap-2"
+                ><span class="material-symbols-outlined"> edit_square </span>
+                Edit
+              </SecondaryButton>
+            </router-link>
           </div>
         </div>
         <div class="border-gray-200 border rounded p-2">
@@ -147,7 +149,9 @@ const walletTotals = computed(() => {
             </p>
           </div>
           <div class="">
-            <SecondaryButton @click="modal.open('new_deposit', customer.customerWallet.balance, customer)" class="flex items-center gap-2"
+            <SecondaryButton
+              @click="modal.open('new_deposit', customer.customerWallet.balance, customer)"
+              class="flex items-center gap-2"
               ><span class="material-symbols-outlined"> mintmark </span>New Deposit</SecondaryButton
             >
           </div>
@@ -218,7 +222,7 @@ const walletTotals = computed(() => {
             <PurchasesTable :purchase-transactions="allTransactions" />
           </div>
           <div v-else>
-            <WalletTransactionsTable :wallet-transactions="customer.customerWallet.transactions"/>
+            <WalletTransactionsTable :wallet-transactions="customer.customerWallet.transactions" />
           </div>
         </div>
       </div>

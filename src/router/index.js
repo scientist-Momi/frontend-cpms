@@ -63,6 +63,12 @@ const router = createRouter({
               component: NewCustomer,
             },
             {
+              path: 'edit/:id',
+              name: 'EditCustomer',
+              meta: { requiresAuth: true, permission: 'UPDATE_CUSTOMER', title: 'Edit Customer' },
+              component: NewCustomer,
+            },
+            {
               path: ':id',
               name: 'CustomerView',
               meta: { requiresAuth: true, permission: 'VIEW_CUSTOMER', title: 'Customer Details' },

@@ -3,13 +3,16 @@ import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 import { useToastStore } from '@/stores/toastStore'
 import { useCustomer } from '@/composables/useCustomer'
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+const route = useRoute()
 const router = useRouter()
 
 const toast = useToastStore()
-const { createCustomer, fetchCustomers } = useCustomer()
+const { createCustomer, fetchCustomers, fetchCustomerId, updateCustomer } = useCustomer()
 
+const isEditMode = ref(false);
+const customerId = ref(null);
 const email = ref('')
 const firstName = ref('')
 const lastName = ref('')
@@ -18,6 +21,34 @@ const alias = ref('')
 const address = ref('')
 const customerNotes = ref('New Customer...')
 const customerType = ref('')
+
+
+const populateField = (data) => {
+  email.value = data.email || ''
+  phone.value = data.phone || ''
+  alias.value = data.alias || ''
+  address.value = data.address || ''
+  customerNotes.value = data.customerNotes || ''
+  customerType.value = data.customerType || ''
+  if (data.name) {
+    const nameParts = data.name.trim().split(' ')
+    firstName.value = nameParts[0] || ''
+    lastName.value = nameParts.slice(1).join(' ') || ''
+  } else {
+    firstName.value = ''
+    lastName.value = ''
+  }
+}
+
+onMounted(async () => {
+  if (route.params.id) {
+    isEditMode.value = true
+    customerId.value = route.params.id
+    const res = await fetchCustomerId(customerId.value)
+    populateField(res.data)
+  }
+})
+
 
 function validateForm() {
   if (
@@ -50,17 +81,23 @@ const handleSave = async () => {
     customerType: customerType.value,
   }
 
-  const res = await createCustomer(payload)
+  // const res = await createCustomer(payload)
+  let res;
+  if (isEditMode.value) {
+    res = await updateCustomer(customerId.value, payload);
+  } else {
+    res = await createCustomer(payload);
+  }
   if (res.success) {
     await fetchCustomers()
     toast.showToast({
-      message: 'Customer created successfully!',
+      message: 'Operation was successfull!',
       type: 'success',
     })
     router.push({ name: 'Customers' })
   } else {
     toast.showToast({
-      message: res.message || 'Failed to create customer.',
+      message: res.message || 'Operation failed.',
       type: 'error',
     })
   }

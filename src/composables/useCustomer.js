@@ -5,7 +5,8 @@ import {
   fetchCustomerById,
   createNewDeposit,
   fetchTransactions,
-  fetchAllCustomerTransactions
+  fetchAllCustomerTransactions,
+  updateCustomerById,
 } from '@/api/customer'
 
 export const useCustomer = () => {
@@ -97,6 +98,20 @@ export const useCustomer = () => {
     }
   };
 
+  const updateCustomer = async (id, payload) => {
+    try {
+      const res = await updateCustomerById(id, payload)
+      console.log(res)
+      return { success: true, data: res }
+    } catch (err) {
+      console.log('Update failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Update failed',
+      }
+    }
+  };
+
   return {
     fetchCustomers,
     createCustomer,
@@ -104,5 +119,6 @@ export const useCustomer = () => {
     newDeposit,
     fetchAllTransactions,
     fetchCustomerTransactions,
+    updateCustomer,
   }
 }

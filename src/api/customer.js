@@ -13,3 +13,5 @@ export const fetchAllCustomerTransactions = () => apiClient.get('/customer/trans
 export const createNewCustomer = (data) => apiClient.post('/customer/new', data)
 
 export const createNewDeposit = (data) => apiClient.post('customer/wallet/deposit', data)
+
+export const updateCustomerById = (id, data) => apiClient.put(`/customer/${id}/update`, data)
