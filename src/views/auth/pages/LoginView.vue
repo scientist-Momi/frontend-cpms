@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { useCustomer } from '@/composables/useCustomer'
+import { useProduct } from '@/composables/useProduct'
 
 const form = reactive({ email: '', password: '' })
 const showPassword = ref(false)
@@ -12,6 +13,7 @@ const loading = ref(false)
 const router = useRouter()
 const { login, fetchUserInfo, fetchUsers } = useAuth()
 const { fetchCustomers, fetchCustomerTransactions } = useCustomer()
+const { fetchProducts } = useProduct()
 
 const handleNext = () => {
   error.value = null
@@ -33,6 +35,7 @@ const handleLogin = async () => {
     fetchUsers()
     fetchCustomers()
     fetchCustomerTransactions()
+    fetchProducts()
   } else {
     error.value = res.message
   }
