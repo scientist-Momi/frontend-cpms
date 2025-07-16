@@ -51,7 +51,7 @@ const products = [
       <ProductsChart class="w-full border border-gray-200 p-2 rounded" :products="products" />
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border border-gray-200">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 p-4 border border-gray-200">
       <ProductCard v-for="product in product.products" :key="product.id" :product="product" />
     </div>
   </div>

@@ -1,66 +1,45 @@
-<!-- <script setup>
-import ProgressBar from '@/components/ProgressBar.vue'
-
-const props = defineProps({
-  product: { type: Object, required: true },
-})
-
-// For demo: let's assume max inventory is 300 for all products.
-// If you have a different logic for "total", adjust accordingly.
-const total = 300
-</script>
-
-<template>
-  <div class="bg-white rounded border border-gray-200 p-6 flex flex-col items-start">
-    <div class="font-semibold text-lg mb-1">{{ product.name }}</div>
-    <div class="text-sm text-gray-500 mb-2">{{ product.brand }}</div>
-    <div class="text-gray-700 mb-4">{{ product.description }}</div>
-    <ProgressBar :available="product.inventory" :total="total" class="w-full" />
-    <div class="mt-2 text-blue-600 font-bold">
-      ₦{{ product.latestPrice.price.toLocaleString() }}
-    </div>
-  </div>
-</template> -->
-
 <script setup>
-import ProgressBar from '@/components/ProgressBar.vue'
+import ProgressCircle from '@/components/ProgressCircle.vue'
+import { useFunction } from '@/composables/useFunction'
 
- defineProps({
+defineProps({
   product: { type: Object, required: true },
 })
 
-// Example: set your own logic for total if needed
-const total = 300
+const { formatCurrency } = useFunction()
 </script>
 
 <template>
-  <div class=" rounded-sm overflow-hidden bg-[#F9F8F4] shadow-md border border-gray-100 flex flex-col">
-    <!-- Card Header with accent background -->
-    <div
-      class="h-20 w-full rounded-t-sm relative flex items-end"
-      style="background: linear-gradient(90deg, #e74c3c 60%, #f39c12 100%);"
-    >
-      <div class="absolute top-0 left-0 w-full h-full opacity-60"
-           style="background: url('/your-blur-image.jpg') center/cover, linear-gradient(90deg, #e74c3c 60%, #f39c12 100%);"></div>
-      <div class="relative z-10 p-3 text-white text-right w-full text-xs font-semibold tracking-wide">
+  <div
+    class="rounded overflow-hidden bg-white shadow-md border border-gray-100 flex flex-col items-center p-2"
+  >
+    <div class="w-full mb-2">
+      <div class="w-fit p-2 text-xs text-red-500 rounded font-semibold bg-red-200">
         {{ product.brand }}
       </div>
     </div>
 
-    <div class="flex-1 p-4 flex flex-col">
-      <div class="font-bold text-base mb-1 text-gray-800 truncate">{{ product.name }}</div>
-      <div class="text-xs text-gray-500 mb-3">{{ product.description }}</div>
-      <div class="flex justify-between mt-4">
-        <div class="w-full">
-          <span class="text-xs text-gray-400 block">Inventory</span>
-          <ProgressBar :available="product.inventory" :total="total" class="w-full mb-3" />
-        </div>
-        <div class="text-right w-full">
-          <span class="text-xs text-gray-400 block">Latest Price</span>
-          <div class="text-lg font-bold text-gray-900">{{ product.latestPrice.price}}</div>
-        </div>
+    <ProgressCircle
+      :available="product.quantitySold"
+      :total="product.inventory"
+      :size="100"
+      :color="'#05C3DD'"
+    />
+
+    <div class="flex flex-col my-3 items-center w-full">
+      <span class="text-xs text-gray-400 block">Latest Price</span>
+      <div class="text-lg font-bold text-gray-900 border px-2 py-1">
+        {{ formatCurrency(product.latestPrice.price) }}
+      </div>
+    </div>
+    <div class="w-full flex items-center gap-2 bg-gray-100 p-1">
+      <div class="w-[85%]">
+        <h1 class="font-semibold text-sm">{{ product.name }}</h1>
+        <small class="text-xs">{{ product.description }}</small>
+      </div>
+      <div class="w-[15%] border flex justify-center hover:bg-gray-200 cursor-pointer">
+        <span class="material-symbols-outlined"> arrow_right_alt </span>
       </div>
     </div>
   </div>
 </template>
-
