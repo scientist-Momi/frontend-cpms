@@ -1,5 +1,5 @@
 import { useProductStore } from '@/stores/productStore'
-import { fetchAllProducts } from '@/api/product'
+import { fetchAllProducts, createNewProduct, updateProductById } from '@/api/product'
 
 export const useProduct = () => {
   const productStore = useProductStore()
@@ -19,7 +19,37 @@ export const useProduct = () => {
     }
   }
 
+  const createProduct = async (payload) => {
+    try {
+      const res = await createNewProduct(payload)
+      console.log(res)
+      return { success: true, data: res.data.data }
+    } catch (err) {
+      console.log('Creation failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Creation failed',
+      }
+    }
+  };
+
+  const updateProduct = async (id, payload) => {
+    try {
+      const res = await updateProductById(id, payload)
+      console.log(res)
+      return { success: true, data: res }
+    } catch (err) {
+      console.log('Update failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Update failed',
+      }
+    }
+  };
+
   return {
     fetchProducts,
+    createProduct,
+    updateProduct,
   }
 }

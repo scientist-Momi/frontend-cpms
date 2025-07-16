@@ -257,20 +257,6 @@ function clearForm() {
             </label>
           </li>
         </ul>
-
-        <!-- <label for="customerType" class="block mb-2 text-sm font-medium text-gray-900">
-            Customer Type
-          </label>
-          <select
-            id="customerType"
-            v-model="customerType"
-            class="block w-full text-gray-900 border border-gray-300 rounded-xs p-2 px-3 text-sm focus:ring-gray-400 focus:outline-none"
-          >
-            <option selected>Choose a type</option>
-            <option value="CONSUMER">CONSUMER</option>
-            <option value="RETAILER">RETAILER</option>
-            <option value="WHOLESALER">WHOLESALER</option>
-          </select> -->
       </div>
 
       <div class="mb-6 flex gap-2">
@@ -309,5 +295,3 @@ function clearForm() {
     </div>
   </div>
 </template>
-
-<style scoped></style>
