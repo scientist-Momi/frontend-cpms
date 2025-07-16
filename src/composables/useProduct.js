@@ -1,5 +1,5 @@
 import { useProductStore } from '@/stores/productStore'
-import { fetchAllProducts, createNewProduct, updateProductById } from '@/api/product'
+import { fetchAllProducts, createNewProduct, updateProductById, fetchProductById } from '@/api/product'
 
 export const useProduct = () => {
   const productStore = useProductStore()
@@ -47,9 +47,24 @@ export const useProduct = () => {
     }
   };
 
+    const fetchProductId = async (payload) => {
+      try {
+        const res = await fetchProductById(payload)
+        console.log(res)
+        return { success: true, data: res.data.data }
+      } catch (err) {
+        console.log('Product fetch failed', err)
+        return {
+          success: false,
+          message: err.response?.data?.message || 'Product fetch failed',
+        }
+      }
+    }
+
   return {
     fetchProducts,
     createProduct,
     updateProduct,
+    fetchProductId,
   }
 }

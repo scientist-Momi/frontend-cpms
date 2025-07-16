@@ -12,7 +12,7 @@ const product = useProductStore()
 const router = useRouter()
 const route = useRoute()
 
-const { createProduct, updateProduct, getProductById, fetchProducts } = useProduct()
+const { createProduct, updateProduct, fetchProductId, fetchProducts } = useProduct()
 
 const isEditMode = ref(false)
 const productId = ref(null)
@@ -36,7 +36,7 @@ onMounted(async () => {
   if (route.params.id) {
     isEditMode.value = true
     productId.value = route.params.id
-    const res = await getProductById(productId.value)
+    const res = await fetchProductId(productId.value)
     if (res?.data) populateFields(res.data)
   }
 })
