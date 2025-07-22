@@ -155,12 +155,13 @@ const series = computed(() => {
             <span class="sr-only">Info</span>
             <div>All transactions that involve the purchase of this product.</div>
           </div>
-          {{ transactions }}
+          <!-- {{ transactions }} -->
+          <ProductTransactionsTable :product-transactions="transactions" :product-id="productId" />
         </div>
         <div v-else></div>
       </div>
     </div>
-    <h1>{{ product }}</h1>
+    <!-- <h1>{{ product }}</h1> -->
   </div>
   <div v-else>
     <PageLoader />
