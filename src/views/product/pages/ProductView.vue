@@ -6,7 +6,10 @@ import ProgressCircle from '@/components/ProgressCircle.vue'
 import { useFunction } from '@/composables/useFunction'
 import { useProduct } from '@/composables/useProduct'
 import BaseChart from '@/components/charts/BaseChart.vue'
+import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 import ProductTransactionsTable from '../components/ProductTransactionsTable.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const route = useRoute()
 const { fetchProductId, fetchProductTransactions } = useProduct()
@@ -53,118 +56,134 @@ const series = computed(() => {
 </script>
 
 <template>
-  <div v-if="product">
-    <div class="border rounded border-gray-200 p-2 mb-4">
-      <div class="flex items-center justify-between mb-2 gap-4">
-        <div class="w-full px-2">
-          <small>Name</small>
-          <h1 class="text-base">{{ product.name }}</h1>
-        </div>
-        <div class="w-full px-2">
-          <small>Brand</small>
-          <h1 class="text-base">{{ product.brand }}</h1>
-        </div>
-        <div class="w-full px-2">
-          <small>Description</small>
-          <h1 class="text-base">{{ product.description }}</h1>
-        </div>
-      </div>
-    </div>
-    <div class="flex gap-4 mb-4">
-      <div class="w-[35%] border rounded p-2 h-fit">
-        <div
-          class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
-          role="alert"
-        >
-          <svg
-            class="shrink-0 inline w-4 h-4 me-3"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
-            />
-          </svg>
-          <span class="sr-only">Info</span>
-          <div>
-            Out of a total of <span class="font-bold">{{ product.inventory }}</span> product,
-            <span class="font-bold">{{ product.quantitySold }}</span> have been sold.
+  <div>
+    <div v-if="$route.name === 'ProductView'">
+      <div v-if="product">
+        <div class="border rounded border-gray-200 p-2 mb-4">
+          <div class="flex items-center justify-between mb-2 gap-4">
+            <div class="w-full px-2">
+              <small>Name</small>
+              <h1 class="text-base">{{ product.name }}</h1>
+            </div>
+            <div class="w-full px-2">
+              <small>Brand</small>
+              <h1 class="text-base">{{ product.brand }}</h1>
+            </div>
+            <div class="w-full px-2">
+              <small>Description</small>
+              <h1 class="text-base">{{ product.description }}</h1>
+            </div>
           </div>
         </div>
-        <div class="flex items-center justify-center">
-          <ProgressCircle
-            :available="product.quantitySold"
-            :total="product.inventory"
-            :size="200"
-            :color="'#05C3DD'"
-          />
+        <div class="flex gap-4 mb-4">
+          <div class="w-[35%]">
+            <div class="border rounded p-2 h-fit mb-4">
+              <div
+                class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
+                role="alert"
+              >
+                <svg
+                  class="shrink-0 inline w-4 h-4 me-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
+                  />
+                </svg>
+                <span class="sr-only">Info</span>
+                <div>
+                  Out of a total of <span class="font-bold">{{ product.inventory }}</span> product,
+                  <span class="font-bold">{{ product.quantitySold }}</span> have been sold.
+                </div>
+              </div>
+              <div class="flex items-center justify-center">
+                <ProgressCircle
+                  :available="product.quantitySold"
+                  :total="product.inventory"
+                  :size="200"
+                  :color="'#05C3DD'"
+                />
+              </div>
+            </div>
+            <div class="p-3 border border-gray-200 rounded">
+              <p class="mb-2">To see more analysis for these product</p>
+
+              <SecondaryButton @click="router.push({ name: 'ProductAnalytics' })"
+                >View More</SecondaryButton
+              >
+            </div>
+          </div>
+
+          <div class="w-[65%] p-2 border border-gray-200 rounded">
+            <BaseChart :series="series" title="Current Price" />
+          </div>
         </div>
-      </div>
-
-      <div class="w-[65%] p-2 border border-gray-200 rounded">
-        <BaseChart :series="series" title="Current Price" />
-      </div>
-    </div>
-    <div class="w-full">
-      <!-- Tab buttons -->
-      <div class="flex gap-2 mb-2">
-        <button
-          :class="[
-            'p-1 px-2 cursor-pointer rounded text-sm border',
-            activeTab === 'transactions'
-              ? 'border-gray-200 text-red-600 bg-blue-50'
-              : 'border-transparent text-gray-600 bg-white hover:bg-gray-50',
-          ]"
-          @click="activeTab = 'transactions'"
-        >
-          Transactions
-        </button>
-        <button
-          :class="[
-            'p-1 px-2 cursor-pointer text-sm rounded border',
-            activeTab === 'variants'
-              ? 'border-gray-200 text-red-600 bg-blue-50'
-              : 'border-transparent text-gray-600 bg-white hover:bg-gray-50',
-          ]"
-          @click="activeTab = 'variants'"
-        >
-          Variants
-        </button>
-      </div>
-
-      <!-- Tab content -->
-      <div class="border border-gray-200 rounded bg-white p-2">
-        <div v-if="activeTab === 'transactions'">
-          <div
-            class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
-            role="alert"
-          >
-            <svg
-              class="shrink-0 inline w-4 h-4 me-3"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 20 20"
+        <div class="w-full">
+          <!-- Tab buttons -->
+          <div class="flex gap-2 mb-2">
+            <button
+              :class="[
+                'p-1 px-2 cursor-pointer rounded text-sm border',
+                activeTab === 'transactions'
+                  ? 'border-gray-200 text-red-600 bg-blue-50'
+                  : 'border-transparent text-gray-600 bg-white hover:bg-gray-50',
+              ]"
+              @click="activeTab = 'transactions'"
             >
-              <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
-              />
-            </svg>
-            <span class="sr-only">Info</span>
-            <div>All transactions that involve the purchase of this product.</div>
+              Transactions
+            </button>
+            <button
+              :class="[
+                'p-1 px-2 cursor-pointer text-sm rounded border',
+                activeTab === 'variants'
+                  ? 'border-gray-200 text-red-600 bg-blue-50'
+                  : 'border-transparent text-gray-600 bg-white hover:bg-gray-50',
+              ]"
+              @click="activeTab = 'variants'"
+            >
+              Variants
+            </button>
           </div>
-          <!-- {{ transactions }} -->
-          <ProductTransactionsTable :product-transactions="transactions" :product-id="productId" />
+
+          <!-- Tab content -->
+          <div class="border border-gray-200 rounded bg-white p-2">
+            <div v-if="activeTab === 'transactions'">
+              <div
+                class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
+                role="alert"
+              >
+                <svg
+                  class="shrink-0 inline w-4 h-4 me-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
+                  />
+                </svg>
+                <span class="sr-only">Info</span>
+                <div>All transactions that involve the purchase of this product.</div>
+              </div>
+              <ProductTransactionsTable
+                :product-transactions="transactions"
+                :product-id="productId"
+              />
+            </div>
+            <div v-else></div>
+          </div>
         </div>
-        <div v-else></div>
+      </div>
+
+      <div v-else>
+        <PageLoader />
       </div>
     </div>
-    <!-- <h1>{{ product }}</h1> -->
-  </div>
-  <div v-else>
-    <PageLoader />
+    <router-view />
   </div>
 </template>
 

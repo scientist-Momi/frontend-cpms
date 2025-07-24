@@ -9,6 +9,7 @@ const Customers = () => import('@/views/customer/pages/CustomersView.vue')
 const Products = () => import('@/views/product/pages/ProductsView.vue')
 const NewProduct = () => import('@/views/product/pages/NewProductView.vue')
 const Product = () => import('@/views/product/pages/ProductView.vue')
+const ProductAnalytics = () => import('@/views/product/pages/ProductAnalyticsView.vue')
 const Users = () => import('@/views/user/pages/UsersView.vue')
 const Transactions = () => import('@/views/transaction/pages/TransactionsView.vue')
 const Login = () => import('@/views/auth/pages/LoginView.vue')
@@ -95,6 +96,18 @@ const router = createRouter({
               name: 'ProductView',
               meta: { requiresAuth: true, permission: 'VIEW_PRODUCT', title: 'Product Details' },
               component: Product,
+              children: [
+                {
+                  path: 'analytics',
+                  name: 'ProductAnalytics',
+                  meta: {
+                    requiresAuth: true,
+                    permission: 'VIEW_PRODUCT',
+                    title: 'Product Analytics',
+                  },
+                  component: ProductAnalytics,
+                },
+              ],
             },
           ],
         },
