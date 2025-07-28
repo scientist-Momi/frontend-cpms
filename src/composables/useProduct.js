@@ -97,9 +97,9 @@ export const useProduct = () => {
     }
   };
 
-  const createVariant = async (payload) => {
+  const createVariant = async (id, payload) => {
     try {
-      const res = await createNewProductVariant(payload)
+      const res = await createNewProductVariant(id, payload)
       console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {

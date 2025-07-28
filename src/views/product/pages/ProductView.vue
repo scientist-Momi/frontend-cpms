@@ -201,7 +201,7 @@ const variantTotal = computed(() => productVariants.value.reduce((sum, v) => sum
               <div class="flex justify-between mb-2">
                 <small>All active distribution of product</small>
                 <div class="flex gap-2">
-                  <SecondaryButton @click="modal.open('new_variant')">New Variant</SecondaryButton>
+                  <SecondaryButton @click="modal.open('new_variant', productId)">New Variant</SecondaryButton>
                   <PrimaryButton>Update Variants</PrimaryButton>
                 </div>
               </div>
