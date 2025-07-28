@@ -15,6 +15,7 @@ import SettingsModal from '@/views/user/pages/SettingsModal.vue'
 import NewDepositModal from '@/components/modals/NewDepositModal.vue'
 import CreditLimitModal from '@/components/modals/CreditLimitModal.vue'
 import NewVariantModal from '@/components/modals/NewVariantModal.vue'
+import UpdateVariantModal from '@/components/modals/UpdateVariantModal.vue'
 import { useAuthStore } from '@/stores/authStore'
 import SidebarSkeleton from '@/components/sidebar/SidebarSkeleton.vue'
 
@@ -84,6 +85,10 @@ const auth = useAuthStore()
         <PrimaryModal v-if="modal.type === 'new_variant'">
           <template #header>Create New Product Variant</template>
           <NewVariantModal />
+        </PrimaryModal>
+        <PrimaryModal v-if="modal.type === 'edit_variants'">
+          <template #header>Update Product Variants</template>
+          <UpdateVariantModal />
         </PrimaryModal>
       </main>
     </div>

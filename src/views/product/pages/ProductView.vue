@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router'
 import { ref, computed, onMounted } from 'vue'
 import PageLoader from '@/components/PageLoader.vue'
 import ProgressCircle from '@/components/ProgressCircle.vue'
-import { useFunction } from '@/composables/useFunction'
+// import { useFunction } from '@/composables/useFunction'
 import { useProduct } from '@/composables/useProduct'
 import BaseChart from '@/components/charts/BaseChart.vue'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
@@ -202,7 +202,7 @@ const variantTotal = computed(() => productVariants.value.reduce((sum, v) => sum
                 <small>All active distribution of product</small>
                 <div class="flex gap-2">
                   <SecondaryButton @click="modal.open('new_variant', productId)">New Variant</SecondaryButton>
-                  <PrimaryButton>Update Variants</PrimaryButton>
+                  <PrimaryButton @click="modal.open('edit_variants', productId)">Update Variants</PrimaryButton>
                 </div>
               </div>
 
