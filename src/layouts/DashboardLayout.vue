@@ -14,6 +14,7 @@ import PrimaryModal from '@/components/PrimaryModal.vue'
 import SettingsModal from '@/views/user/pages/SettingsModal.vue'
 import NewDepositModal from '@/components/modals/NewDepositModal.vue'
 import CreditLimitModal from '@/components/modals/CreditLimitModal.vue'
+import NewVariantModal from '@/components/modals/NewVariantModal.vue'
 import { useAuthStore } from '@/stores/authStore'
 import SidebarSkeleton from '@/components/sidebar/SidebarSkeleton.vue'
 
@@ -79,6 +80,10 @@ const auth = useAuthStore()
         <PrimaryModal v-if="modal.type === 'credit_limit'">
           <template #header>Update Credit Limit</template>
           <CreditLimitModal />
+        </PrimaryModal>
+        <PrimaryModal v-if="modal.type === 'new_variant'">
+          <template #header>Create New Product Variant</template>
+          <NewVariantModal />
         </PrimaryModal>
       </main>
     </div>

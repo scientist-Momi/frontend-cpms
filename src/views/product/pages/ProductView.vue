@@ -7,12 +7,16 @@ import { useFunction } from '@/composables/useFunction'
 import { useProduct } from '@/composables/useProduct'
 import BaseChart from '@/components/charts/BaseChart.vue'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
+import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import ProductTransactionsTable from '../components/ProductTransactionsTable.vue'
+import ProductVariantChart from '@/components/charts/ProductVariantChart.vue'
 import { useRouter } from 'vue-router'
+import { useModalStore } from '@/stores/modalStore'
 const router = useRouter()
 
 const route = useRoute()
-const { fetchProductId, fetchProductTransactions } = useProduct()
+const modal = useModalStore()
+const { fetchProductId, fetchProductTransactions, fetchVariants } = useProduct()
 const productId = computed(() => route.params.id)
 
 const product = ref(null)
@@ -23,8 +27,11 @@ onMounted(async () => {
   await new Promise((resolve) => setTimeout(resolve, 2500))
   const res = await fetchProductId(productId.value)
   const res2 = await fetchProductTransactions(productId.value)
+  const res3 = await fetchVariants(productId.value)
+
   product.value = res.data
   transactions.value = res2.data
+  productVariants.value = res3.data
 })
 
 // Assume "product" is a reactive prop or value with the full product object
@@ -53,6 +60,10 @@ const series = computed(() => {
     },
   ]
 })
+
+const productVariants = ref([])
+
+const variantTotal = computed(() => productVariants.value.reduce((sum, v) => sum + v.inventory, 0))
 </script>
 
 <template>
@@ -146,10 +157,21 @@ const series = computed(() => {
             >
               Variants
             </button>
+            <button
+              :class="[
+                'p-1 px-2 cursor-pointer text-sm rounded border',
+                activeTab === 'discounts'
+                  ? 'border-gray-200 text-red-600 bg-blue-50'
+                  : 'border-transparent text-gray-600 bg-white hover:bg-gray-50',
+              ]"
+              @click="activeTab = 'discounts'"
+            >
+              Discounts
+            </button>
           </div>
 
           <!-- Tab content -->
-          <div class="border border-gray-200 rounded bg-white p-2">
+          <div class="border border-gray-200 rounded bg-white p-4">
             <div v-if="activeTab === 'transactions'">
               <div
                 class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
@@ -174,7 +196,61 @@ const series = computed(() => {
                 :product-id="productId"
               />
             </div>
-            <div v-else></div>
+            <div v-if="activeTab === 'discounts'"></div>
+            <div v-if="activeTab === 'variants'">
+              <div class="flex justify-between mb-2">
+                <small>All active distribution of product</small>
+                <div class="flex gap-2">
+                  <SecondaryButton @click="modal.open('new_variant')">New Variant</SecondaryButton>
+                  <PrimaryButton>Update Variants</PrimaryButton>
+                </div>
+              </div>
+
+              <!-- Distribution balance status -->
+              <div
+                class="flex items-center gap-3 mb-4 px-4 py-2 rounded-lg"
+                :class="{
+                  'bg-red-50 border border-red-200 text-red-600':
+                    variantTotal !== product.inventory,
+                  'bg-green-50 border border-green-200 text-green-700':
+                    variantTotal === product.inventory,
+                }"
+              >
+                <span
+                  class="material-symbols-outlined text-2xl"
+                  v-if="variantTotal < product.inventory"
+                >
+                  warning
+                </span>
+                <span
+                  class="material-symbols-outlined text-2xl"
+                  v-else-if="variantTotal > product.inventory"
+                >
+                  error
+                </span>
+                <span class="material-symbols-outlined text-2xl" v-else> check_circle </span>
+
+                <span v-if="variantTotal < product.inventory">
+                  <b>{{ product.inventory - variantTotal }}</b> unit<span
+                    v-if="product.inventory - variantTotal > 1"
+                    >s</span
+                  >
+                  unassigned. (<b>{{ variantTotal }}</b> of
+                  <b>{{ product.inventory }}</b> categorized)
+                </span>
+                <span v-else-if="variantTotal > product.inventory">
+                  <b>{{ variantTotal - product.inventory }}</b> unit<span
+                    v-if="variantTotal - product.inventory > 1"
+                    >s</span
+                  >
+                  over-assigned! (<b>{{ variantTotal }}</b> of <b>{{ product.inventory }}</b
+                  >)
+                </span>
+                <span v-else> All units balanced and categorized. </span>
+              </div>
+
+              <ProductVariantChart :variants-data="productVariants" />
+            </div>
           </div>
         </div>
       </div>

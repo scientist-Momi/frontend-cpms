@@ -5,6 +5,8 @@ import {
   updateProductById,
   fetchProductById,
   fetchAllTransactionsOnAProduct,
+  fetchProductVariants,
+  createNewProductVariant,
 } from '@/api/product'
 
 export const useProduct = () => {
@@ -81,11 +83,41 @@ export const useProduct = () => {
     }
   };
 
+  const fetchVariants = async (payload) => {
+    try {
+      const res = await fetchProductVariants(payload)
+      console.log(res)
+      return { success: true, data: res.data.data }
+    } catch (err) {
+      console.log('Variants fetch failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Variants fetch failed',
+      }
+    }
+  };
+
+  const createVariant = async (payload) => {
+    try {
+      const res = await createNewProductVariant(payload)
+      console.log(res)
+      return { success: true, data: res.data.data }
+    } catch (err) {
+      console.log('Creation failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Creation failed',
+      }
+    }
+  };
+
   return {
     fetchProducts,
     createProduct,
     updateProduct,
     fetchProductId,
     fetchProductTransactions,
+    fetchVariants,
+    createVariant,
   }
 }

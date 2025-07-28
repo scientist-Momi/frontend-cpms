@@ -86,7 +86,7 @@ function setNoteFromTag(tag) {
       <PageLoader />
     </div>
     <div v-else class="p-6">
-      <div class="mb-6">
+      <div class="mb-6 text-center">
         <div class="border border-gray-200 p-2 w-full">
           <small>Deposit Amount</small>
           <input
@@ -94,7 +94,7 @@ function setNoteFromTag(tag) {
             id="depositAmount"
             v-model="amount"
             placeholder="0.00"
-            class="block mt-1 w-full text-gray-900 border-0 rounded-xs text-2xl focus:ring-gray-400 focus:outline-none"
+            class="text-center block mt-1 w-full text-gray-900 border-0 rounded-xs text-2xl focus:ring-gray-400 focus:outline-none"
           />
         </div>
         <p class="text-sm text-gray-400 mt-2">
