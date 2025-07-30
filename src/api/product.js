@@ -13,3 +13,5 @@ export const fetchAllTransactionsOnAProduct = (id) => apiClient.get(`/customer/t
 export const fetchProductVariants = (id) => apiClient.get(`/products/${id}/variants`)
 
 export const createNewProductVariant = (id, data) => apiClient.post(`/products/${id}/variants`, data)
+
+export const updateProductVariant = (id, v_id, data) => apiClient.put(`/products/${id}/variants/${v_id}`, data)

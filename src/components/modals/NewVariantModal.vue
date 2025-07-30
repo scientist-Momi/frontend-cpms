@@ -22,7 +22,7 @@ function resetForm() {
 
 const submitVariant = async() => {
   if (!weight.value || !inventory.value || isNaN(weight.value) || isNaN(inventory.value)) {
-    toast.showToast({ message: 'All fields are required', type: 'error' })
+    toast.showToast({ message: 'All fields are required and must be numbers', type: 'error' })
     return
   }
   loading.value = true
@@ -61,7 +61,7 @@ const submitVariant = async() => {
           />
         </div>
         <p class="text-sm text-gray-400 mt-2">
-          Enter the deposit amount OR adjust balance after deposit directly.
+          Enter the weight of the product to be recorded.
         </p>
       </div>
       <div class="mb-6">
@@ -76,7 +76,7 @@ const submitVariant = async() => {
           />
         </div>
         <p class="text-sm text-gray-400 mt-2">
-          Enter the deposit amount OR adjust balance after deposit directly.
+          Enter the number of products with the weight listed.
         </p>
       </div>
       <div class="flex items-center gap-2">
