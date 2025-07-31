@@ -3,6 +3,9 @@ import { ref, computed, watch } from 'vue'
 import { useTransactionStore } from '@/stores/TransactionStore'
 // import ReusableFilter from '@/components/ReusableFilter.vue'
 import { useFunction } from '@/composables/useFunction'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const { formatDateShort, formatCurrency, getCustomerInitials } = useFunction()
 
@@ -66,6 +69,11 @@ function onRowsPerPageChange(e) {
 watch([search], () => {
   currentPage.value = 1
 })
+
+function goToTransaction(id) {
+  router.push({ name: 'TransactionView', params: { id } })
+}
+
 </script>
 
 <template>
@@ -97,24 +105,20 @@ watch([search], () => {
           </tr>
         </thead>
         <tbody class="text-sm">
-          
           <tr
             v-for="transaction in paginatedTransactions"
             :key="transaction.transactionId"
-            class="border-b border-gray-100 hover:bg-gray-50 transition"
+            class="border-b border-gray-100 hover:bg-gray-50 transition cursor-pointer"
+            @click="goToTransaction(transaction.transactionId)"
           >
-            <!-- <router-link :to="{ name: 'TransactionView', params: { id: transaction.transactionId } }">
-              <td class="px-2 py-2">{{ customer.name }}</td>
-            </router-link> -->
             <td class="p-2 py-3">{{ formatDateShort(transaction.createdAt) }}</td>
             <td class="p-2 py-3">
               <div class="flex items-center gap-2">
                 <div class="rounded-full bg-red-500 p-2 text-sm text-white font-semibold">
-                {{ getCustomerInitials(transaction.customerName) }}
+                  {{ getCustomerInitials(transaction.customerName) }}
+                </div>
+                <p>{{ transaction.customerName }}</p>
               </div>
-              <p>{{ transaction.customerName }}</p>
-              </div>
-
             </td>
             <td class="p-2 py-3">{{ formatCurrency(transaction.totalAmount) }}</td>
             <td class="p-2 py-3">{{ formatCurrency(transaction.totalQuantity) }}</td>

@@ -12,6 +12,8 @@ const Product = () => import('@/views/product/pages/ProductView.vue')
 const ProductAnalytics = () => import('@/views/product/pages/ProductAnalyticsView.vue')
 const Users = () => import('@/views/user/pages/UsersView.vue')
 const Transactions = () => import('@/views/transaction/pages/TransactionsView.vue')
+const Transaction = () => import('@/views/transaction/pages/TransactionView.vue')
+const NewTransaction = () => import('@/views/transaction/pages/NewTransactionView.vue')
 const Login = () => import('@/views/auth/pages/LoginView.vue')
 const Unauthorised = () => import('@/views/Unauthorised.vue')
 const Settings = () => import('@/views/analytics/pages/SettingsView.vue')
@@ -145,6 +147,12 @@ const router = createRouter({
                 title: 'New Transaction',
               },
               component: NewTransaction,
+            },
+            {
+              path: ':id',
+              name: 'TransactionView',
+              meta: { requiresAuth: true, permission: 'VIEW_TRANSACTION', title: 'Transaction Details' },
+              component: Transaction,
             },
           ],
         },

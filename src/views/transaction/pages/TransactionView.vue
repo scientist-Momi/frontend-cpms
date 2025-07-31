@@ -3,7 +3,7 @@
 
 <template>
   <div>
-    <h1>NewTransactionView.vue</h1>
+    <h1>TransactionView.vue</h1>
   </div>
 </template>
 
