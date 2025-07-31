@@ -12,6 +12,15 @@ export function useFunction() {
     }).format(date)
   }
 
+  function formatDateLong(date) {
+    if (!date) return ''
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  }
+
   function formatDateShort(dateString) {
     if (!dateString) return ''
     const date = new Date(dateString)
@@ -33,5 +42,5 @@ export function useFunction() {
     return initials
   }
 
-  return { formatDate, formatCurrency, formatDateShort, getCustomerInitials }
+  return { formatDate, formatCurrency, formatDateShort, getCustomerInitials, formatDateLong }
 }
