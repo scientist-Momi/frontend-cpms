@@ -8,6 +8,7 @@ import {
   fetchProductVariants,
   createNewProductVariant,
   updateProductVariant,
+  deleteProductVariant,
 } from '@/api/product'
 
 export const useProduct = () => {
@@ -124,7 +125,21 @@ export const useProduct = () => {
         message: err.response?.data?.message || 'Update failed',
       }
     }
+  };
+
+const deleteVariant = async (id, v_id) => {
+  try {
+    const res = await deleteProductVariant(id, v_id)
+    console.log(res)
+    return { success: true, data: res }
+  } catch (err) {
+    console.log('Delete failed', err)
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Delete failed',
+    }
   }
+}
 
   return {
     fetchProducts,
@@ -135,5 +150,6 @@ export const useProduct = () => {
     fetchVariants,
     createVariant,
     updateVariant,
+    deleteVariant,
   }
 }

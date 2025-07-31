@@ -8,7 +8,7 @@ import { useProduct } from '@/composables/useProduct'
 import { useToastStore } from '@/stores/toastStore'
 const toast = useToastStore()
 
-const { fetchVariants, updateVariant } = useProduct()
+const { fetchVariants, updateVariant, deleteVariant } = useProduct()
 const loading = ref(false)
 const modal = useModalStore()
 const productVariants = ref([])
@@ -62,6 +62,27 @@ const handleSave = async () => {
     toast.showToast({ message: res.message || 'Update failed.', type: 'error' })
   }
 }
+
+const handleDelete = async () => {
+  if (
+    !editedWeight.value ||
+    !editedInventory.value
+  ) {
+    toast.showToast({ message: 'Please choose variant to delete', type: 'error' })
+    return
+  }
+  loading.value = true
+  const res = await deleteVariant(modal.data, editedId.value)
+  if (res.success) {
+    toast.showToast({ message: 'Variant Deleted!', type: 'success' })
+    await new Promise((resolve) => setTimeout(resolve, 2500))
+    modal.close()
+    window.location.reload()
+  } else {
+    loading.value = false
+    toast.showToast({ message: res.message || 'Delete failed.', type: 'error' })
+  }
+}
 </script>
 
 <template>
@@ -70,7 +91,7 @@ const handleSave = async () => {
       <PageLoader />
     </div>
     <div v-else class="p-6">
-      <div v-if="productVariants = []">
+      <div v-if="productVariants.length === 0">
         <h1>No variants to update.</h1>
       </div>
       <div v-else>
@@ -116,10 +137,12 @@ const handleSave = async () => {
               Enter the number of products with the weight listed.
             </p>
           </div>
-          <div class="flex items-center gap-2">
-            <PrimaryButton @click="handleSave">Save Variant</PrimaryButton>
-            <PrimaryButton @click="handleSave">Delete Variant</PrimaryButton>
-            <SecondaryButton @click="cancelEdit">Cancel</SecondaryButton>
+          <div class="flex items-center justify-between">
+            <div class="flex gap-2">
+              <PrimaryButton @click="handleSave">Save Variant</PrimaryButton>
+              <SecondaryButton @click="cancelEdit">Cancel</SecondaryButton>
+            </div>
+            <PrimaryButton @click="handleDelete">Delete Variant</PrimaryButton>
           </div>
         </div>
       </div>

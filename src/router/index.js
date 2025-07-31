@@ -20,7 +20,6 @@ const User = () => import('@/views/user/pages/UserView.vue')
 const Customer = () => import('@/views/customer/pages/CustomerView.vue')
 const NewCustomer = () => import('@/views/customer/pages/NewCustomerView.vue')
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -136,6 +135,18 @@ const router = createRouter({
           name: 'Transactions',
           meta: { requiresAuth: true, permission: 'VIEW_TRANSACTION', title: 'Transactions' },
           component: Transactions,
+          children: [
+            {
+              path: 'new',
+              name: 'NewTransaction',
+              meta: {
+                requiresAuth: true,
+                permission: 'CREATE_TRANSACTION',
+                title: 'New Transaction',
+              },
+              component: NewTransaction,
+            },
+          ],
         },
         {
           path: 'settings',
@@ -166,6 +177,5 @@ router.beforeEach((to, from, next) => {
 
   next()
 })
-
 
 export default router

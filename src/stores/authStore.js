@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useAuth } from '@/composables/useAuth'
 import { useCustomer } from '@/composables/useCustomer'
 import { useProduct } from '@/composables/useProduct'
+import { useTransaction } from '@/composables/useTransaction'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -36,6 +37,7 @@ export const useAuthStore = defineStore('auth', {
       const { fetchUserInfo, fetchUsers } = useAuth()
       const {fetchCustomers, fetchCustomerTransactions} = useCustomer()
       const { fetchProducts } = useProduct()
+      const { fetchTransactions } = useTransaction()
       const token = localStorage.getItem('token')
       const permissions = JSON.parse(localStorage.getItem('permissions')) || []
       const user = this.user
@@ -50,6 +52,7 @@ export const useAuthStore = defineStore('auth', {
           fetchCustomers()
           fetchCustomerTransactions()
           fetchProducts()
+          fetchTransactions()
         }
       }
     },

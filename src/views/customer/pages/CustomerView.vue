@@ -10,7 +10,7 @@ import PurchasesTable from '../components/PurchasesTable.vue'
 import WalletTransactionsTable from '../components/WalletTransactionsTable.vue'
 import { useModalStore } from '@/stores/modalStore'
 
-const { formatDate, formatCurrency } = useFunction()
+const { formatDate, formatCurrency, getCustomerInitials } = useFunction()
 const { fetchCustomerId, fetchAllTransactions } = useCustomer()
 const modal = useModalStore()
 const route = useRoute()
@@ -27,13 +27,6 @@ onMounted(async () => {
   customer.value = res.data
   allTransactions.value = res2.data
 })
-
-function getCustomerInitials(name) {
-  if (!name) return ''
-  const parts = name.trim().split(/\s+/).filter(Boolean)
-  const initials = parts.map((part) => part[0].toUpperCase()).join('')
-  return initials
-}
 
 const activeTab = ref('product')
 

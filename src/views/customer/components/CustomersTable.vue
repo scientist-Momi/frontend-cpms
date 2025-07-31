@@ -282,10 +282,7 @@ watch([statusFilter, search], () => {
         </tbody>
       </table>
     </div>
-    <div
-      class="flex items-center justify-between text-sm text-gray-500 px-4 py-4 border-t border-gray-200"
-    >
-      <span>{{ selected.length }} of {{ filteredCustomers.length }} row(s) selected.</span>
+    <div class="flex items-center justify-between text-sm text-gray-500 px-4 py-4 border-t border-gray-200">
       <div class="flex items-center gap-2">
         <span>Rows per page</span>
         <select

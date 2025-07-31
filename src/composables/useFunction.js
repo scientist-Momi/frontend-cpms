@@ -26,5 +26,12 @@ export function useFunction() {
     return '£' + num.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   }
 
-  return { formatDate, formatCurrency, formatDateShort }
+  function getCustomerInitials(name) {
+    if (!name) return ''
+    const parts = name.trim().split(/\s+/).filter(Boolean)
+    const initials = parts.map((part) => part[0].toUpperCase()).join('')
+    return initials
+  }
+
+  return { formatDate, formatCurrency, formatDateShort, getCustomerInitials }
 }
