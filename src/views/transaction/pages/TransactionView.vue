@@ -4,8 +4,9 @@ import { ref, computed, onMounted } from 'vue'
 import { useTransaction } from '@/composables/useTransaction'
 import { useFunction } from '@/composables/useFunction'
 import PageLoader from '@/components/PageLoader.vue'
+import TransactionDetailsTable from '../components/TransactionDetailsTable.vue'
 
-const { formatDate, formatCurrency, getCustomerInitials, formatDateLong } = useFunction()
+const { formatDate, formatCurrency, getCustomerInitials, formatDateLongWithTimeBy } = useFunction()
 const { fetchTransaction } = useTransaction()
 const route = useRoute()
 const transactionId = computed(() => route.params.id)
@@ -30,7 +31,7 @@ onMounted(async () => {
 
       <div class="flex-1">
         <h1 class="text-xl font-semibold mb-2">{{ transaction.customerName }}</h1>
-        <p class="mb-4">Purchase was made on {{ formatDateLong(transaction.createdAt) }}</p>
+        <p class="mb-4">Purchase was made on {{ formatDateLongWithTimeBy(transaction.createdAt) }}</p>
         <div class="flex gap-10">
           <div>
             <small class="text-xs">Total Amount</small>
@@ -46,6 +47,9 @@ onMounted(async () => {
           </div>
         </div>
       </div>
+    </div>
+    <div class="border border-gray-200 bg-white">
+      <TransactionDetailsTable />
     </div>
   </div>
   <div class="" v-else>

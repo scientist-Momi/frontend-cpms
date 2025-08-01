@@ -1,5 +1,4 @@
 export function useFunction() {
-
   function formatDate(dateString) {
     if (!dateString) return ''
     const date = new Date(dateString)
@@ -42,5 +41,28 @@ export function useFunction() {
     return initials
   }
 
-  return { formatDate, formatCurrency, formatDateShort, getCustomerInitials, formatDateLong }
+  function formatDateLongWithTimeBy(date) {
+    if (!date) return ''
+    const d = new Date(date)
+    const dateStr = d.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+    const timeStr = d.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    })
+    return `${dateStr} by ${timeStr}`
+  }
+
+  return {
+    formatDate,
+    formatCurrency,
+    formatDateShort,
+    getCustomerInitials,
+    formatDateLong,
+    formatDateLongWithTimeBy,
+  }
 }
