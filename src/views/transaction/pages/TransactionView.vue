@@ -6,7 +6,7 @@ import { useFunction } from '@/composables/useFunction'
 import PageLoader from '@/components/PageLoader.vue'
 import TransactionDetailsTable from '../components/TransactionDetailsTable.vue'
 
-const { formatDate, formatCurrency, getCustomerInitials, formatDateLongWithTimeBy } = useFunction()
+const { formatCurrency, getCustomerInitials, formatDateLongWithTimeBy } = useFunction()
 const { fetchTransaction } = useTransaction()
 const route = useRoute()
 const transactionId = computed(() => route.params.id)
@@ -48,13 +48,11 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="border border-gray-200 bg-white">
-      <TransactionDetailsTable />
+    <div class="border border-gray-200 bg-white p-4">
+      <TransactionDetailsTable :purchase-transactions="transaction.transactionDetails"/>
     </div>
   </div>
   <div class="" v-else>
     <PageLoader />
   </div>
 </template>
-
-<style scoped></style>

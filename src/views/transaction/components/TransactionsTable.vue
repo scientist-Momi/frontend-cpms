@@ -121,7 +121,7 @@ function goToTransaction(id) {
               </div>
             </td>
             <td class="p-2 py-3">{{ formatCurrency(transaction.totalAmount) }}</td>
-            <td class="p-2 py-3">{{ formatCurrency(transaction.totalQuantity) }}</td>
+            <td class="p-2 py-3">{{ transaction.totalQuantity }}</td>
             <td class="p-2 py-3">{{ formatCurrency(transaction.totalDiscount) }}</td>
           </tr>
         </tbody>
