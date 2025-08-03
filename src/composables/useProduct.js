@@ -88,7 +88,7 @@ export const useProduct = () => {
   const fetchVariants = async (payload) => {
     try {
       const res = await fetchProductVariants(payload)
-      console.log(res)
+      console.log('Variants fetched', res)
       return { success: true, data: res.data.data }
     } catch (err) {
       console.log('Variants fetch failed', err)

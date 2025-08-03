@@ -1,69 +1,97 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { onClickOutside } from '@vueuse/core'
+import { useCustomerStore } from '@/stores/customerStore'
+import { useFunction } from '@/composables/useFunction'
+import { useProduct } from '@/composables/useProduct'
+import { useProductStore } from '@/stores/productStore'
+import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
+import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
+import { useToastStore } from '@/stores/toastStore'
 
-// ======== MOCK DATA AND API =========
-// Replace with actual API calls in production!
-const allCustomers = [
-  { id: 'customer-1', name: 'Alice James' },
-  { id: 'customer-2', name: 'Ben Peters' },
-  { id: '9ede1659-57f0-4194-aae6-2955f7ea977a', name: 'Fanupé Johnson' }
-]
+const toast = useToastStore()
+const productStore = useProductStore()
+const productOptions = computed(() => productStore.products)
 
-const allProducts = [
-  { id: 1, name: 'Rice', latestPrice: { price: 2600 } },
-  { id: 2, name: 'Beans', latestPrice: { price: 3200 } },
-  { id: 7, name: 'Spaghetti', latestPrice: { price: 1600 } }
-]
-// productId -> array of variants
-const allVariants = {
-  1: [
-    { id: 4, name: 'Rice 5kg', weight: 5 },
-    { id: 5, name: 'Rice 10kg', weight: 10 }
-  ],
-  2: [
-    { id: 6, name: 'Beans 2kg', weight: 2 }
-  ],
-  7: [
-    { id: 7, name: 'Spaghetti 1kg', weight: 1 }
-  ]
-}
-
-async function fetchProducts() { return allProducts }
-async function fetchVariants(productId) { return allVariants[productId] || [] }
-async function fetchCustomers() { return allCustomers }
-async function fetchProductById(productId) { return allProducts.find(p => p.id === productId) }
-
-function formatCurrency(val) {
-  if (val == null) return '₦0';
-  return '₦' + Number(val).toLocaleString();
-}
-// ========== END MOCK DATA ===========
-
-// ========== COMPONENT STATE =========
+const customers = useCustomerStore()
 const customerId = ref('')
-const customers = ref([])
-const productOptions = ref([])
+const allCustomers = computed(() => customers.customers || [])
+
+const { formatCurrency, formatCurrencyTrans } = useFunction()
+const { fetchVariants } = useProduct()
+
+const wrapperRef = ref()
+const dropdownOpen = ref(false)
+const search = ref('')
+const selectedCustomer = ref(null)
+
+const filteredCustomers = computed(() => {
+  const s = search.value.toLowerCase()
+  if (!s) return allCustomers.value
+  return allCustomers.value.filter((cust) => cust.name.toLowerCase().includes(s))
+})
+
+function onInputFocus() {
+  dropdownOpen.value = true
+}
+
+function pickCustomer(cust) {
+  selectedCustomer.value = cust
+  customerId.value = selectedCustomer.value.customerId
+  search.value = cust.name
+  dropdownOpen.value = false
+}
+
+onClickOutside(wrapperRef, () => (dropdownOpen.value = false))
+
+watch(search, (val) => {
+  if (!selectedCustomer.value) return
+  if (val !== selectedCustomer.value.name) selectedCustomer.value = null
+})
+
+const fetchProductVariants = async (productId) => {
+  try {
+    const res = await fetchVariants(productId)
+    return { success: true, data: res.data }
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Variants fetch failed',
+    }
+  }
+}
+
+
 const rows = ref([
-  // Row structure: { productId, variantId, quantity, unitPrice, unitPriceDisplay, variantWeight, lineDiscount, variants }
-  { productId: null, variantId: null, quantity: 1, unitPrice: null, unitPriceDisplay: null, variantWeight: null, lineDiscount: 0, variants: [] }
+  {
+    productId: null,
+    variantId: null,
+    quantity: 1,
+    unitPrice: null,
+    unitPriceDisplay: null,
+    variantWeight: null,
+    lineDiscount: 0,
+    variants: [],
+  },
 ])
 
-// ========= FETCH DATA ON MOUNT ======
-;(async function init() {
-  customers.value = await fetchCustomers()
-  productOptions.value = await fetchProducts()
-})()
-
-// ============= METHODS ==============
 function addRow() {
-  rows.value.push({ productId: null, variantId: null, quantity: 1, unitPrice: null, unitPriceDisplay: null, variantWeight: null, lineDiscount: 0, variants: [] })
+  rows.value.push({
+    productId: null,
+    variantId: null,
+    quantity: 1,
+    unitPrice: null,
+    unitPriceDisplay: null,
+    variantWeight: null,
+    lineDiscount: 0,
+    variants: [],
+  })
 }
 
 function removeRow(idx) {
   if (rows.value.length > 1) rows.value.splice(idx, 1)
 }
 
-// Handles when product is selected in a row
 async function onProductSelect(row) {
   if (!row.productId) {
     row.variants = []
@@ -72,40 +100,41 @@ async function onProductSelect(row) {
     row.variantWeight = null
     return
   }
-  // Fetch and set variants list
-  row.variants = await fetchVariants(row.productId)
-  // Fetch unit price
-  const product = await fetchProductById(row.productId)
+
+  const result = await fetchProductVariants(row.productId)
+  row.variants = result.success ? result.data : []
+  if (row.variants.length === 0) {
+    toast.showToast({
+      message: 'This product does not have any variants yet.',
+      type: 'error',
+    })
+  }
+
+  const product = productOptions.value.find((p) => p.id === row.productId)
   row.unitPriceDisplay = product?.latestPrice?.price ?? 0
   row.unitPrice = row.unitPriceDisplay
-  // Reset variant, quantity, discount
   row.variantId = null
   row.variantWeight = null
   row.quantity = 1
   row.lineDiscount = 0
 }
 
-// Handles when variant is selected in a row
 function onVariantSelect(row) {
-  const v = row.variants.find(v => v.id === row.variantId)
+  const v = row.variants.find((v) => v.id === row.variantId)
   row.variantWeight = v ? v.weight : null
 }
 
-// Calculates total for a row: weight × unit price × quantity − line discount
 function rowTotal(row) {
   const w = +row.variantWeight || 0
   const p = +row.unitPrice || 0
   const q = +row.quantity || 0
   const d = +row.lineDiscount || 0
-  return (w * p * q) - d
+  return w * p * q - d
 }
 
-// Computes overall grand total (sum of line totals)
 const grandTotal = computed(() => rows.value.reduce((sum, row) => sum + rowTotal(row), 0))
 
-// =========== SUBMISSION ============
 function onSubmit() {
-  // Basic validation: a customer is selected and all rows filled
   if (!customerId.value) {
     alert('Choose a customer')
     return
@@ -117,111 +146,205 @@ function onSubmit() {
     }
   }
 
-  // Prepare payload
   const payload = {
     customerId: customerId.value,
-    transactionDetails: rows.value.map(row => ({
+    transactionDetails: rows.value.map((row) => ({
       productId: row.productId,
       variantId: row.variantId,
       quantity: +row.quantity,
       unitPrice: +row.unitPrice,
-      lineDiscount: +row.lineDiscount
-    }))
+      lineDiscount: +row.lineDiscount,
+    })),
   }
   alert(JSON.stringify(payload, null, 2))
-  // Send payload to backend (not shown here)
 }
 </script>
 
 <template>
-  <div class="max-w-3xl my-6 mx-auto bg-white rounded-lg shadow-md p-8">
-    <h2 class="text-2xl font-bold mb-4">New Transaction</h2>
-
-    <!-- Customer select -->
-    <div class="mb-6">
-      <label class="block mb-2 font-semibold">Customer</label>
-      <select v-model="customerId" class="p-2 border rounded min-w-[300px]">
-        <option disabled value="">Choose customer...</option>
-        <option v-for="cust in customers" :key="cust.id" :value="cust.id">{{ cust.name }}</option>
-      </select>
+  <div ref="wrapperRef" class="mb-4 bg-white rounded">
+    <div class="flex items-center p-4 border-b border-gray-200 gap-2 mb-2">
+      <span class="material-symbols-outlined"> contract_edit </span>
+      <p class="font-semibold">New Transaction Form</p>
     </div>
 
-    <!-- Transaction rows -->
+    <div
+      class="flex items-center p-4 mb-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
+      role="alert"
+    >
+      <svg
+        class="shrink-0 inline w-4 h-4 me-3"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path
+          d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
+        />
+      </svg>
+      <span class="sr-only">Info</span>
+      <div>
+        To continue with initiating a new transaction. You must pick the customer the transaction is
+        meant for my searching for their name and clicking on them.
+      </div>
+    </div>
+
+    <div class="relative border border-gray-200 p-4">
+      <div class="border border-gray-200 p-2 w-full">
+        <small>Choose Customer</small>
+        <input
+          v-model="search"
+          type="text"
+          @focus="onInputFocus"
+          @click="onInputFocus"
+          id="customer"
+          class="block mt-1 w-full text-gray-900 border-0 rounded-xs text-2xl focus:ring-gray-400 focus:outline-none"
+          autocomplete="off"
+        />
+      </div>
+
+      <transition
+        name="fade"
+        enter-active-class="transition ease-out duration-150"
+        leave-active-class="transition ease-in duration-100"
+      >
+        <div
+          v-if="dropdownOpen"
+          class="absolute left-0 z-10 mt-1 w-full bg-white border border-gray-200 rounded shadow-lg max-h-56 overflow-y-auto"
+        >
+          <ul>
+            <li
+              v-for="cust in filteredCustomers"
+              :key="cust.customerId"
+              class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-base"
+              @mousedown.prevent="pickCustomer(cust)"
+            >
+              {{ cust.name }}
+            </li>
+            <li v-if="filteredCustomers.length === 0" class="px-4 py-2 text-gray-500 text-sm">
+              No customers found
+            </li>
+          </ul>
+        </div>
+      </transition>
+
+      <div v-if="selectedCustomer" class="border rounded mt-4 bg-gray-50 p-4 space-y-2">
+        <div class="flex gap-10">
+          <div>
+            <small class="text-xs">Credit Limit</small>
+            <p class="font-medium text-xl">{{ formatCurrency(selectedCustomer.creditLimit) }}</p>
+          </div>
+          <div>
+            <small class="text-xs">Wallet Balance</small>
+            <p class="font-medium text-xl">
+              {{ formatCurrency(selectedCustomer.customerWallet.balance) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-if="selectedCustomer" class="bg-white rounded border border-gray-200 p-4">
     <table class="w-full mb-4 border-t border-b">
-      <thead>
+      <thead class="text-xs">
         <tr>
-          <th class="p-2">Product</th>
-          <th class="p-2">Variant</th>
-          <th class="p-2">Unit Price</th>
-          <th class="p-2">Weight</th>
-          <th class="p-2">Quantity</th>
-          <th class="p-2">Discount</th>
-          <th class="p-2">Total</th>
-          <th class="p-2"></th>
+          <th class="py-2 text-left font-medium">Product</th>
+          <th class="py-2 text-left font-medium">Variant</th>
+          <th class="py-2 text-left font-medium">Unit Price</th>
+          <th class="py-2 text-left font-medium">Weight</th>
+          <th class="py-2 text-left font-medium">Quantity</th>
+          <th class="py-2 text-left font-medium">Discount</th>
+          <th class="py-2 text-left font-medium">Total</th>
+          <th class="py-2 text-left font-medium"></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(row, idx) in rows" :key="idx" class="odd:bg-gray-50">
-          <!-- Product dropdown -->
           <td>
-            <select v-model="row.productId" @change="onProductSelect(row)" class="p-1 border rounded min-w-[120px]">
+            <select
+              v-model="row.productId"
+              @change="onProductSelect(row)"
+              class="p-1 border rounded w-full"
+            >
               <option disabled value="">Pick product…</option>
               <option v-for="p in productOptions" :key="p.id" :value="p.id">{{ p.name }}</option>
             </select>
           </td>
-          <!-- Variant dropdown -->
           <td>
-            <select v-model="row.variantId" @change="onVariantSelect(row)" class="p-1 border rounded min-w-[120px]" :disabled="!row.variants.length">
+            <select
+              v-model="row.variantId"
+              @change="onVariantSelect(row)"
+              class="p-1 border rounded w-full"
+              :disabled="!row.variants.length"
+            >
               <option disabled value="">Pick variant…</option>
-              <option v-for="v in row.variants" :key="v.id" :value="v.id">{{ v.name }} ({{ v.weight }}kg)</option>
+              <option v-for="v in row.variants" :key="v.id" :value="v.id">
+                {{ v.name }} ({{ v.weight }}kg)
+              </option>
             </select>
           </td>
-          <!-- Unit price (readonly) -->
           <td>
-            <span class="inline-block w-16 text-right">{{ formatCurrency(row.unitPriceDisplay) }}</span>
+            <span class="inline-block w-full">{{ formatCurrencyTrans(row.unitPriceDisplay) }}</span>
           </td>
-          <!-- Weight (readonly) -->
           <td>
-            <span class="inline-block w-10 text-right">{{ row.variantWeight ?? "—" }}</span>
+            <span class="inline-block w-full">{{ row.variantWeight ?? '—' }}</span>
           </td>
-          <!-- Quantity -->
           <td>
-            <input type="number" v-model.number="row.quantity" min="1" class="p-1 border rounded w-16" />
+            <input
+              type="number"
+              v-model.number="row.quantity"
+              min="1"
+              class="p-1 border rounded w-full"
+            />
           </td>
-          <!-- Discount -->
           <td>
-            <input type="number" v-model.number="row.lineDiscount" min="0" class="p-1 border rounded w-16" />
+            <input
+              type="number"
+              v-model.number="row.lineDiscount"
+              min="0"
+              class="p-1 border rounded w-full"
+            />
           </td>
-          <!-- Row total -->
           <td>
-            <span class="font-semibold">{{ formatCurrency(rowTotal(row)) }}</span>
+            <span class="font-semibold">{{ formatCurrencyTrans(rowTotal(row)) }}</span>
           </td>
-          <!-- Remove -->
           <td>
-            <button type="button" @click="removeRow(idx)" :disabled="rows.length===1" class="text-red-500">x</button>
+            <secondary-button
+              @click="removeRow(idx)"
+              :disabled="rows.length === 1"
+              class="text-red-500"
+              ><span class="material-symbols-outlined"> close </span></secondary-button
+            >
           </td>
         </tr>
       </tbody>
     </table>
 
-    <button type="button" class="mb-4 px-3 py-1 bg-blue-600 text-white rounded shadow" @click="addRow">
-      + Add Product
-    </button>
+    <secondary-button @click="addRow" class="flex items-center">
+      <span class="material-symbols-outlined"> add </span>
+      Add Product</secondary-button
+    >
 
-    <!-- Total summary -->
-    <div class="text-right text-lg font-medium">
-      Grand Total: <span class="font-bold">{{ formatCurrency(grandTotal) }}</span>
+    <div class="text-right">
+      <div>
+        <small class="text-sm">Grand Total</small>
+        <p class="font-bold text-2xl">{{ formatCurrencyTrans(grandTotal) }}</p>
+      </div>
     </div>
-
-    <!-- Submit -->
-    <div class="mt-8 text-right">
-      <button @click="onSubmit" class="px-6 py-2 bg-green-600 text-white font-semibold rounded shadow hover:bg-green-700">
-        Submit Transaction
-      </button>
+    <div class="mt-4 text-right">
+      <primary-button @click="onSubmit">Submit Transaction</primary-button>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* You can add more styles or use Tailwind as above */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.15s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

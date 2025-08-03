@@ -34,6 +34,13 @@ export function useFunction() {
     return '£' + num.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   }
 
+  function formatCurrencyTrans(value) {
+    if (value == null || isNaN(value)) return '£0.00'
+    const num = typeof value === 'string' ? parseFloat(value) : value
+    return '£' + num.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  }
+
+
   function getCustomerInitials(name) {
     if (!name) return ''
     const parts = name.trim().split(/\s+/).filter(Boolean)
@@ -64,5 +71,6 @@ export function useFunction() {
     getCustomerInitials,
     formatDateLong,
     formatDateLongWithTimeBy,
+    formatCurrencyTrans,
   }
 }
