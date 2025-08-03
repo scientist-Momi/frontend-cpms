@@ -5,10 +5,17 @@ import { useCustomerStore } from '@/stores/customerStore'
 import { useFunction } from '@/composables/useFunction'
 import { useProduct } from '@/composables/useProduct'
 import { useProductStore } from '@/stores/productStore'
+import { useTransaction } from '@/composables/useTransaction'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import { useToastStore } from '@/stores/toastStore'
+import { useRouter } from 'vue-router'
+import { useModalStore } from '@/stores/modalStore'
+import { useCustomer } from '@/composables/useCustomer'
 
+
+const router = useRouter()
+const modal = useModalStore()
 const toast = useToastStore()
 const productStore = useProductStore()
 const productOptions = computed(() => productStore.products)
@@ -19,6 +26,8 @@ const allCustomers = computed(() => customers.customers || [])
 
 const { formatCurrency, formatCurrencyTrans } = useFunction()
 const { fetchVariants } = useProduct()
+const { createTransaction, fetchTransactions } = useTransaction()
+const {fetchCustomers} = useCustomer()
 
 const wrapperRef = ref()
 const dropdownOpen = ref(false)
@@ -134,14 +143,20 @@ function rowTotal(row) {
 
 const grandTotal = computed(() => rows.value.reduce((sum, row) => sum + rowTotal(row), 0))
 
-function onSubmit() {
+const onSubmit = async () => {
   if (!customerId.value) {
-    alert('Choose a customer')
+    toast.showToast({
+      message: 'Please, choose a customer.',
+      type: 'error',
+    })
     return
   }
   for (const row of rows.value) {
     if (!row.productId || !row.variantId || !row.quantity || !row.unitPrice) {
-      alert('Fill all fields in each row')
+      toast.showToast({
+      message: 'Fill all fields in each row.',
+      type: 'error',
+    })
       return
     }
   }
@@ -156,7 +171,26 @@ function onSubmit() {
       lineDiscount: +row.lineDiscount,
     })),
   }
-  alert(JSON.stringify(payload, null, 2))
+  // alert(JSON.stringify(payload, null, 2))
+  const res = await createTransaction(payload)
+  modal.open("loadingState")
+  await new Promise((resolve) => setTimeout(resolve, 2500))
+  if(res.success){
+    await fetchTransactions()
+    await fetchCustomers()
+    toast.showToast({
+      message: 'Transaction has been saved!',
+      type: 'success',
+    })
+    modal.close()
+    router.push({name: 'Transactions'})
+  }else{
+    toast.showToast({
+      message: res.message || 'Failed to save transaction.',
+      type: 'error',
+    })
+    modal.close()
+  }
 }
 </script>
 

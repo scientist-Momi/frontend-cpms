@@ -18,10 +18,10 @@ import NewVariantModal from '@/components/modals/NewVariantModal.vue'
 import UpdateVariantModal from '@/components/modals/UpdateVariantModal.vue'
 import { useAuthStore } from '@/stores/authStore'
 import SidebarSkeleton from '@/components/sidebar/SidebarSkeleton.vue'
+import LoadingModal from '@/components/LoadingModal.vue'
 
 const modal = useModalStore()
 const auth = useAuthStore()
-
 </script>
 
 <template>
@@ -53,6 +53,8 @@ const auth = useAuthStore()
           <template #header>Confirm Activation or Deactivativation of User</template>
           <ActivationModal></ActivationModal>
         </BaseModal>
+
+        <LoadingModal v-if="modal.type === 'loadingState'"></LoadingModal>
 
         <SecondaryModal v-if="modal.type === 'settings'">
           <template #header>Settings</template>

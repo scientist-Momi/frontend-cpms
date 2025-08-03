@@ -1,5 +1,5 @@
 import { useTransactionStore } from '@/stores/TransactionStore'
-import { fetchAllTransactions, fetchATransaction } from '@/api/Transactions'
+import { fetchAllTransactions, fetchATransaction, createNewTransaction } from '@/api/Transactions'
 
 export const useTransaction = () => {
   const transactionStore = useTransactionStore()
@@ -32,8 +32,23 @@ export const useTransaction = () => {
       }
     }
   };
+
+  const createTransaction = async (payload) => {
+    try {
+      const res = await createNewTransaction(payload)
+      console.log(res)
+      return { success: true, data: res.data.data }
+    } catch (err) {
+      console.log('Transaction creation failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Transaction creation failed',
+      }
+    }
+  };
   return {
     fetchTransactions,
     fetchTransaction,
+    createTransaction,
   }
 }
