@@ -59,13 +59,13 @@ watch(
             v-for="detail in tx.transactionDetails.filter(d => d.productId == selectedProductId)"
             :key="detail.detailId"
           >
-            <tr>
+            <tr class="bg-gray-200">
               <td class="relative p-0">
                 <div class="border-l border-b ml-9 w-full border-gray-500 p-2"></div>
               </td>
               <td></td>
-              <td class="p-2 py-3">{{ formatCurrency(detail.quantity * detail.unitPrice) }}</td>
-              <td class="p-2 py-3">{{ detail.quantity }}</td>
+              <td class="p-2 py-3">{{ formatCurrency(detail.quantity * detail.unitPrice * detail.variant.weight) }}</td>
+              <td class="p-2 py-3">{{ detail.quantity }} of {{ detail.variant.weight }}Kg</td>
               <td class="p-2 py-3">{{ formatCurrency(detail.lineDiscount) }}</td>
             </tr>
           </template>

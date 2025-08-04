@@ -48,7 +48,3 @@ const cards = [
     </div>
   </div>
 </template>
-
-<style>
-/* Make sure Material Symbols font is loaded in your project for the icons to display */
-</style>
