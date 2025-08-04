@@ -64,6 +64,11 @@ export function useFunction() {
     return `${dateStr} by ${timeStr}`
   }
 
+  function formatWithCommas(number) {
+    return number.toLocaleString('en-US')
+  }
+
+
   return {
     formatDate,
     formatCurrency,
@@ -72,5 +77,6 @@ export function useFunction() {
     formatDateLong,
     formatDateLongWithTimeBy,
     formatCurrencyTrans,
+    formatWithCommas,
   }
 }

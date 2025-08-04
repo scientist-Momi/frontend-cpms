@@ -1,48 +1,34 @@
 <script setup>
-// Example props/data
-const cards = [
-  {
-    icon: 'groups',
-    iconBg: 'bg-white',
-    iconColor: 'text-blue-600',
-    label: 'Active customers',
-    value: '202,123',
-    delta: '+22,325',
-    percent: '12.2%',
-    deltaColor: 'text-green-600',
-    period: 'last 12 months'
-  },
-  {
-    icon: 'mail',
-    iconBg: 'bg-white',
-    iconColor: 'text-orange-500',
-    label: 'Emails opened',
-    value: '78,500',
-    delta: '+22,325',
-    percent: '12.2%',
-    deltaColor: 'text-green-600',
-    period: 'last 12 months'
-  }
-]
+import { computed, ref, watchEffect } from 'vue'
+import { useCustomerStore } from '@/stores/customerStore'
+import { useProductStore } from '@/stores/productStore'
+import { useFunction } from '@/composables/useFunction'
+import StatsCard from '../components/StatsCard.vue'
+import { useTransactionStore } from '@/stores/TransactionStore'
+import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
+import CustomerRankingTable from '../components/CustomerRankingTable.vue'
+
+const customers = useCustomerStore()
+const products = useProductStore()
+const transactions = useTransactionStore()
+
+const { formatCurrency, formatWithCommas } = useFunction()
+
 </script>
 
 <template>
-  <div class="flex gap-6">
-    <div
-      v-for="(card, idx) in cards"
-      :key="idx"
-      class="bg-white rounded-2xl shadow border border-gray-100 p-6 flex-1 min-w-[260px] max-w-[320px] flex flex-col gap-4"
-    >
-      <div :class="['w-12 h-12 flex items-center justify-center border border-gray-200 shadow rounded-xl mb-2', card.iconBg]">
-        <span :class="['material-symbols-outlined text-3xl', card.iconColor]">{{ card.icon }}</span>
-      </div>
-      <div>
-        <div class="text-gray-600 text-sm font-medium mb-2">{{ card.label }}</div>
-        <div class="text-3xl font-medium text-gray-900 mb-2">{{ card.value }}</div>
-        <div class="flex items-center gap-2 text-sm">
-          <span :class="card.deltaColor">{{ card.delta }} ({{ card.percent }})</span>
-          <span class="text-gray-400">&bull;</span>
-          <span class="text-gray-400">{{ card.period }}</span>
+  <div class="">
+    <stats-card />
+
+    <div class="flex gap-4 mt-4">
+      <customer-ranking-table />
+
+      <div class="border border-gray-200 rounded w-full">
+        <div class="flex items-center p-4 border-b border-gray-200 gap-2 justify-between">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined"> group </span>
+            <p class="font-semibold">Current Users</p>
+          </div>
         </div>
       </div>
     </div>
