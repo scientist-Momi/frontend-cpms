@@ -63,55 +63,52 @@ const displayedRanking = computed(() => {
 
 <template>
   <div class="border border-gray-200 rounded w-full">
-        <div class="flex items-center p-4 border-b border-gray-200 gap-2 justify-between">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined"> group </span>
-            <p class="font-semibold">Customers Ranking</p>
-          </div>
-          <SecondaryButton
-            @click="toggleRanking"
-
-          >
-            Rank by {{ rankingType === 'amount' ? 'Quantity' : 'Amount' }}
-          </SecondaryButton>
-        </div>
-        <div class="">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left table-auto border-collapse">
-              <thead class="bg-blue-50 sticky top-0 z-10">
-                <tr>
-                  <th class="px-4 py-3 font-semibold text-sm text-gray-700 w-12">#</th>
-                  <th class="px-4 py-3 font-semibold text-sm text-gray-700">Name</th>
-                  <th class="px-4 py-3 font-semibold text-sm text-gray-700">Amount Total</th>
-                  <th class="px-4 py-3 font-semibold text-sm text-gray-700">Quantity Total</th>
-                </tr>
-              </thead>
-              <tbody class="text-gray-700 text-sm">
-                <tr
-                  v-for="(tx, index) in displayedRanking"
-                  :key="tx.customerId"
-                  :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
-                  class="hover:bg-blue-100 transition-colors cursor-pointer"
-                >
-                  <td
-                    class="px-4 py-3 font-bold text-center"
-                    :class="{
-                      'bg-yellow-500': index === 0,
-                      'bg-yellow-400': index === 1,
-                      'bg-yellow-700': index === 2,
-                      'bg-blue-600': index === 3,
-                      'bg-green-600': index === 4,
-                    }"
-                  >
-                    {{ index + 1 }}
-                  </td>
-                  <td class="px-4 py-3 font-medium">{{ tx.customerName }}</td>
-                  <td class="px-4 py-3">{{ formatCurrency(tx.totalAmount) }}</td>
-                  <td class="px-4 py-3">{{ formatWithCommas(tx.totalQuantity) }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+    <div class="flex items-center p-4 border-b border-gray-200 gap-2 justify-between">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined"> hotel_class </span>
+        <p class="font-semibold">Customers Ranking</p>
       </div>
+      <SecondaryButton @click="toggleRanking">
+        Rank by {{ rankingType === 'amount' ? 'Quantity' : 'Amount' }}
+      </SecondaryButton>
+    </div>
+    <div class="">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left table-auto border-collapse">
+          <thead class="bg-blue-50 sticky top-0 z-10">
+            <tr>
+              <th class="px-4 py-3 font-semibold text-sm text-gray-700 w-12">#</th>
+              <th class="px-4 py-3 font-semibold text-sm text-gray-700">Name</th>
+              <th class="px-4 py-3 font-semibold text-sm text-gray-700">Amount Total</th>
+              <th class="px-4 py-3 font-semibold text-sm text-gray-700">Quantity Total</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700 text-sm">
+            <tr
+              v-for="(tx, index) in displayedRanking"
+              :key="tx.customerId"
+              :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
+              class="hover:bg-blue-100 transition-colors cursor-pointer"
+            >
+              <td
+                class="px-4 py-3 font-bold text-center"
+                :class="{
+                  'bg-yellow-500': index === 0,
+                  'bg-yellow-400': index === 1,
+                  'bg-yellow-700': index === 2,
+                  'bg-blue-600': index === 3,
+                  'bg-green-600': index === 4,
+                }"
+              >
+                {{ index + 1 }}
+              </td>
+              <td class="px-4 py-3 font-medium">{{ tx.customerName }}</td>
+              <td class="px-4 py-3">{{ formatCurrency(tx.totalAmount) }}</td>
+              <td class="px-4 py-3">{{ formatWithCommas(tx.totalQuantity) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </template>

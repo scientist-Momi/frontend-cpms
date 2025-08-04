@@ -25,7 +25,7 @@ const customerId = ref('')
 const allCustomers = computed(() => customers.customers || [])
 
 const { formatCurrency, formatCurrencyTrans } = useFunction()
-const { fetchVariants } = useProduct()
+const { fetchVariants, fetchProducts } = useProduct()
 const { createTransaction, fetchTransactions } = useTransaction()
 const {fetchCustomers} = useCustomer()
 
@@ -178,6 +178,7 @@ const onSubmit = async () => {
   if(res.success){
     await fetchTransactions()
     await fetchCustomers()
+    await fetchProducts()
     toast.showToast({
       message: 'Transaction has been saved!',
       type: 'success',
