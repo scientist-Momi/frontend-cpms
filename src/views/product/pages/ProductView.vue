@@ -12,13 +12,14 @@ import ProductTransactionsTable from '../components/ProductTransactionsTable.vue
 import ProductVariantChart from '@/components/charts/ProductVariantChart.vue'
 import { useRouter } from 'vue-router'
 import { useModalStore } from '@/stores/modalStore'
-const router = useRouter()
+import { useFunction } from '@/composables/useFunction'
 
+const router = useRouter()
 const route = useRoute()
 const modal = useModalStore()
 const { fetchProductId, fetchProductTransactions, fetchVariants } = useProduct()
 const productId = computed(() => route.params.id)
-
+const { formatCurrency } = useFunction()
 const product = ref(null)
 const transactions = ref([])
 const activeTab = ref('transactions')
@@ -128,8 +129,13 @@ const variantTotal = computed(() => productVariants.value.reduce((sum, v) => sum
             </div>
           </div>
 
-          <div class="w-[65%] p-2 border border-gray-200 rounded">
-            <BaseChart :series="series" title="Current Price" />
+          <div class="w-[65%] p-3 border border-gray-200 rounded">
+            <div class="flex items-center justify-between">
+              <p>Current Price - {{ formatCurrency(product.latestPrice.price) }}</p>
+              <SecondaryButton @click="modal.open('update_price')">Update Price</SecondaryButton>
+            </div>
+
+            <BaseChart :series="series"  />
           </div>
         </div>
         <div class="w-full">

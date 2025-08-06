@@ -17,3 +17,5 @@ export const createNewProductVariant = (id, data) => apiClient.post(`/products/$
 export const updateProductVariant = (id, v_id, data) => apiClient.put(`/products/${id}/variants/${v_id}`, data)
 
 export const deleteProductVariant = (id, v_id) => apiClient.delete(`/products/${id}/variants/${v_id}`)
+
+export const updateProductPrice = (id, data) => apiClient.put(`/product/${id}/price/update`, data)

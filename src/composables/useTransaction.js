@@ -1,5 +1,9 @@
 import { useTransactionStore } from '@/stores/TransactionStore'
-import { fetchAllTransactions, fetchATransaction, createNewTransaction } from '@/api/Transactions'
+import {
+  fetchAllTransactions,
+  fetchATransaction,
+  createNewTransaction,
+} from '@/api/Transactions'
 
 export const useTransaction = () => {
   const transactionStore = useTransactionStore()

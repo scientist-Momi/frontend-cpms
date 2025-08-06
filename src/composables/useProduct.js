@@ -9,6 +9,7 @@ import {
   createNewProductVariant,
   updateProductVariant,
   deleteProductVariant,
+  updateProductPrice,
 } from '@/api/product'
 
 export const useProduct = () => {
@@ -83,7 +84,7 @@ export const useProduct = () => {
         message: err.response?.data?.message || 'Transaction fetch failed',
       }
     }
-  };
+  }
 
   const fetchVariants = async (payload) => {
     try {
@@ -97,7 +98,7 @@ export const useProduct = () => {
         message: err.response?.data?.message || 'Variants fetch failed',
       }
     }
-  };
+  }
 
   const createVariant = async (id, payload) => {
     try {
@@ -111,7 +112,7 @@ export const useProduct = () => {
         message: err.response?.data?.message || 'Creation failed',
       }
     }
-  };
+  }
 
   const updateVariant = async (id, v_id, payload) => {
     try {
@@ -125,21 +126,35 @@ export const useProduct = () => {
         message: err.response?.data?.message || 'Update failed',
       }
     }
-  };
+  }
 
-const deleteVariant = async (id, v_id) => {
-  try {
-    const res = await deleteProductVariant(id, v_id)
-    console.log(res)
-    return { success: true, data: res }
-  } catch (err) {
-    console.log('Delete failed', err)
-    return {
-      success: false,
-      message: err.response?.data?.message || 'Delete failed',
+  const deleteVariant = async (id, v_id) => {
+    try {
+      const res = await deleteProductVariant(id, v_id)
+      console.log(res)
+      return { success: true, data: res }
+    } catch (err) {
+      console.log('Delete failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Delete failed',
+      }
     }
   }
-}
+
+  const updatePrice = async (id, payload) => {
+    try {
+      const res = await updateProductPrice(id, payload)
+      console.log(res)
+      return { success: true, data: res.data.data }
+    } catch (err) {
+      console.log('Update failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Update failed',
+      }
+    }
+  }
 
   return {
     fetchProducts,
@@ -151,5 +166,6 @@ const deleteVariant = async (id, v_id) => {
     createVariant,
     updateVariant,
     deleteVariant,
+    updatePrice,
   }
 }

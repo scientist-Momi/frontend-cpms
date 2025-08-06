@@ -11,7 +11,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const product = useProductStore()
-const { formatCurrency, formatWithCommas } = useFunction()
+const { formatWithCommas } = useFunction()
 
 const totalSold = computed(() => {
   return product.products.reduce((sum, product) => {
@@ -21,20 +21,10 @@ const totalSold = computed(() => {
 
 const totalUnsold = computed(() => {
   return product.products.reduce((sum, product) => {
-    // For each product: inventory - quantitySold
     const unsold = (product.inventory || 0) - (product.quantitySold || 0)
     return sum + unsold
   }, 0)
 })
-
-
-
-
-const products = [
-  { name: 'Western Europe 2025-02', valueSold: 750000, totalPrice: 2500 },
-  { name: 'Eastern Europe 2025-03', valueSold: 320000, totalPrice: 1600 },
-  { name: 'Eastern Europe 2025-04', valueSold: 510000, totalPrice: 1700 },
-]
 </script>
 
 <template>
@@ -70,8 +60,14 @@ const products = [
         />
       </div>
       <div class="flex gap-4 mb-4">
-        <ProductsChart class="w-full border border-gray-200 p-2 rounded" :products="product.products" />
-        <ProductsChart class="w-full border border-gray-200 p-2 rounded" :products="product.products" />
+        <ProductsChart
+          class="w-full border border-gray-200 p-2 rounded"
+          :products="product.products"
+        />
+        <ProductsChart
+          class="w-full border border-gray-200 p-2 rounded"
+          :products="product.products"
+        />
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 p-4 border border-gray-200">
