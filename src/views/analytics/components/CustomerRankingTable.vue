@@ -5,11 +5,9 @@ import { useTransactionStore } from '@/stores/TransactionStore'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 
 const transactions = useTransactionStore()
-
 const { formatCurrency, formatWithCommas } = useFunction()
 
 function getTopPurchasers(transactions, topN = 10) {
-  // Aggregate totals by customerId
   const customerTotals = {}
 
   transactions.forEach((tx) => {
@@ -24,29 +22,20 @@ function getTopPurchasers(transactions, topN = 10) {
     customerTotals[id].totalAmount += tx.totalAmount
     customerTotals[id].totalQuantity += tx.totalQuantity
   })
-
-  // Convert to array for sorting
   const rankingArray = Object.entries(customerTotals).map(([customerId, data]) => ({
     customerId,
     customerName: data.customerName,
     totalAmount: data.totalAmount,
     totalQuantity: data.totalQuantity,
   }))
-
-  // Top purchasers by amount
   const topByAmount = [...rankingArray].sort((a, b) => b.totalAmount - a.totalAmount).slice(0, topN)
-
-  // Top purchasers by quantity
   const topByQuantity = [...rankingArray]
     .sort((a, b) => b.totalQuantity - a.totalQuantity)
     .slice(0, topN)
 
   return { topByAmount, topByQuantity }
 }
-
 const rankings = computed(() => getTopPurchasers(transactions.transactions, 5))
-
-// Destructure computed to expose to template
 const topByAmount = computed(() => rankings.value.topByAmount)
 const topByQuantity = computed(() => rankings.value.topByQuantity)
 

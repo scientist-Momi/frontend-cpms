@@ -78,34 +78,31 @@ const cards = computed(() => [
 </script>
 
 <template>
-    <div class="flex gap-4">
+  <div class="flex gap-4">
+    <div
+      v-for="(card, idx) in cards"
+      :key="idx"
+      class="bg-white rounded shadow border border-gray-100 p-4 flex-1 min-w-[260px] flex flex-col gap-4"
+    >
       <div
-        v-for="(card, idx) in cards"
-        :key="idx"
-        class="bg-white rounded shadow border border-gray-100 p-4 flex-1 min-w-[260px] flex flex-col gap-4"
+        :class="[
+          'w-10 h-10 flex items-center justify-center border border-gray-200 shadow rounded-xl mb-2',
+          card.iconBg,
+        ]"
       >
-        <div
-          :class="[
-            'w-10 h-10 flex items-center justify-center border border-gray-200 shadow rounded-xl mb-2',
-            card.iconBg,
-          ]"
-        >
-          <span :class="['material-symbols-outlined text-2xl', card.iconColor]">{{
-            card.icon
-          }}</span>
-        </div>
-        <div>
-          <div class="text-gray-600 text-sm font-medium mb-2">{{ card.label }}</div>
-          <div class="text-3xl font-medium text-gray-900 mb-2">{{ card.value }}</div>
-          <div class="flex items-center gap-2 text-sm">
-            <!-- <span :class="card.deltaColor">{{ card.delta }} ({{ card.percent }})</span> -->
-            <!-- <span class="text-gray-400">&bull;</span>
+        <span :class="['material-symbols-outlined text-2xl', card.iconColor]">{{ card.icon }}</span>
+      </div>
+      <div>
+        <div class="text-gray-600 text-sm font-medium mb-2">{{ card.label }}</div>
+        <div class="text-3xl font-medium text-gray-900 mb-2">{{ card.value }}</div>
+        <div class="flex items-center gap-2 text-sm">
+          <!-- <span :class="card.deltaColor">{{ card.delta }} ({{ card.percent }})</span> -->
+          <!-- <span class="text-gray-400">&bull;</span>
           <span class="text-gray-400">{{ card.period }}</span> -->
-          </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

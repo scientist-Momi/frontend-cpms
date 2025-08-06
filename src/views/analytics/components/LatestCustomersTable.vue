@@ -47,5 +47,3 @@ const recentCustomers = computed(() => {
     </table>
   </div>
 </template>
-
-<style scoped></style>

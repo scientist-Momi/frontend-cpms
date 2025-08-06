@@ -171,7 +171,6 @@ const onSubmit = async () => {
       lineDiscount: +row.lineDiscount,
     })),
   }
-  // alert(JSON.stringify(payload, null, 2))
   const res = await createTransaction(payload)
   modal.open("loadingState")
   await new Promise((resolve) => setTimeout(resolve, 2500))

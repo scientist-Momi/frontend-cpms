@@ -1,14 +1,34 @@
 <script setup>
+import { computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import SecondaryStatsCard from '@/components/SecondaryStatsCard.vue'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import ProductsChart from '@/components/charts/ProductChart.vue'
 import ProductCard from '../components/ProductCard.vue'
+import { useFunction } from '@/composables/useFunction'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const product = useProductStore()
+const { formatCurrency, formatWithCommas } = useFunction()
+
+const totalSold = computed(() => {
+  return product.products.reduce((sum, product) => {
+    return sum + (product.quantitySold || 0)
+  }, 0)
+})
+
+const totalUnsold = computed(() => {
+  return product.products.reduce((sum, product) => {
+    // For each product: inventory - quantitySold
+    const unsold = (product.inventory || 0) - (product.quantitySold || 0)
+    return sum + unsold
+  }, 0)
+})
+
+
+
 
 const products = [
   { name: 'Western Europe 2025-02', valueSold: 750000, totalPrice: 2500 },
@@ -40,18 +60,18 @@ const products = [
         <SecondaryStatsCard label="Total Products" :value="product.products.length" icon="groups" />
         <SecondaryStatsCard
           label="Total Products Sold"
-          :value="product.products.length"
+          :value="formatWithCommas(totalSold)"
           icon="attach_money"
         />
         <SecondaryStatsCard
           label="Total Products Unsold"
-          :value="product.products.length"
+          :value="formatWithCommas(totalUnsold)"
           icon="money_off"
         />
       </div>
       <div class="flex gap-4 mb-4">
-        <ProductsChart class="w-full border border-gray-200 p-2 rounded" :products="products" />
-        <ProductsChart class="w-full border border-gray-200 p-2 rounded" :products="products" />
+        <ProductsChart class="w-full border border-gray-200 p-2 rounded" :products="product.products" />
+        <ProductsChart class="w-full border border-gray-200 p-2 rounded" :products="product.products" />
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 p-4 border border-gray-200">

@@ -52,5 +52,3 @@ const transactionsByRecency = computed(() => {
     </table>
   </div>
 </template>
-
-<style scoped></style>

@@ -1,20 +1,20 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
-import { useFunction } from '@/composables/useFunction'  // Assuming you have format utils here
+import { useFunction } from '@/composables/useFunction' 
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 
 const products = useProductStore()
 const { formatCurrency, formatWithCommas } = useFunction()
 
-const productRankingType = ref('quantity') // 'quantity' or 'price'
+const productRankingType = ref('quantity')
 
 function toggleProductRanking() {
   productRankingType.value = productRankingType.value === 'quantity' ? 'price' : 'quantity'
 }
 
 const rankedByQuantity = computed(() => {
-  return [...products.products]   // Assuming your store exposes `products` array
+  return [...products.products]
     .sort((a, b) => b.quantitySold - a.quantitySold)
     .slice(0, 5)
 })

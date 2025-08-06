@@ -1,33 +1,32 @@
-
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
+import { useTransactionStore } from '@/stores/TransactionStore'
 
-// Register ApexCharts component locally
-// const components = { apexchart: VueApexCharts }
-
-// Props: products array with each product having at least:
-// { name: string, valueSold: number, totalPrice: number }
-const props = defineProps({
-  products: {
-    type: Array,
-    required: true,
-    default: () => [],
-  },
-})
-
-// Reactive series and options
-// const props = defineProps(['products'])
+const transactions = useTransactionStore()
+function getProductTotalSold(transactionsArr) {
+  const totalsMap = {}
+  for (const tx of transactionsArr) {
+    for (const detail of tx.transactionDetails) {
+      const value = (detail.quantity || 0) * (detail.unitPrice || 0) * (detail.variant?.weight || 1)
+      const name = detail.product?.name || 'Unknown Product'
+      if (!totalsMap[name]) {
+        totalsMap[name] = 0
+      }
+      totalsMap[name] += value
+    }
+  }
+  return Object.entries(totalsMap).map(([name, valueSold]) => ({
+    name,
+    valueSold,
+  }))
+}
 
 const series = ref([
   {
     name: 'Value Sold',
     data: [],
   },
-  // {
-  //   name: 'Total Price',
-  //   data: [],
-  // },
 ])
 
 const chartOptions = ref({
@@ -83,13 +82,13 @@ const chartOptions = ref({
   },
 })
 
-// Update chart data when products prop changes
+const productSalesArray = computed(() => getProductTotalSold(transactions.transactions))
+
 watch(
-  () => props.products,
-  (newProducts) => {
-    chartOptions.value.xaxis.categories = newProducts.map((p) => p.name)
-    series.value[0].data = newProducts.map((p) => p.valueSold)
-    // series.value[1].data = newProducts.map((p) => p.totalPrice)
+  productSalesArray,
+  (newArr) => {
+    series.value[0].data = newArr.map((p) => p.valueSold)
+    chartOptions.value.xaxis.categories = newArr.map((p) => p.name)
   },
   { immediate: true },
 )
