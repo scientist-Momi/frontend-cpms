@@ -6,7 +6,9 @@ import { useProductStore } from '@/stores/productStore'
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 import { useProduct } from '@/composables/useProduct'
+import { useModalStore } from '@/stores/modalStore'
 
+const modal = useModalStore()
 const toast = useToastStore()
 const product = useProductStore()
 const router = useRouter()
@@ -56,7 +58,13 @@ function populateFields(data) {
 }
 
 function validateForm() {
-  if (!nameForSave.value || !brand.value || !price.value || !inventory.value || !description.value) {
+  if (
+    !nameForSave.value ||
+    !brand.value ||
+    !price.value ||
+    !inventory.value ||
+    !description.value
+  ) {
     toast.showToast({ message: 'Please fill in all fields.', type: 'error' })
     return false
   }
@@ -80,12 +88,15 @@ async function handleSave() {
   } else {
     res = await createProduct(payload)
   }
-
+  modal.open("loadingState")
+  await new Promise((resolve) => setTimeout(resolve, 2500))
   if (res.success) {
     await fetchProducts()
     toast.showToast({ message: 'Product saved successfully!', type: 'success' })
+    modal.close()
     router.push({ name: 'Products' })
   } else {
+    modal.close()
     toast.showToast({ message: res.message || 'Failed to save product.', type: 'error' })
   }
 }
@@ -128,8 +139,8 @@ const nameForSave = computed(() => {
   return isEditMode.value
     ? name.value
     : nameBase.value
-    ? `${nameBase.value.trim()} ${currentYear}-${currentMonth}`
-    : ''
+      ? `${nameBase.value.trim()} ${currentYear}-${currentMonth}`
+      : ''
 })
 </script>
 
@@ -148,28 +159,28 @@ const nameForSave = computed(() => {
             Product Name
           </label>
           <div v-if="isEditMode">
-    <input
-      id="name"
-      type="text"
-      v-model="name"
-      placeholder="Enter product name"
-      class="block w-full text-gray-900 border border-gray-300 rounded-xs p-2 px-3 text-sm focus:outline-none focus:ring-gray-400"
-    />
-  </div>
-  <div v-else class="relative">
-    <input
-      id="nameBase"
-      type="text"
-      v-model="nameBase"
-      placeholder="Enter base name"
-      class="block w-full pr-24 text-gray-900 border border-gray-300 rounded-xs p-2 px-3 text-sm focus:outline-none focus:ring-gray-400"
-    />
-    <span
-      class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 pointer-events-none"
-    >
-      {{ currentYear }}-{{ currentMonth }}
-    </span>
-  </div>
+            <input
+              id="name"
+              type="text"
+              v-model="name"
+              placeholder="Enter product name"
+              class="block w-full text-gray-900 border border-gray-300 rounded-xs p-2 px-3 text-sm focus:outline-none focus:ring-gray-400"
+            />
+          </div>
+          <div v-else class="relative">
+            <input
+              id="nameBase"
+              type="text"
+              v-model="nameBase"
+              placeholder="Enter base name"
+              class="block w-full pr-24 text-gray-900 border border-gray-300 rounded-xs p-2 px-3 text-sm focus:outline-none focus:ring-gray-400"
+            />
+            <span
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 pointer-events-none"
+            >
+              {{ currentYear }}-{{ currentMonth }}
+            </span>
+          </div>
         </div>
         <div>
           <label for="brand" class="block mb-1 text-sm font-medium text-gray-900">Brand</label>
