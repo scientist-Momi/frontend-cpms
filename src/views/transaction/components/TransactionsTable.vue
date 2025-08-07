@@ -11,7 +11,6 @@ const { formatDateShort, formatCurrency, getCustomerInitials } = useFunction()
 
 const transactionStore = useTransactionStore()
 const search = ref('')
-// const selected = ref([])
 const transactions = computed(() => transactionStore.transactions)
 
 const currentPage = ref(1)
@@ -20,16 +19,10 @@ const rowsPerPageOptions = [10, 20, 50]
 
 const filteredTransactions = computed(() => {
   let arr = transactions.value
-  // if (statusFilter.value !== 'all') {
-  //   arr = arr.filter((c) => c.status === statusFilter.value)
-  // }
-  // if (typeFilter.value !== 'all') {
-  //   arr = arr.filter((c) => c.customerType === typeFilter.value)
-  // }
   if (search.value.trim()) {
     const s = search.value.toLowerCase()
-    arr = arr.filter(
-      (t) => t.name.toLowerCase().includes(s) || t.product?.toLowerCase().includes(s),
+    arr = arr.filter((t) =>
+      t.customerName?.toLowerCase().includes(s)
     )
   }
   return arr
@@ -85,13 +78,6 @@ function goToTransaction(id) {
         placeholder="Search transactions..."
         class="border border-gray-200 rounded px-3 py-2 w-1/3 text-sm focus:outline-none focus:ring-0 shadow-xs"
       />
-      <div class="flex gap-2">
-        <!-- <ReusableFilter
-          label="Type"
-
-          icon="bookmark_flag"
-        /> -->
-      </div>
     </div>
     <div class="max-h-[30rem] overflow-y-auto px-4">
       <table class="w-full text-left">

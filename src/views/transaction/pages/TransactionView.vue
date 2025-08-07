@@ -5,6 +5,8 @@ import { useTransaction } from '@/composables/useTransaction'
 import { useFunction } from '@/composables/useFunction'
 import PageLoader from '@/components/PageLoader.vue'
 import TransactionDetailsTable from '../components/TransactionDetailsTable.vue'
+import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
+import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 
 const { formatCurrency, getCustomerInitials, formatDateLongWithTimeBy } = useFunction()
 const { fetchTransaction } = useTransaction()
@@ -22,7 +24,7 @@ onMounted(async () => {
 
 <template>
   <div v-if="transaction">
-    <div class="border border-gray-200 bg-white p-4 flex gap-8 mb-4 items-stretch">
+    <div class="border border-gray-200 bg-white p-4 flex gap-8 mb-4 ">
       <div
         class="rounded bg-red-500 flex items-center justify-center p-6 text-3xl font-semibold min-w-[7rem] text-white"
       >
@@ -47,6 +49,10 @@ onMounted(async () => {
           </div>
         </div>
       </div>
+      <div class="flex items-start gap-2 ml-auto">
+    <SecondaryButton>Initiate Return</SecondaryButton>
+    <PrimaryButton>Edit Transaction</PrimaryButton>
+  </div>
     </div>
     <div class="border border-gray-200 bg-white p-4">
       <TransactionDetailsTable :purchase-transactions="transaction.transactionDetails"/>
