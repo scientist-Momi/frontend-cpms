@@ -85,6 +85,11 @@ const variantTotal = computed(() => productVariants.value.reduce((sum, v) => sum
               <small>Description</small>
               <h1 class="text-base">{{ product.description }}</h1>
             </div>
+            <div class="w-full px-2 flex justify-end">
+              <router-link :to="{ name: 'EditProduct', params: { id: product.id } }">
+              <SecondaryButton>Edit Product</SecondaryButton>
+            </router-link>
+            </div>
           </div>
         </div>
         <div class="flex gap-4 mb-4">
@@ -204,7 +209,7 @@ const variantTotal = computed(() => productVariants.value.reduce((sum, v) => sum
             </div>
             <div v-if="activeTab === 'discounts'"></div>
             <div v-if="activeTab === 'variants'">
-              <div class="flex justify-between mb-2">
+              <div class="flex justify-between items-center mb-2">
                 <small>All active distribution of product</small>
                 <div class="flex gap-2">
                   <SecondaryButton @click="modal.open('new_variant', productId)">New Variant</SecondaryButton>

@@ -93,6 +93,12 @@ const router = createRouter({
               component: NewProduct,
             },
             {
+              path: 'edit/:id',
+              name: 'EditProduct',
+              meta: { requiresAuth: true, permission: 'UPDATE_PRODUCT', title: 'Edit Product' },
+              component: NewProduct,
+            },
+            {
               path: ':id',
               name: 'ProductView',
               meta: { requiresAuth: true, permission: 'VIEW_PRODUCT', title: 'Product Details' },
@@ -151,7 +157,11 @@ const router = createRouter({
             {
               path: ':id',
               name: 'TransactionView',
-              meta: { requiresAuth: true, permission: 'VIEW_TRANSACTION', title: 'Transaction Details' },
+              meta: {
+                requiresAuth: true,
+                permission: 'VIEW_TRANSACTION',
+                title: 'Transaction Details',
+              },
               component: Transaction,
             },
           ],

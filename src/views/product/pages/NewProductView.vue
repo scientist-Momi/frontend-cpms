@@ -18,19 +18,19 @@ const isEditMode = ref(false)
 const productId = ref(null)
 
 // Form fields
-// const name = ref('')
+const name = ref('')
 const brand = ref('')
 const inventory = ref('')
 const price = ref('')
 const description = ref('')
 
-function populateFields(data) {
-  name.value = data.name || ''
-  brand.value = data.brand || ''
-  inventory.value = String(data.inventory ?? '')
-  price.value = String(data.price ?? '')
-  description.value = data.description || ''
-}
+// function populateFields(data) {
+//   name.value = data.name || ''
+//   brand.value = data.brand || ''
+//   inventory.value = String(data.inventory ?? '')
+//   price.value = String(data.price ?? '')
+//   description.value = data.description || ''
+// }
 
 onMounted(async () => {
   if (route.params.id) {
@@ -41,8 +41,22 @@ onMounted(async () => {
   }
 })
 
+function populateFields(data) {
+  if (isEditMode.value) {
+    // In edit mode: retain full product name as free text
+    name.value = data.name || ''
+  } else {
+    // In create mode: clear base field
+    nameBase.value = ''
+  }
+  brand.value = data.brand || ''
+  inventory.value = String(data.inventory ?? '')
+  price.value = String(data.latestPrice?.price ?? data.price ?? '')
+  description.value = data.description || ''
+}
+
 function validateForm() {
-  if (!name.value || !brand.value || !price.value || !inventory.value || !description.value) {
+  if (!nameForSave.value || !brand.value || !price.value || !inventory.value || !description.value) {
     toast.showToast({ message: 'Please fill in all fields.', type: 'error' })
     return false
   }
@@ -53,7 +67,7 @@ async function handleSave() {
   if (!validateForm()) return
 
   const payload = {
-    name: name.value,
+    name: nameForSave.value,
     brand: brand.value,
     inventory: Number(inventory.value),
     price: Number(price.value),
@@ -110,8 +124,10 @@ const currentDate = new Date()
 const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0') // 01-12
 const currentYear = currentDate.getFullYear()
 
-const name = computed(() => {
-  return nameBase.value
+const nameForSave = computed(() => {
+  return isEditMode.value
+    ? name.value
+    : nameBase.value
     ? `${nameBase.value.trim()} ${currentYear}-${currentMonth}`
     : ''
 })
@@ -131,20 +147,29 @@ const name = computed(() => {
           <label for="name" class="block mb-1 text-sm font-medium text-gray-900">
             Product Name
           </label>
-          <div class="relative">
-            <input
-              id="name"
-              type="text"
-              v-model="nameBase"
-              placeholder="Enter base name"
-              class="block w-full pr-24 text-gray-900 border border-gray-300 rounded-xs p-2 px-3 text-sm focus:outline-none focus:ring-gray-400"
-            />
-            <span
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 pointer-events-none"
-            >
-              {{ currentYear }}-{{ currentMonth }}
-            </span>
-          </div>
+          <div v-if="isEditMode">
+    <input
+      id="name"
+      type="text"
+      v-model="name"
+      placeholder="Enter product name"
+      class="block w-full text-gray-900 border border-gray-300 rounded-xs p-2 px-3 text-sm focus:outline-none focus:ring-gray-400"
+    />
+  </div>
+  <div v-else class="relative">
+    <input
+      id="nameBase"
+      type="text"
+      v-model="nameBase"
+      placeholder="Enter base name"
+      class="block w-full pr-24 text-gray-900 border border-gray-300 rounded-xs p-2 px-3 text-sm focus:outline-none focus:ring-gray-400"
+    />
+    <span
+      class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 pointer-events-none"
+    >
+      {{ currentYear }}-{{ currentMonth }}
+    </span>
+  </div>
         </div>
         <div>
           <label for="brand" class="block mb-1 text-sm font-medium text-gray-900">Brand</label>
