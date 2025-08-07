@@ -21,7 +21,7 @@ watch(
 )
 
 function lineTotal(tx) {
-  const unitPrice = tx.product.latestPrice.price || 0; // assuming number or BigDecimal convertible
+  const unitPrice = tx.unitPrice || 0; // assuming number or BigDecimal convertible
   const weight = tx.variant.weight || 0;
   const quantity = tx.quantity || 0;
   const discount = tx.lineDiscount || 0;
@@ -53,7 +53,7 @@ function lineTotal(tx) {
           class="border-b border-gray-200 hover:bg-gray-50 transition"
         >
           <td class="p-2 py-3">{{  tx.product.name }}</td>
-          <td class="p-2 py-3">{{  formatCurrency(tx.product.latestPrice.price) }}</td>
+          <td class="p-2 py-3">{{  formatCurrency(tx.unitPrice) }}</td>
           <td class="p-2 py-3">{{ tx.variant.weight }}Kg</td>
           <td class="p-2 py-3">{{ tx.quantity }}</td>
           <td class="p-2 py-3">{{ formatCurrency(tx.lineDiscount) }}</td>

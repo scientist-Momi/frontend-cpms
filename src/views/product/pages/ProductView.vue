@@ -131,8 +131,8 @@ const variantTotal = computed(() => productVariants.value.reduce((sum, v) => sum
 
           <div class="w-[65%] p-3 border border-gray-200 rounded">
             <div class="flex items-center justify-between">
-              <p>Current Price - {{ formatCurrency(product.latestPrice.price) }}</p>
-              <SecondaryButton @click="modal.open('update_price')">Update Price</SecondaryButton>
+              <p class="font-medium">Price History - {{ formatCurrency(product.latestPrice.price) }}</p>
+              <SecondaryButton @click="modal.open('update_price', product.latestPrice.price)">Update Price</SecondaryButton>
             </div>
 
             <BaseChart :series="series"  />
