@@ -12,6 +12,7 @@ export const useAuthStore = defineStore('auth', {
     user: null,
     permissions: [],
     users: [],
+    activities: []
   }),
   getters: {
     isAuthenticated: (state) => !!state.token,
@@ -34,7 +35,7 @@ export const useAuthStore = defineStore('auth', {
       // localStorage.setItem('users', JSON.stringify(users))
     },
     loadStoredAuth() {
-      const { fetchUserInfo, fetchUsers } = useAuth()
+      const { fetchUserInfo, fetchUsers, getUserActivities } = useAuth()
       const {fetchCustomers, fetchCustomerTransactions} = useCustomer()
       const { fetchProducts } = useProduct()
       const { fetchTransactions } = useTransaction()
@@ -53,6 +54,7 @@ export const useAuthStore = defineStore('auth', {
           fetchCustomerTransactions()
           fetchProducts()
           fetchTransactions()
+          getUserActivities()
         }
       }
     },

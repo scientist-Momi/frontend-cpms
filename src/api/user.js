@@ -24,3 +24,7 @@ export const updateProfileById = (id, data) => apiClient.put(`/user/${id}/update
 export const updatePasswordById = (id, data) => apiClient.put(`/user/${id}/password/update`, data)
 
 export const deleteUsersById = (data) => apiClient.delete('/user/delete', { data })
+
+export const getAllUsersActivities = () => apiClient.get('/admin/activities/all')
+
+export const getAllUsersActivitiesById = (id) => apiClient.get(`/admin/activities/${id}`)

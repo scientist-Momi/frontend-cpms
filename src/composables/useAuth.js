@@ -1,6 +1,21 @@
 import { useAuthStore } from '@/stores/authStore'
 import { loginUser } from '@/api/auth'
-import { fetchUser, updateUserProfile, updateUserPassword, createNewUser, fetchUserPermissions, updateUserPermissions, fetchAllUsers, fetchUserById, deactivateUserById, updateProfileById, updatePasswordById, deleteUsersById } from '@/api/user'
+import {
+  fetchUser,
+  updateUserProfile,
+  updateUserPassword,
+  createNewUser,
+  fetchUserPermissions,
+  updateUserPermissions,
+  fetchAllUsers,
+  fetchUserById,
+  deactivateUserById,
+  updateProfileById,
+  updatePasswordById,
+  deleteUsersById,
+  getAllUsersActivities,
+  getAllUsersActivitiesById
+} from '@/api/user'
 import { useRouter } from 'vue-router'
 
 export const useAuth = () => {
@@ -40,15 +55,15 @@ export const useAuth = () => {
 
   const fetchUsers = async () => {
     authStore.pageLoading = true
-    try{
+    try {
       const res = await fetchAllUsers()
       authStore.setUsers(res.data.data)
-      return {success : true}
-    }catch(err){
+      return { success: true }
+    } catch (err) {
       authStore.setUsers([])
       console.log('Users fetch failed', err)
       return { success: false, message: err.response?.data.message || 'Users fetch failed' }
-    }finally {
+    } finally {
       authStore.pageLoading = false
     }
   }
@@ -96,106 +111,134 @@ export const useAuth = () => {
     }
   }
 
-const createUser = async (payload) => {
-  try {
-    const res = await createNewUser(payload)
-    console.log(res)
-    return { success: true, data: res.data.data }
-  } catch (err) {
-    console.log('Creation failed', err)
-    return {
-      success: false,
-      message: err.response?.data?.message || 'Creation failed',
+  const createUser = async (payload) => {
+    try {
+      const res = await createNewUser(payload)
+      console.log(res)
+      return { success: true, data: res.data.data }
+    } catch (err) {
+      console.log('Creation failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Creation failed',
+      }
     }
   }
-};
 
-const fetchPermissions = async (payload) => {
-  try {
-    const res = await fetchUserPermissions(payload)
-    console.log(res)
-    return { success: true, data: res }
-  } catch (err) {
-    console.log('Fetch failed', err)
-    return {
-      success: false,
-      message: err.response?.data?.message || 'Fetch failed',
+  const fetchPermissions = async (payload) => {
+    try {
+      const res = await fetchUserPermissions(payload)
+      console.log(res)
+      return { success: true, data: res }
+    } catch (err) {
+      console.log('Fetch failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Fetch failed',
+      }
     }
   }
-};
 
-const updatePermissions = async (id, payload) => {
-  try {
-    const res = await updateUserPermissions(id, payload)
-    console.log(res)
-    return { success: true, data: res }
-  } catch (err) {
-    console.log('Update failed', err)
-    return {
-      success: false,
-      message: err.response?.data?.message || 'Update failed',
+  const updatePermissions = async (id, payload) => {
+    try {
+      const res = await updateUserPermissions(id, payload)
+      console.log(res)
+      return { success: true, data: res }
+    } catch (err) {
+      console.log('Update failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Update failed',
+      }
     }
   }
-};
 
-const updateUserProfileById = async (id, payload) => {
-  try {
-    const res = await updateProfileById(id, payload)
-    console.log(res)
-    return { success: true, data: res }
-  } catch (err) {
-    console.log('User update failed', err)
-    return {
-      success: false,
-      message: err.response?.data?.message || 'User update failed',
+  const updateUserProfileById = async (id, payload) => {
+    try {
+      const res = await updateProfileById(id, payload)
+      console.log(res)
+      return { success: true, data: res }
+    } catch (err) {
+      console.log('User update failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'User update failed',
+      }
     }
   }
-};
 
-const updateUserPasswordById = async (id, payload) => {
-  try {
-    const res = await updatePasswordById(id, payload)
-    console.log(res)
-    return { success: true, data: res }
-  } catch (err) {
-    console.log('Update failed', err)
-    return {
-      success: false,
-      message: err.response?.data?.message || 'Update failed',
+  const updateUserPasswordById = async (id, payload) => {
+    try {
+      const res = await updatePasswordById(id, payload)
+      console.log(res)
+      return { success: true, data: res }
+    } catch (err) {
+      console.log('Update failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Update failed',
+      }
     }
   }
-};
 
-const deactivateUser = async (payload) => {
-  try {
-    const res = await deactivateUserById(payload)
-    console.log(res)
-    return { success: true, data: res }
-  } catch (err) {
-    console.log('Update failed', err)
-    return {
-      success: false,
-      message: err.response?.data?.message || 'Update failed',
+  const deactivateUser = async (payload) => {
+    try {
+      const res = await deactivateUserById(payload)
+      console.log(res)
+      return { success: true, data: res }
+    } catch (err) {
+      console.log('Update failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Update failed',
+      }
     }
   }
-};
 
-const deleteUsers = async (payload) => {
-  try {
-    const res = await deleteUsersById(payload)
-    console.log(res)
-    return { success: true}
-  } catch (err) {
-    console.log('Delete failed', err)
-    return {
-      success: false,
-      message: err.response?.data?.message || 'Delete failed',
+  const deleteUsers = async (payload) => {
+    try {
+      const res = await deleteUsersById(payload)
+      console.log(res)
+      return { success: true }
+    } catch (err) {
+      console.log('Delete failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Delete failed',
+      }
     }
   }
-};
 
   const logout = () => {
     authStore.logout()
+  }
+
+  const getUserActivities = async (payload) => {
+    try {
+      const res = await getAllUsersActivities(payload)
+      console.log(res)
+      return { success: true, data: res.data.data }
+    } catch (err) {
+      console.log('Fetch failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Fetch failed',
+      }
+    }
+  };
+
+  const getUserActivitiesById = async (payload) => {
+    try {
+      const res = await getAllUsersActivitiesById(payload)
+      console.log(res)
+      return { success: true, data: res.data.data }
+    } catch (err) {
+      console.log('Fetch failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Fetch failed',
+      }
+    }
   }
 
   return {
@@ -214,5 +257,7 @@ const deleteUsers = async (payload) => {
     updateUserProfileById,
     updateUserPasswordById,
     deleteUsers,
+    getUserActivities,
+    getUserActivitiesById,
   }
 }
