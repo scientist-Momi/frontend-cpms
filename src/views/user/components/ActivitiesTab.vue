@@ -52,6 +52,7 @@ function resolveIcon(actionType) {
     case 'UPDATE_PRODUCT': return 'edit'
     case 'SIGN_IN_USER': return 'login'
     case 'SIGN_OUT_USER': return 'logout'
+    case 'VIEW_USER': return 'data_loss_prevention'
     default: return 'info'
   }
 }
@@ -63,6 +64,7 @@ function resolveIconBg(actionType) {
     case 'UPDATE_PRODUCT': return 'bg-yellow-500'
     case 'SIGN_IN_USER': return 'bg-purple-500'
     case 'SIGN_OUT_USER': return 'bg-gray-400'
+    case 'VIEW_USER': return 'bg-orange-400'
     default: return 'bg-gray-300'
   }
 }
