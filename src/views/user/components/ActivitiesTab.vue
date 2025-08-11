@@ -3,10 +3,9 @@ import { useRoute } from 'vue-router'
 import { ref, computed, onMounted } from 'vue'
 import { useAuth } from '@/composables/useAuth'
 
-// ✅ New prop for passing a user object or just the ID
 const props = defineProps({
   user: {
-    type: [Object, Number], // Can pass a full user object or just their ID
+    type: [Object, Number],
     default: null
   }
 })
@@ -14,19 +13,15 @@ const props = defineProps({
 const { getUserActivitiesById } = useAuth()
 const route = useRoute()
 
-// ✅ Decide which ID to use
 const userId = computed(() => {
   if (props.user) {
-    // If a full user object is passed
     if (typeof props.user === 'object' && props.user.id) {
       return props.user.id
     }
-    // If just a number is passed
     if (typeof props.user === 'number') {
       return props.user
     }
   }
-  // Else use route param fallback
   return Number(route.params.id)
 })
 
