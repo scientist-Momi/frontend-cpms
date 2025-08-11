@@ -78,7 +78,7 @@ const visibleTabs = computed(() =>
         <AccountSecurityTab />
       </div>
       <div v-if="activeTab === 'activity'">
-        <ActivitiesTab>
+        <ActivitiesTab :user="auth.user">
           <h1 class="text-lg font-semibold">Account Events & Logs</h1>
           <p class="text-sm text-gray-500">This is how others will see you on the site.</p>
           <TabDivider />

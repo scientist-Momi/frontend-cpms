@@ -12,7 +12,7 @@ const error = ref(null)
 const loading = ref(false)
 
 const router = useRouter()
-const { login, fetchUserInfo, fetchUsers } = useAuth()
+const { login, fetchUserInfo, fetchUsers, getUserActivities } = useAuth()
 const { fetchCustomers, fetchCustomerTransactions } = useCustomer()
 const { fetchProducts } = useProduct()
 const { fetchTransactions } = useTransaction()
@@ -39,6 +39,7 @@ const handleLogin = async () => {
     fetchCustomerTransactions()
     fetchProducts()
     fetchTransactions()
+    getUserActivities()
   } else {
     error.value = res.message
   }

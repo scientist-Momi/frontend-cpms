@@ -12,7 +12,7 @@ export const useAuthStore = defineStore('auth', {
     user: null,
     permissions: [],
     users: [],
-    activities: []
+    activities: [],
   }),
   getters: {
     isAuthenticated: (state) => !!state.token,
@@ -26,17 +26,20 @@ export const useAuthStore = defineStore('auth', {
       localStorage.setItem('permissions', JSON.stringify(permissions))
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     },
-    setUser(user){
+    setUser(user) {
       this.user = user
       // localStorage.setItem('user', JSON.stringify(user))
     },
-    setUsers(users){
+    setUsers(users) {
       this.users = users
       // localStorage.setItem('users', JSON.stringify(users))
     },
+    setActivities(activities) {
+      this.activities = activities
+    },
     loadStoredAuth() {
       const { fetchUserInfo, fetchUsers, getUserActivities } = useAuth()
-      const {fetchCustomers, fetchCustomerTransactions} = useCustomer()
+      const { fetchCustomers, fetchCustomerTransactions } = useCustomer()
       const { fetchProducts } = useProduct()
       const { fetchTransactions } = useTransaction()
       const token = localStorage.getItem('token')

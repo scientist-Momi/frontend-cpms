@@ -1,61 +1,106 @@
 <script setup>
-import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import { useAuth } from '@/composables/useAuth'
 
-const activities = ref([
-  {
-    time: '10:15',
-    icon: 'person_add',
-    iconBg: 'bg-green-500',
-    iconColor: 'text-white',
-    title: 'Created New Customer',
-    subtitle: 'Added customer John Doe to the system.',
-    // Optionally, you can add actions or extra fields as in the first array
-  },
-  {
-    time: '11:00',
-    icon: 'shopping_cart',
-    iconBg: 'bg-blue-500',
-    iconColor: 'text-white',
-    title: 'Created Transaction',
-    subtitle: 'Processed a purchase for customer John Doe.',
-  },
-  {
-    time: '16:45',
-    icon: 'edit',
-    iconBg: 'bg-yellow-500',
-    iconColor: 'text-white',
-    title: 'Edited Product',
-    subtitle: 'Updated details of product "Wireless Mouse".',
-  },
-  {
-    time: '09:45',
-    icon: 'login',
-    iconBg: 'bg-purple-500',
-    iconColor: 'text-white',
-    title: 'Login',
-    subtitle: 'Signed in from Chrome on Windows.',
-  },
-  {
-    time: '20:00',
-    icon: 'logout',
-    iconBg: 'bg-gray-400',
-    iconColor: 'text-white',
-    title: 'Logout',
-    subtitle: 'Signed out from Safari on iPhone.',
+// ✅ New prop for passing a user object or just the ID
+const props = defineProps({
+  user: {
+    type: [Object, Number], // Can pass a full user object or just their ID
+    default: null
   }
-])
+})
 
+const { getUserActivitiesById } = useAuth()
+const route = useRoute()
+
+// ✅ Decide which ID to use
+const userId = computed(() => {
+  if (props.user) {
+    // If a full user object is passed
+    if (typeof props.user === 'object' && props.user.id) {
+      return props.user.id
+    }
+    // If just a number is passed
+    if (typeof props.user === 'number') {
+      return props.user
+    }
+  }
+  // Else use route param fallback
+  return Number(route.params.id)
+})
+
+const activities = ref([])
+
+const mapActivity = (log) => {
+  return {
+    time: log.createdAt
+      ? new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      : '',
+    icon: resolveIcon(log.actionType || ''),
+    iconBg: resolveIconBg(log.actionType || ''),
+    iconColor: 'text-white',
+    title: formatActionTitle(log),
+    subtitle: log.details || ''
+  }
+}
+
+function resolveIcon(actionType) {
+  switch (actionType) {
+    case 'CREATE_USER': return 'person_add'
+    case 'CREATE_TRANSACTION': return 'shopping_cart'
+    case 'UPDATE_PRODUCT': return 'edit'
+    case 'SIGN_IN_USER': return 'login'
+    case 'SIGN_OUT_USER': return 'logout'
+    default: return 'info'
+  }
+}
+
+function resolveIconBg(actionType) {
+  switch (actionType) {
+    case 'CREATE_USER': return 'bg-green-500'
+    case 'CREATE_TRANSACTION': return 'bg-blue-500'
+    case 'UPDATE_PRODUCT': return 'bg-yellow-500'
+    case 'SIGN_IN_USER': return 'bg-purple-500'
+    case 'SIGN_OUT_USER': return 'bg-gray-400'
+    default: return 'bg-gray-300'
+  }
+}
+
+function formatActionTitle(log) {
+  const type = log?.actionType || 'UNKNOWN'
+  return type
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    .replace(/\b\w/g, l => l.toUpperCase())
+}
+
+// ✅ Fetch activities dynamically
+onMounted(async () => {
+  try {
+    const res = await getUserActivitiesById(userId.value)
+
+    // Ensure we’re dealing with an array
+    activities.value = Array.isArray(res.data)
+      ? res.data.map(mapActivity)
+      : []
+
+  } catch (err) {
+    console.error('Failed to load activities', err)
+    activities.value = []
+  }
+})
 </script>
+
 
 <template>
   <div class="w-3/5">
-    <slot>
-
-    </slot>
+    <slot></slot>
     <div class="mt-4">
       <div class="relative ml-6">
         <!-- Vertical line -->
         <div class="absolute left-5 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+
         <div v-for="(activity, idx) in activities" :key="idx" class="relative flex items-start mb-8">
           <!-- Timeline Icon -->
           <div class="z-10">
@@ -63,6 +108,7 @@ const activities = ref([
               <span :class="['material-symbols-outlined text-2xl', activity.iconColor]">{{ activity.icon }}</span>
             </div>
           </div>
+
           <!-- Activity Card -->
           <div class="ml-6 flex-1">
             <div class="flex items-center gap-2">
@@ -85,6 +131,8 @@ const activities = ref([
             </div>
           </div>
         </div>
+
+        <div v-if="!activities.length" class="text-gray-500 text-sm mt-4">No activities found for this user.</div>
       </div>
     </div>
   </div>
