@@ -7,10 +7,12 @@ import PageLoader from '@/components/PageLoader.vue'
 import TransactionDetailsTable from '../components/TransactionDetailsTable.vue'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
+import { useModalStore } from '@/stores/modalStore'
 
 const { formatCurrency, getCustomerInitials, formatDateLongWithTimeBy } = useFunction()
 const { fetchTransaction } = useTransaction()
 const route = useRoute()
+const modal = useModalStore()
 const transactionId = computed(() => route.params.id)
 
 const transaction = ref(null)
@@ -50,7 +52,7 @@ onMounted(async () => {
         </div>
       </div>
       <div class="flex items-start gap-2 ml-auto">
-    <SecondaryButton>Initiate Return</SecondaryButton>
+    <SecondaryButton @click="modal.open('return_transaction')">Initiate Return</SecondaryButton>
     <PrimaryButton>Edit Transaction</PrimaryButton>
   </div>
     </div>
