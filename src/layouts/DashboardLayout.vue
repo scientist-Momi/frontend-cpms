@@ -20,6 +20,7 @@ import { useAuthStore } from '@/stores/authStore'
 import SidebarSkeleton from '@/components/sidebar/SidebarSkeleton.vue'
 import LoadingModal from '@/components/LoadingModal.vue'
 import UpdatePriceModal from '@/components/modals/UpdatePriceModal.vue'
+import ReturnModal from '@/components/modals/ReturnModal.vue'
 
 const modal = useModalStore()
 const auth = useAuthStore()
@@ -96,6 +97,10 @@ const auth = useAuthStore()
         <PrimaryModal v-if="modal.type === 'update_price'">
           <template #header>Update Unit Product Price</template>
           <UpdatePriceModal />
+        </PrimaryModal>
+        <PrimaryModal v-if="modal.type === 'return_transaction'">
+          <template #header>Return Product</template>
+          <ReturnModal />
         </PrimaryModal>
       </main>
     </div>
