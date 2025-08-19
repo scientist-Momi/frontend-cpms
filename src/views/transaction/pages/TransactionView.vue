@@ -52,7 +52,7 @@ onMounted(async () => {
         </div>
       </div>
       <div class="flex items-start gap-2 ml-auto">
-    <SecondaryButton @click="modal.open('return_transaction')">Initiate Return</SecondaryButton>
+    <SecondaryButton @click="modal.open('return_transaction', transactionId)">Initiate Return</SecondaryButton>
     <PrimaryButton>Edit Transaction</PrimaryButton>
   </div>
     </div>
