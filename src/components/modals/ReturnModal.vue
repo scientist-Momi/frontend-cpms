@@ -33,6 +33,27 @@ onMounted(async () => {
       </div>
       <div v-else>
         {{ transaction }}
+        <table class="w-full text-left">
+      <thead class="text-xs border-b border-gray-200">
+        <tr>
+          <th class="px-2 py-2 font-medium">Transaction</th>
+          <th class="px-2 py-2 font-medium">Quantity to return</th>
+
+
+        </tr>
+      </thead>
+      <tbody class="text-sm">
+        <tr
+          v-for="tx in purchaseTransactions"
+          :key="tx.detailId"
+          class="border-b border-gray-200 hover:bg-gray-50 transition"
+        >
+          <td class="p-2 py-3">{{  tx.product.name }}</td>
+          <td class="p-2 py-3">{{  formatCurrency(tx.unitPrice) }}</td>
+
+        </tr>
+      </tbody>
+    </table>
       </div>
     </div>
   </div>
