@@ -6,9 +6,11 @@ import PageLoader from '../PageLoader.vue'
 import { useModalStore } from '@/stores/modalStore'
 import { useToastStore } from '@/stores/toastStore'
 import { useTransaction } from '@/composables/useTransaction'
+import { useFunction } from '@/composables/useFunction'
 
 const toast = useToastStore()
 const { fetchTransaction } = useTransaction()
+const { formatCurrency } = useFunction()
 const loading = ref(false)
 const modal = useModalStore()
 const transaction = ref(null)
@@ -29,13 +31,12 @@ function toggleSelect(txDetail) {
   } else {
     selectedDetails.value.push({
       ...txDetail,
-      returnQuantity: 1, // default
+      returnQuantity: 1,
     })
   }
 }
 
 function updateQuantity(detail, val) {
-  // Optionally clamp input to [1, maxReturnable]
   detail.returnQuantity = Math.max(
     1,
     Math.min(val, detail.quantity - (detail.alreadyReturned || 0)),
@@ -44,12 +45,20 @@ function updateQuantity(detail, val) {
 
 function calcLineRefund(detail) {
   const qty = detail.returnQuantity || 0
-  return qty * (detail.unitPrice - (detail.lineDiscount || 0))
+  return qty * (detail.unitPrice - (detail.lineDiscount || 0)) * detail.variant.weight
 }
 
 const totalRefund = computed(() =>
   selectedDetails.value.reduce((sum, d) => sum + calcLineRefund(d), 0),
 )
+
+function lineTotal(tx) {
+  const unitPrice = tx.unitPrice || 0;
+  const weight = tx.variant.weight || 0;
+  const quantity = tx.quantity || 0;
+  const discount = tx.lineDiscount || 0;
+  return (weight * unitPrice * quantity) - discount;
+}
 </script>
 
 <template>
@@ -76,7 +85,7 @@ const totalRefund = computed(() =>
             "
           >
             {{ tx.product.name }} - {{ tx.variant.weight }}kg<br />
-            <small>Qty: {{ tx.quantity }}, ₦{{ tx.unitPrice }}</small>
+            <small>Qty: {{ tx.quantity }}, {{ formatCurrency(lineTotal(tx))}}</small>
           </div>
         </div>
 
@@ -85,13 +94,11 @@ const totalRefund = computed(() =>
           <thead class="text-xs border-b border-gray-200">
             <tr>
               <th class="px-2 py-2 font-medium">Product</th>
-              <th class="px-2 py-2 font-medium">Variant</th>
-              <th class="px-2 py-2 font-medium">Qty bought</th>
-              <th class="px-2 py-2 font-medium">Qty already returned</th>
-              <th class="px-2 py-2 font-medium">Qty to return</th>
-              <th class="px-2 py-2 font-medium">Unit Price</th>
+
+              <th class="px-2 py-2 font-medium">Unit Total</th>
               <th class="px-2 py-2 font-medium">Line Discount</th>
-              <th class="px-2 py-2 font-medium">Refund for this line</th>
+              <th class="px-2 py-2 font-medium">Qty to return</th>
+              <th class="px-2 py-2 font-medium">Refund Price</th>
             </tr>
           </thead>
           <tbody class="text-sm">
@@ -100,10 +107,12 @@ const totalRefund = computed(() =>
               :key="detail.detailId"
               class="border-b border-gray-200"
             >
-              <td class="p-2">{{ detail.product.name }}</td>
-              <td class="p-2">{{ detail.variant.weight }}kg</td>
-              <td class="p-2">{{ detail.quantity }}</td>
-              <td class="p-2">{{ detail.alreadyReturned || 0 }}</td>
+              <td class="p-2"><h3>{{ detail.product.name }} - {{ detail.variant.weight }}kg</h3>
+                <h3>{{ detail.quantity }} units</h3>
+                <h3>@ {{ formatCurrency((detail.variant.weight) * (detail.unitPrice))}} each</h3>
+              </td>
+              <td class="p-2">{{ formatCurrency(lineTotal(detail)) }}</td>
+              <td class="p-2">{{ formatCurrency(detail.lineDiscount || 0) }}</td>
               <td class="p-2">
                 <input
                   type="number"
@@ -114,8 +123,7 @@ const totalRefund = computed(() =>
                   class="w-16 border rounded px-1"
                 />
               </td>
-              <td class="p-2">{{ formatCurrency(detail.unitPrice) }}</td>
-              <td class="p-2">{{ formatCurrency(detail.lineDiscount || 0) }}</td>
+
               <td class="p-2 font-bold">{{ formatCurrency(calcLineRefund(detail)) }}</td>
             </tr>
           </tbody>
@@ -130,5 +138,3 @@ const totalRefund = computed(() =>
     </div>
   </div>
 </template>
-
-<style scoped></style>
