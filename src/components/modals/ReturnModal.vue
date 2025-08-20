@@ -207,7 +207,7 @@ async function submitReturn() {
               </tr>
             </tfoot>
           </table>
-          <PrimaryButton @click="proceedToReason">Proceed</PrimaryButton>
+          <PrimaryButton class="mt-2" @click="proceedToReason">Proceed</PrimaryButton>
         </template>
         <template v-else>
           <label for="reason" class="block mb-2 font-semibold">Reason for return:</label>
