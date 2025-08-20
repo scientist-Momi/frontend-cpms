@@ -37,11 +37,9 @@ function toggleSelect(txDetail) {
 }
 
 function updateQuantity(detail, val) {
-  detail.returnQuantity = Math.max(
-    1,
-    Math.min(val, detail.quantity - (detail.alreadyReturned || 0)),
-  )
+  detail.returnQuantity = val
 }
+
 
 function calcLineRefund(detail) {
   const qty = detail.returnQuantity || 0
@@ -53,11 +51,23 @@ const totalRefund = computed(() =>
 )
 
 function lineTotal(tx) {
-  const unitPrice = tx.unitPrice || 0;
-  const weight = tx.variant.weight || 0;
-  const quantity = tx.quantity || 0;
-  const discount = tx.lineDiscount || 0;
-  return (weight * unitPrice * quantity) - discount;
+  const unitPrice = tx.unitPrice || 0
+  const weight = tx.variant.weight || 0
+  const quantity = tx.quantity || 0
+  const discount = tx.lineDiscount || 0
+  return weight * unitPrice * quantity - discount
+}
+
+function validateReturn() {
+  for (const item of selectedDetails.value) {
+    if (!item.returnQuantity || item.returnQuantity < 1) {
+      toast.showToast({ message: `Invalid quantity for ${item.product.name}`, type: 'error' })
+    }
+    if (item.returnQuantity > item.quantity - (item.alreadyReturned || 0)) {
+      toast.showToast({ message: `Return quantity for ${item.product.name} exceeds allowable amount`, type: 'error' })
+    }
+  }
+  // proceed with submission
 }
 </script>
 
@@ -78,14 +88,17 @@ function lineTotal(tx) {
             :key="tx.detailId"
             @click="toggleSelect(tx)"
             class="border border-gray-200 p-2 py-1 hover:bg-gray-100 cursor-pointer rounded"
-            :class="
-              selectedDetails.some((d) => d.detailId === tx.detailId)
-                ? 'bg-blue-100 border-blue-300'
-                : ''
-            "
+            :class="{
+              'bg-blue-100 border-blue-300': selectedDetails.some(
+                (d) => d.detailId === tx.detailId,
+              ),
+              'opacity-50 pointer-events-none': selectedDetails.some(
+                (d) => d.detailId === tx.detailId,
+              ),
+            }"
           >
             {{ tx.product.name }} - {{ tx.variant.weight }}kg<br />
-            <small>Qty: {{ tx.quantity }}, {{ formatCurrency(lineTotal(tx))}}</small>
+            <small>Qty: {{ tx.quantity }}, {{ formatCurrency(lineTotal(tx)) }}</small>
           </div>
         </div>
 
@@ -107,29 +120,34 @@ function lineTotal(tx) {
               :key="detail.detailId"
               class="border-b border-gray-200"
             >
-              <td class="p-2"><h3>{{ detail.product.name }} - {{ detail.variant.weight }}kg</h3>
+              <td class="p-2">
+                <h3>{{ detail.product.name }} - {{ detail.variant.weight }}kg</h3>
                 <h3>{{ detail.quantity }} units</h3>
-                <h3>@ {{ formatCurrency((detail.variant.weight) * (detail.unitPrice))}} each</h3>
+                <h3 class="font-bold">@ {{ formatCurrency(detail.variant.weight * detail.unitPrice) }} each</h3>
               </td>
               <td class="p-2">{{ formatCurrency(lineTotal(detail)) }}</td>
               <td class="p-2">{{ formatCurrency(detail.lineDiscount || 0) }}</td>
               <td class="p-2">
                 <input
-                  type="number"
-                  min="1"
-                  :max="detail.quantity - (detail.alreadyReturned || 0)"
+                  type="text"
                   v-model.number="detail.returnQuantity"
                   @input="updateQuantity(detail, detail.returnQuantity)"
-                  class="w-16 border rounded px-1"
+                  class="w-16 border rounded p-2 text-center hide-arrows"
+                  placeholder="Qty"
                 />
               </td>
 
               <td class="p-2 font-bold">{{ formatCurrency(calcLineRefund(detail)) }}</td>
+              <td class="p-2">
+                <button @click="toggleSelect(detail)" class="text-red-600 hover:underline text-xs">
+                  Remove
+                </button>
+              </td>
             </tr>
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="7" class="text-right p-2 font-medium">Total Refund:</td>
+              <td colspan="4" class="text-right p-2 font-medium">Total Refund:</td>
               <td class="p-2 font-bold text-blue-600">{{ formatCurrency(totalRefund) }}</td>
             </tr>
           </tfoot>
