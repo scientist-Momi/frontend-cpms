@@ -3,6 +3,7 @@ import {
   fetchAllTransactions,
   fetchATransaction,
   createNewTransaction,
+  createNewReturn,
 } from '@/api/Transactions'
 
 export const useTransaction = () => {
@@ -50,9 +51,24 @@ export const useTransaction = () => {
       }
     }
   };
+
+  const createReturn = async (payload) => {
+    try {
+      const res = await createNewReturn(payload)
+      console.log(res)
+      return { success: true, data: res.data.data }
+    } catch (err) {
+      console.log('Return operation failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Return operation failed',
+      }
+    }
+  };
   return {
     fetchTransactions,
     fetchTransaction,
     createTransaction,
+    createReturn,
   }
 }

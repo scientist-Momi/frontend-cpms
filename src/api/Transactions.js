@@ -5,3 +5,5 @@ export const fetchAllTransactions = () => apiClient.get('/customer/transaction/a
 export const fetchATransaction = (id) => apiClient.get(`/customer/transaction/t/${id}`)
 
 export const createNewTransaction = (data) => apiClient.post('/customer/transaction/new', data)
+
+export const createNewReturn = (data) => apiClient.post('/customer/transaction/return', data)
