@@ -103,7 +103,7 @@ async function submitReturn() {
         productId: d.productId,
         variantId: d.variantId,
         quantity: d.returnQuantity,
-        // unitPrice: d
+        unitPrice: d.unitPrice
         // add other needed fields
       })),
     }
@@ -212,7 +212,7 @@ async function submitReturn() {
               </tr>
             </tfoot>
           </table>
-          <PrimaryButton class="mt-2" @click="proceedToReason">Proceed</PrimaryButton>
+          <PrimaryButton class="mt-4" @click="proceedToReason">Proceed</PrimaryButton>
         </template>
         <template v-else>
           <label for="reason" class="block mb-2 font-semibold">Reason for return:</label>
