@@ -76,34 +76,39 @@ function validateReturn() {
   for (const item of selectedDetails.value) {
     if (!item.returnQuantity || item.returnQuantity < 1) {
       toast.showToast({ message: `Invalid quantity for ${item.product.name}`, type: 'error' })
-      return
+      return false
     }
     if (item.returnQuantity > item.quantity - (item.alreadyReturned || 0)) {
       toast.showToast({
         message: `Return quantity for ${item.product.name} exceeds allowable amount`,
         type: 'error',
       })
-      return
+      return false
     }
   }
-  // proceed with submission
+  return true
 }
+
 
 async function submitReturn() {
   try {
     // Here you can validate quantities if you like (on submit)
-    validateReturn()
+    if (!validateReturn()) return
     // Prepare payload from selectedDetails & returnReason
     const payload = {
       transactionId: transaction.value.transactionId,
-      customerId: transaction.value.customer.id,
+      customerId: transaction.value.customerId,
       reason: returnReason.value,
-      details: selectedDetails.value.map(d => ({
-        detailId: d.detailId,
+      returnDetails: selectedDetails.value.map(d => ({
+        productId: d.productId,
+        variantId: d.variantId,
         quantity: d.returnQuantity,
+        // unitPrice: d
         // add other needed fields
       })),
     }
+    alert(JSON.stringify(payload, null, 2))
+
     // Call your API to process return
     // await api.submitReturn(payload)
 
