@@ -9,7 +9,7 @@ import { useTransaction } from '@/composables/useTransaction'
 import { useFunction } from '@/composables/useFunction'
 
 const toast = useToastStore()
-const { fetchTransaction } = useTransaction()
+const { fetchTransaction, createReturn } = useTransaction()
 const { formatCurrency } = useFunction()
 const loading = ref(false)
 const modal = useModalStore()
@@ -89,40 +89,34 @@ function validateReturn() {
   return true
 }
 
+const handleReturn = async () => {
+  loading.value = true
 
-async function submitReturn() {
-  try {
-    // Here you can validate quantities if you like (on submit)
-    if (!validateReturn()) return
-    // Prepare payload from selectedDetails & returnReason
-    const payload = {
-      transactionId: transaction.value.transactionId,
-      customerId: transaction.value.customerId,
-      reason: returnReason.value,
-      returnDetails: selectedDetails.value.map(d => ({
-        productId: d.productId,
-        variantId: d.variantId,
-        quantity: d.returnQuantity,
-        unitPrice: d.unitPrice
-        // add other needed fields
-      })),
-    }
-    alert(JSON.stringify(payload, null, 2))
+  if (!validateReturn()) return
+  const payload = {
+    transactionId: transaction.value.transactionId,
+    customerId: transaction.value.customerId,
+    reason: returnReason.value,
+    returnDetails: selectedDetails.value.map((d) => ({
+      productId: d.productId,
+      variantId: d.variantId,
+      quantity: d.returnQuantity,
+      unitPrice: d.unitPrice,
+    })),
+  }
 
-    // Call your API to process return
-    // await api.submitReturn(payload)
-
-    toast.showToast({ message: 'Return submitted successfully!', type: 'success' })
-    // Reset
+  const res = await createReturn(payload)
+  await new Promise((resolve) => setTimeout(resolve, 2500))
+  if (res.success) {
     isReasonStage.value = false
     selectedDetails.value = []
     returnReason.value = ''
-    // Optionally refresh transaction data etc.
-  } catch (e) {
-    toast.showToast({ message: e.message || 'Failed to submit return', type: 'error' })
+    toast.showToast({ message: 'Return submitted successfully!', type: 'success' })
+    modal.close()
+  } else {
+    toast.showToast({ message: res.message || 'Failed to submit return', type: 'error' })
   }
 }
-
 </script>
 
 <template>
@@ -225,7 +219,7 @@ async function submitReturn() {
           ></textarea>
           <div class="flex gap-3">
             <SecondaryButton @click="goBackToSelection">Back</SecondaryButton>
-            <PrimaryButton :disabled="!returnReason.trim()" @click="submitReturn"
+            <PrimaryButton :disabled="!returnReason.trim()" @click="handleReturn"
               >Submit Return</PrimaryButton
             >
           </div>
