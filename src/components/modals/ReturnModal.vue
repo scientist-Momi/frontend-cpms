@@ -108,12 +108,14 @@ const handleReturn = async () => {
   const res = await createReturn(payload)
   await new Promise((resolve) => setTimeout(resolve, 2500))
   if (res.success) {
+    loading.value = false
     isReasonStage.value = false
     selectedDetails.value = []
     returnReason.value = ''
     toast.showToast({ message: 'Return submitted successfully!', type: 'success' })
     modal.close()
   } else {
+    loading.value = false
     toast.showToast({ message: res.message || 'Failed to submit return', type: 'error' })
   }
 }
