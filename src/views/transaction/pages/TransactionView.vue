@@ -1,6 +1,6 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useTransaction } from '@/composables/useTransaction'
 import { useFunction } from '@/composables/useFunction'
 import PageLoader from '@/components/PageLoader.vue'
@@ -17,10 +17,14 @@ const transactionId = computed(() => route.params.id)
 
 const transaction = ref(null)
 
-onMounted(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 2500))
+async function loadTransaction() {
   const res = await fetchTransaction(transactionId.value)
   transaction.value = res.data
+}
+
+onMounted(async () => {
+  await new Promise((resolve) => setTimeout(resolve, 2500))
+  await loadTransaction()
 })
 
 function getTotalReturns(transactions) {
@@ -31,6 +35,13 @@ function getTotalReturns(transactions) {
 }
 
 const totalReturns = computed(() => getTotalReturns(transaction.value))
+
+watch(() => modal.refreshNeeded, (newVal) => {
+  if (newVal) {
+    loadTransaction()
+    modal.refreshNeeded = false 
+  }
+})
 
 </script>
 

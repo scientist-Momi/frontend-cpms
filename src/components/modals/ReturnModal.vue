@@ -15,6 +15,7 @@ const loading = ref(false)
 const modal = useModalStore()
 const transaction = ref(null)
 const selectedDetails = ref([])
+const emit = defineEmits(['editComplete'])
 
 onMounted(async () => {
   loading.value = true
@@ -104,7 +105,7 @@ const handleReturn = async () => {
       unitPrice: d.unitPrice,
     })),
   }
-const emit = defineEmits(['editComplete'])
+
   const res = await createReturn(payload)
   await new Promise((resolve) => setTimeout(resolve, 2500))
   if (res.success) {
