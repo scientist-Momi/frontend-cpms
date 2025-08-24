@@ -114,6 +114,7 @@ const handleReturn = async () => {
     returnReason.value = ''
     toast.showToast({ message: 'Return submitted successfully!', type: 'success' })
     modal.close()
+    window.reload()
   } else {
     loading.value = false
     toast.showToast({ message: res.message || 'Failed to submit return', type: 'error' })
