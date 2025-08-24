@@ -43,6 +43,7 @@ function lineTotal(tx) {
           <th class="px-2 py-2 font-medium">Discount</th>
           <th class="px-2 py-2 font-medium">Unit Total</th>
           <th class="px-2 py-2 font-medium">Quantity Returned</th>
+          <th></th>
         </tr>
       </thead>
       <tbody class="text-sm">
@@ -58,6 +59,9 @@ function lineTotal(tx) {
           <td class="p-2 py-3">{{ formatCurrency(tx.lineDiscount) }}</td>
           <td class="p-2 py-3">{{ formatCurrency(lineTotal(tx)) }}</td>
           <td class="p-2 py-3">{{ tx.quantityReturned || 0 }}</td>
+          <td
+          v-if="tx.quantityReturned"
+           class="p-2 py-3"><span class="material-symbols-outlined cursor-pointer" title="Open return details"> outbound </span></td>
         </tr>
       </tbody>
     </table>

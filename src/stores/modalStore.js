@@ -5,7 +5,8 @@ export const useModalStore = defineStore('modal', {
     isOpen: false,
     data: null,
     user: [],
-    type: null, // e.g. 'logout', 'settings'
+    type: null,
+    refreshNeeded: false,
   }),
   actions: {
     open(type, data, user) {
@@ -13,12 +14,14 @@ export const useModalStore = defineStore('modal', {
       this.data = data
       this.isOpen = true
       this.user = user
+      this.refreshNeeded = false
     },
     close() {
       this.type = null
       this.data = null
       this.user = []
       this.isOpen = false
+      this.refreshNeeded = true
     },
   },
 })

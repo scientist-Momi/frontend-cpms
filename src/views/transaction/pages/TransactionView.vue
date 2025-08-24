@@ -22,6 +22,16 @@ onMounted(async () => {
   const res = await fetchTransaction(transactionId.value)
   transaction.value = res.data
 })
+
+function getTotalReturns(transactions) {
+  if (!transactions) return 0
+  return transactions.transactionDetails.reduce((total, tx) => {
+    return total + (tx.quantityReturned || 0)
+  }, 0)
+}
+
+const totalReturns = computed(() => getTotalReturns(transaction.value))
+
 </script>
 
 <template>
@@ -48,6 +58,10 @@ onMounted(async () => {
           <div>
             <small class="text-xs">Total Quantity</small>
             <p class="font-medium text-xl">{{ transaction.totalQuantity }}</p>
+          </div>
+          <div>
+            <small class="text-xs">Total Return</small>
+            <p class="font-medium text-xl">{{ totalReturns }}</p>
           </div>
           <div>
             <small class="text-xs">Total Discount</small>

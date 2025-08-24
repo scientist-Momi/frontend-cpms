@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, defineEmits } from 'vue'
 import PrimaryButton from '../buttons/PrimaryButton.vue'
 import SecondaryButton from '../buttons/SecondaryButton.vue'
 import PageLoader from '../PageLoader.vue'
@@ -104,7 +104,7 @@ const handleReturn = async () => {
       unitPrice: d.unitPrice,
     })),
   }
-
+const emit = defineEmits(['editComplete'])
   const res = await createReturn(payload)
   await new Promise((resolve) => setTimeout(resolve, 2500))
   if (res.success) {
@@ -114,7 +114,8 @@ const handleReturn = async () => {
     returnReason.value = ''
     toast.showToast({ message: 'Return submitted successfully!', type: 'success' })
     modal.close()
-    window.reload()
+    // window.reload()
+    emit('editComplete')
   } else {
     loading.value = false
     toast.showToast({ message: res.message || 'Failed to submit return', type: 'error' })
