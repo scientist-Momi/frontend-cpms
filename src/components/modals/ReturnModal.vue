@@ -77,6 +77,7 @@ function validateReturn() {
   for (const item of selectedDetails.value) {
     if (!item.returnQuantity || item.returnQuantity < 1) {
       toast.showToast({ message: `Invalid quantity for ${item.product.name}`, type: 'error' })
+      loading.value = false
       return false
     }
     if (item.returnQuantity > item.quantity - (item.alreadyReturned || 0)) {
@@ -84,6 +85,7 @@ function validateReturn() {
         message: `Return quantity for ${item.product.name} exceeds allowable amount`,
         type: 'error',
       })
+      loading.value = false
       return false
     }
   }

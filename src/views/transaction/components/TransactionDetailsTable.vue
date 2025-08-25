@@ -58,7 +58,7 @@ function lineTotal(tx) {
           <td class="p-2 py-3">{{ tx.product.name }}</td>
           <td class="p-2 py-3">{{ formatCurrency(tx.unitPrice) }}</td>
           <td class="p-2 py-3">{{ tx.variant.weight }}Kg</td>
-          <td class="p-2 py-3">{{ (tx.quantity) -  (tx.quantityReturned || 0)}}</td>
+          <td class="p-2 py-3">{{ (tx.quantity) }}</td>
           <td class="p-2 py-3">{{ formatCurrency(tx.lineDiscount) }}</td>
           <td class="p-2 py-3">{{ formatCurrency(lineTotal(tx)) }}</td>
           <td class="p-2 py-3">{{ tx.quantityReturned || 0 }}</td>
