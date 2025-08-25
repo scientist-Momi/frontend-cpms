@@ -110,7 +110,11 @@ function goToTransaction(id) {
             <td class="p-2 py-3">{{ formatCurrency(transaction.totalAmount) }}</td>
             <td class="p-2 py-3">{{ transaction.totalQuantity }}</td>
             <td class="p-2 py-3">{{ formatCurrency(transaction.totalDiscount) }}</td>
-            <td>{{  }}</td>
+            <td v-if="transaction.hasReturned" class="p-2 py-3">
+              <span class="material-symbols-outlined">
+amend
+</span>
+            </td>
           </tr>
         </tbody>
       </table>

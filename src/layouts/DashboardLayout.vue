@@ -11,6 +11,7 @@ import EditProfileModal from '@/components/modals/EditProfileModal.vue'
 import EditEmailModal from '@/components/modals/EditEmailModal.vue'
 import DeleteUserModal from '@/components/modals/DeleteUserModal.vue'
 import PrimaryModal from '@/components/PrimaryModal.vue'
+import PrimaryDrawer from '@/components/PrimaryDrawer.vue'
 import SettingsModal from '@/views/user/pages/SettingsModal.vue'
 import NewDepositModal from '@/components/modals/NewDepositModal.vue'
 import CreditLimitModal from '@/components/modals/CreditLimitModal.vue'
@@ -21,6 +22,7 @@ import SidebarSkeleton from '@/components/sidebar/SidebarSkeleton.vue'
 import LoadingModal from '@/components/LoadingModal.vue'
 import UpdatePriceModal from '@/components/modals/UpdatePriceModal.vue'
 import ReturnModal from '@/components/modals/ReturnModal.vue'
+import ReturnedDetailsDrawer from '@/components/drawers/ReturnedDetailsDrawer.vue'
 
 const modal = useModalStore()
 const auth = useAuthStore()
@@ -102,6 +104,10 @@ const auth = useAuthStore()
           <template #header>Return Product</template>
           <ReturnModal />
         </PrimaryModal>
+        <PrimaryDrawer v-if="modal.type === 'return_drawer'">
+          <template #header>Returned Product Details</template>
+          <ReturnedDetailsDrawer />
+        </PrimaryDrawer>
       </main>
     </div>
   </div>

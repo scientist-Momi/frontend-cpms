@@ -1,6 +1,9 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useFunction } from '@/composables/useFunction'
+import { useModalStore } from '@/stores/modalStore'
+
+const modal = useModalStore()
 
 const { formatCurrency } = useFunction()
 
@@ -55,11 +58,12 @@ function lineTotal(tx) {
           <td class="p-2 py-3">{{ tx.product.name }}</td>
           <td class="p-2 py-3">{{ formatCurrency(tx.unitPrice) }}</td>
           <td class="p-2 py-3">{{ tx.variant.weight }}Kg</td>
-          <td class="p-2 py-3">{{ tx.quantity }}</td>
+          <td class="p-2 py-3">{{ (tx.quantity) -  (tx.quantityReturned || 0)}}</td>
           <td class="p-2 py-3">{{ formatCurrency(tx.lineDiscount) }}</td>
           <td class="p-2 py-3">{{ formatCurrency(lineTotal(tx)) }}</td>
           <td class="p-2 py-3">{{ tx.quantityReturned || 0 }}</td>
           <td
+          @click="modal.open('return_drawer')"
           v-if="tx.quantityReturned"
            class="p-2 py-3"><span class="material-symbols-outlined cursor-pointer" title="Open return details"> outbound </span></td>
         </tr>
