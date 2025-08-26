@@ -28,7 +28,7 @@ function close() {
         class="fixed z-60 w-180 max-w-full h-full bg-white shadow-xl flex flex-col top-0 right-0"
       >
         <!-- Header -->
-        <header class="flex justify-between items-center p-4 border-b border-gray-200">
+        <header class="flex justify-between items-center px-4 p-2 text-sm border-b bg-gray-100 border-gray-200">
           <slot name="header">Drawer Title</slot>
        <button
             class="text-gray-400 hover:text-gray-600 text-2xl cursor-pointer"

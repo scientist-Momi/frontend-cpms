@@ -4,6 +4,7 @@ import {
   fetchATransaction,
   createNewTransaction,
   createNewReturn,
+  fetchAllTransactionReturns
 } from '@/api/Transactions'
 
 export const useTransaction = () => {
@@ -65,11 +66,26 @@ export const useTransaction = () => {
       }
     }
   };
+
+  const fetchTransactionReturns = async (payload) => {
+    try {
+      const res = await fetchAllTransactionReturns(payload)
+      console.log(res)
+      return { success: true, data: res.data.data }
+    } catch (err) {
+      console.log('fetch failed', err)
+      return {
+        success: false,
+        message: err.response?.data?.message || 'fetch failed',
+      }
+    }
+  };
   return {
     fetchTransactions,
     fetchTransaction,
     createTransaction,
     createReturn,
+    fetchTransactionReturns,
   }
 }
 
