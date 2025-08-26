@@ -26,7 +26,7 @@ onMounted(async () => {
     <div v-if="loading">
       <PageLoader />
     </div>
-    <div v-else class="p-6">
+    <div v-else class="p-6 text-xs">
       {{ returns }}
     </div>
 
