@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useTransaction } from '@/composables/useTransaction'
 // import { useFunction } from '@/composables/useFunction'
 import { useRoute } from 'vue-router'
+import PageLoader from '../PageLoader.vue'
 
 const { fetchTransactionReturns } = useTransaction()
 // const { formatCurrency } = useFunction()
@@ -21,10 +22,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <h1>{{ returns }}</h1>
+  <div class="bg-white h-full">
+    <div v-if="loading">
+      <PageLoader />
+    </div>
+    <div v-else class="p-6">
+      {{ returns }}
+    </div>
+
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
