@@ -60,16 +60,6 @@ onMounted(async () => {
           </div>
         </div>
 
-        <!-- Customer -->
-        <!-- <div class="mb-3">
-          <p class="text-sm text-gray-600">
-            Customer: <span class="font-medium text-gray-800">{{ item.customerName }}</span>
-          </p>
-          <p class="text-xs text-gray-400">
-            Created: {{ formatDate(item.createdAt) }}
-          </p>
-        </div> -->
-
         <!-- Return Details -->
         <div class="space-y-2">
           <div
