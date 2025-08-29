@@ -99,7 +99,7 @@ onMounted(async () => {
           <div class="flex flex-col">
             <div class="flex items-center">
               <span class="w-2 h-2 rounded-full bg-gray-400 mr-2"></span>
-              <p>From Mercury Savings ••7658</p>
+              <!-- <p>{{ detail.product.name }} •• {{ detail.variant.weight }}kg</p> -->
             </div>
             <div class="flex">
               <span class="w-0.5 h-10 bg-gray-400 ml-0.5 mr-3"></span>
