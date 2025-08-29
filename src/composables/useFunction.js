@@ -56,10 +56,9 @@ export function useFunction() {
       month: 'long',
       day: 'numeric',
     })
-    const timeStr = d.toLocaleTimeString('en-US', {
+    const timeStr = d.toLocaleTimeString('en-GB', {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true,
     })
     return `${dateStr} by ${timeStr}`
   }

@@ -7,7 +7,7 @@ import { useFunction } from '@/composables/useFunction'
 // Uncomment and use a formatter if desired
 
 const { fetchTransactionReturns } = useTransaction()
-const { formatCurrency, formatDate } = useFunction()
+const { formatCurrency, formatDate, formatDateLongWithTimeBy } = useFunction()
 const loading = ref(false)
 const returns = ref(null)
 const route = useRoute()
@@ -40,22 +40,16 @@ onMounted(async () => {
       <div
         v-for="item in returns"
         :key="item.returnId"
-        class="bg-white shadow-md  p-5 border border-gray-200"
+        class="bg-white shadow-md p-5 border border-gray-200"
       >
         <!-- Header -->
         <div class="flex justify-between items-center border-b pb-3 mb-3">
           <div>
-            <h2 class="text-lg font-semibold text-gray-800">
-              Return #{{ item.returnId }}
-            </h2>
-            <p class="text-sm text-gray-500">
-              Transaction ID: {{ item.transactionId }}
-            </p>
+            <h2 class="text-lg font-semibold text-gray-800">Return #{{ item.returnId }}</h2>
+            <p class="text-sm text-gray-500">Transaction ID: {{ item.transactionId }}</p>
           </div>
           <div class="text-right">
-            <p class="text-xl font-bold text-red-600">
-              –{{ formatCurrency(item.totalAmount) }}
-            </p>
+            <p class="text-xl font-bold text-red-600">–{{ formatCurrency(item.totalAmount) }}</p>
             <p class="text-xs text-gray-500">Qty: {{ item.totalQuantity }}</p>
           </div>
         </div>
@@ -88,40 +82,32 @@ onMounted(async () => {
           Last updated: {{ formatDate(item.updatedAt) }}
         </div>
       </div>
+
+      <div class="">
+        <div class="text-3xl font-semibold text-red-500 mb-4 flex items-baseline">
+          <span class="mr-1">−</span>
+          <span>$40</span>
+          <span class="text-gray-500">,</span>
+          <span>000</span>
+          <span class="align-super text-base text-gray-500">.00</span>
+        </div>
+
+        <div
+        v-for="item in returns"
+        :key="item.returnId"
+         class="">
+          <div class="flex flex-col">
+            <div class="flex items-center">
+              <span class="w-2 h-2 rounded-full bg-gray-400 mr-2"></span>
+              <p>From Mercury Savings ••7658</p>
+            </div>
+            <div class="flex">
+              <span class="w-0.5 h-10 bg-gray-400 ml-0.5 mr-3"></span>
+              <small>{{ formatDateLongWithTimeBy(item.updatedAt) }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-<!-- <div class="bg-white rounded-xl shadow-lg p-6"> -->
-    <!-- Amount Display -->
-    <div class="text-3xl font-semibold text-red-500 mb-4 flex items-baseline">
-      <span class="mr-1">−</span>
-      <span>$40</span>
-      <span class="text-gray-500">,</span>
-      <span>000</span>
-      <span class="align-super text-base text-gray-500">.00</span>
-    </div>
-
-    <div class="mb-6">
-      <div class="flex flex-col">
-        <div class="flex items-center ">
-          <span class="w-2 h-2 rounded-full bg-gray-400 mr-2"></span>
-          <p>From Mercury Savings ••7658</p>
-        </div>
-        <div class="flex ">
-          <span class="w-0.5 h-10 bg-gray-400 ml-0.5 mr-3"></span>
-          <small>Aug 28 at 12:14PM</small>
-        </div>
-      </div>
-      <div class="flex flex-col">
-        <div class="flex items-center ">
-          <span class="w-2 h-2 rounded-full bg-gray-400 mr-2"></span>
-          <p>From Mercury Savings ••7658</p>
-        </div>
-        <div class="flex ">
-          <span class="w-0.5 h-10 bg-gray-400 ml-0.5 mr-3"></span>
-          <small>Aug 28 at 12:14PM</small>
-        </div>
-      </div>
-    </div>
-  <!-- </div> -->
 </template>
