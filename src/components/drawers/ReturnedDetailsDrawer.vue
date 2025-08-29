@@ -103,11 +103,28 @@ onMounted(async () => {
 
     <!-- Timeline Parties -->
     <div class="mb-6">
-      <div class="flex items-center gap-2">
+      <div class="flex flex-col gap-2">
         <!-- Timeline Dot and Line -->
+        <div class="flex items-center border">
+          <span class="w-2 h-2 rounded-full bg-gray-500 mr-2"></span>
+          <p>From Mercury Savings ••7658</p>
+          <!-- <span class="w-0.5 h-10 bg-red-300"></span> -->
+        </div>
+        <div class="flex border">
+          <p>Aug 28 at 12:14PM</p>
+        </div>
+        <!-- <div>
+          <a
+            href="#"
+            class="font-medium text-gray-900 underline hover:text-blue-700"
+          >From Mercury Savings ••7658</a>
+          <div class="text-xs text-gray-500">Aug 28 at 12:14PM</div>
+        </div> -->
+      </div>
+      <!-- <div class="flex items-center gap-2">
         <div class="flex flex-col items-center mr-2">
           <span class="w-2 h-2 rounded-full bg-gray-300"></span>
-          <span class="w-0.5 h-5 bg-gray-300"></span>
+          <span class="w-0.5 h-10 bg-red-300"></span>
         </div>
         <div>
           <a
@@ -116,11 +133,20 @@ onMounted(async () => {
           >From Mercury Savings ••7658</a>
           <div class="text-xs text-gray-500">Aug 28 at 12:14PM</div>
         </div>
-      </div>
+      </div> -->
+
+
+
+
+
+
+
       <div class="flex items-center gap-2 mt-4">
         <!-- Timeline End, Pin Icon -->
         <div class="flex flex-col items-center mr-2">
-          <span class="w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center"></span>
+          <!-- <span class="w-3 h-3 bg-blue-500 rounded-full flex items-center justify-center"></span> -->
+           <span class="w-2 h-2 rounded-full bg-gray-300"></span>
+          <!-- <span class="w-0.5 h-12 bg-red-300"></span> -->
         </div>
         <div>
           <a
