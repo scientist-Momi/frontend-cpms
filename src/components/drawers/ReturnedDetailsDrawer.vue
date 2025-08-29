@@ -103,15 +103,16 @@ onMounted(async () => {
 
     <!-- Timeline Parties -->
     <div class="mb-6">
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col">
         <!-- Timeline Dot and Line -->
         <div class="flex items-center border">
-          <span class="w-2 h-2 rounded-full bg-gray-500 mr-2"></span>
+          <span class="w-2 h-2 rounded-full bg-gray-400 mr-2"></span>
           <p>From Mercury Savings ••7658</p>
           <!-- <span class="w-0.5 h-10 bg-red-300"></span> -->
         </div>
         <div class="flex border">
-          <p>Aug 28 at 12:14PM</p>
+          <span class="w-0.5 h-10 bg-gray-400 ml-0.5 mr-4"></span>
+          <small>Aug 28 at 12:14PM</small>
         </div>
         <!-- <div>
           <a
