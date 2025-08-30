@@ -36,13 +36,13 @@ onMounted(async () => {
       <PageLoader />
     </div>
 
-    <div v-else class="space-y-4">
-      <div
+    <div v-else class="">
+      <!-- <div
         v-for="item in returns"
         :key="item.returnId"
         class="bg-white shadow-md p-5 border border-gray-200"
       >
-        <!-- Header -->
+
         <div class="flex justify-between items-center border-b pb-3 mb-3">
           <div>
             <h2 class="text-lg font-semibold text-gray-800">Return #{{ item.returnId }}</h2>
@@ -54,7 +54,7 @@ onMounted(async () => {
           </div>
         </div>
 
-        <!-- Return Details -->
+
         <div class="space-y-2">
           <div
             v-for="detail in item.returnDetails"
@@ -77,11 +77,11 @@ onMounted(async () => {
           </div>
         </div>
 
-        <!-- Footer -->
+
         <div class="mt-4 border-t pt-3 text-xs text-gray-400">
           Last updated: {{ formatDate(item.updatedAt) }}
         </div>
-      </div>
+      </div> -->
 
       <div class="">
         <div class="text-3xl font-semibold text-red-500 mb-4 flex items-baseline">
@@ -105,11 +105,12 @@ onMounted(async () => {
               <div
                 v-for="detail in item.returnDetails"
                 :key="detail.detailId"
-                class="py-2 mb-4 flex items-center"
+                class="py-2"
               >
                 <p class="text-gray-900 font-medium">
-                  {{ detail.product.name }} &bull; {{ detail.variant.weight }}kg
+                  {{ detail.product.name }} &bull; {{ detail.variant.weight }}kg × {{ detail.quantity }} unit(s)
                 </p>
+                <p>{{ detail.variant.weight }}kg × {{ detail.quantity }} unit(s)</p>
               </div>
               </div>
             </div>

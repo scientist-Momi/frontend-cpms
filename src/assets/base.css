@@ -76,7 +76,9 @@ body {
     'Helvetica Neue',
     sans-serif; */
   /* font-size: 15px; */
-  font-family: "Geist", sans-serif;
+  /* font-family: "Geist", sans-serif; */
+  font-family: 'Neue Montreal', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
