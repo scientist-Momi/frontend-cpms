@@ -2,7 +2,6 @@
 import { ref, onMounted, computed } from 'vue'
 import { useTransaction } from '@/composables/useTransaction'
 import { useRoute } from 'vue-router'
-import PageLoader from '../PageLoader.vue'
 import { useFunction } from '@/composables/useFunction'
 // Uncomment and use a formatter if desired
 
@@ -18,18 +17,12 @@ onMounted(async () => {
   returns.value = res.data
   loading.value = false
 })
-
 </script>
 
 <template>
   <div class="bg-white min-h-screen">
-    <div v-if="loading">
-      <PageLoader />
-    </div>
-
-    <div v-else class="">
-
-      <div class="">
+    <div>
+      <div v-if="returns && returns.length">
         <div class="text-3xl font-semibold text-red-500 mb-4 flex items-baseline">
           <p></p>
         </div>
@@ -54,6 +47,10 @@ onMounted(async () => {
             </div>
           </div>
         </div>
+      </div>
+      <div v-else class="flex flex-col items-center justify-center">
+        <span class="material-symbols-outlined"> sentiment_neutral </span>
+        <p class="text-sm">Nothing to show.</p>
       </div>
     </div>
   </div>
