@@ -92,18 +92,26 @@ onMounted(async () => {
           <span class="align-super text-base text-gray-500">.00</span>
         </div>
 
-        <div
-        v-for="item in returns"
-        :key="item.returnId"
-         class="">
+        <div v-for="item in returns" :key="item.returnId">
           <div class="flex flex-col">
             <div class="flex items-center">
-              <span class="w-2 h-2 rounded-full bg-gray-400 mr-2"></span>
-              <!-- <p>{{ detail.product.name }} •• {{ detail.variant.weight }}kg</p> -->
+              <span class="w-2 h-2 rounded-full bg-gray-400 mr-4"></span>
+              <small>{{ formatDateLongWithTimeBy(item.updatedAt) }}</small>
             </div>
             <div class="flex">
-              <span class="w-0.5 h-10 bg-gray-400 ml-0.5 mr-3"></span>
-              <small>{{ formatDateLongWithTimeBy(item.updatedAt) }}</small>
+              <span class="w-0.5 bg-gray-400 ml-0.75 mr-5"
+              :style="{ height: `${item.returnDetails.length * 46}px` }"></span>
+              <div class="flex flex-col flex-1">
+              <div
+                v-for="detail in item.returnDetails"
+                :key="detail.detailId"
+                class="py-2 mb-4 flex items-center"
+              >
+                <p class="text-gray-900 font-medium">
+                  {{ detail.product.name }} &bull; {{ detail.variant.weight }}kg
+                </p>
+              </div>
+              </div>
             </div>
           </div>
         </div>
@@ -111,3 +119,6 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+
+
