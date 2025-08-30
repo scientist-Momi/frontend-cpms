@@ -7,27 +7,18 @@ import { useFunction } from '@/composables/useFunction'
 // Uncomment and use a formatter if desired
 
 const { fetchTransactionReturns } = useTransaction()
-const { formatCurrency, formatDate, formatDateLongWithTimeBy } = useFunction()
+const { formatCurrency, formatDateLongWithTimeBy } = useFunction()
 const loading = ref(false)
 const returns = ref(null)
 const route = useRoute()
 const transactionId = computed(() => route.params.id)
 
 onMounted(async () => {
-  // loading.value = true
-  // await new Promise((resolve) => setTimeout(resolve, 2500))
   const res = await fetchTransactionReturns(transactionId.value)
   returns.value = res.data
   loading.value = false
 })
 
-// Helper for formatting (replace currency as needed)
-// function formatCurrency(n) {
-//   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n / 100)
-// }
-// function formatDate(dateStr) {
-//   return new Date(dateStr).toLocaleString()
-// }
 </script>
 
 <template>
@@ -37,59 +28,10 @@ onMounted(async () => {
     </div>
 
     <div v-else class="">
-      <!-- <div
-        v-for="item in returns"
-        :key="item.returnId"
-        class="bg-white shadow-md p-5 border border-gray-200"
-      >
-
-        <div class="flex justify-between items-center border-b pb-3 mb-3">
-          <div>
-            <h2 class="text-lg font-semibold text-gray-800">Return #{{ item.returnId }}</h2>
-            <p class="text-sm text-gray-500">Transaction ID: {{ item.transactionId }}</p>
-          </div>
-          <div class="text-right">
-            <p class="text-xl font-bold text-red-600">–{{ formatCurrency(item.totalAmount) }}</p>
-            <p class="text-xs text-gray-500">Qty: {{ item.totalQuantity }}</p>
-          </div>
-        </div>
-
-
-        <div class="space-y-2">
-          <div
-            v-for="detail in item.returnDetails"
-            :key="detail.detailId"
-            class="flex justify-between items-center bg-gray-50 rounded-lg px-3 py-2"
-          >
-            <div>
-              <p class="font-medium text-gray-700">{{ detail.product.name }}</p>
-              <p class="text-xs text-gray-500">Brand: {{ detail.product.brand }}</p>
-              <p class="text-xs text-gray-400">Weight: {{ detail.variant.weight }}kg</p>
-            </div>
-            <div class="text-right">
-              <p class="font-semibold text-gray-800">
-                {{ formatCurrency(detail.unitPrice) }} × {{ detail.quantity }}
-              </p>
-              <p class="text-xs text-gray-500">
-                Subtotal: {{ formatCurrency(detail.unitPrice * detail.quantity) }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="mt-4 border-t pt-3 text-xs text-gray-400">
-          Last updated: {{ formatDate(item.updatedAt) }}
-        </div>
-      </div> -->
 
       <div class="">
         <div class="text-3xl font-semibold text-red-500 mb-4 flex items-baseline">
-          <span class="mr-1">−</span>
-          <span>$40</span>
-          <span class="text-gray-500">,</span>
-          <span>000</span>
-          <span class="align-super text-base text-gray-500">.00</span>
+          <p></p>
         </div>
 
         <div v-for="item in returns" :key="item.returnId">
@@ -98,20 +40,16 @@ onMounted(async () => {
               <span class="w-2 h-2 rounded-full bg-gray-400 mr-4"></span>
               <small>{{ formatDateLongWithTimeBy(item.updatedAt) }}</small>
             </div>
-            <div class="flex">
-              <span class="w-0.5 bg-gray-400 ml-0.75 mr-5"
-              :style="{ height: `${item.returnDetails.length * 46}px` }"></span>
-              <div class="flex flex-col flex-1">
-              <div
-                v-for="detail in item.returnDetails"
-                :key="detail.detailId"
-                class="py-2"
-              >
-                <p class="text-gray-900 font-medium">
-                  {{ detail.product.name }} &bull; {{ detail.variant.weight }}kg × {{ detail.quantity }} unit(s)
+            <div class="flex flex-col flex-1 border-l-2 border-gray-400 ml-1 pl-4.5">
+              <p class="text-2xl my-2 text-red-500">{{ formatCurrency(item.totalAmount) }}</p>
+              <div v-for="detail in item.returnDetails" :key="detail.detailId" class="pb-4">
+                <p class="text-gray-900 text-sm">
+                  {{ detail.product.name }} &bull; {{ detail.variant.weight }}kg ×
+                  {{ detail.quantity }} unit(s)
                 </p>
-                <p>{{ detail.variant.weight }}kg × {{ detail.quantity }} unit(s)</p>
-              </div>
+                <p class="text-red-500 text-sm">
+                  {{ formatCurrency(detail.variant.weight * detail.quantity * detail.unitPrice) }}
+                </p>
               </div>
             </div>
           </div>
@@ -120,6 +58,3 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-
-
-
