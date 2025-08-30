@@ -88,7 +88,7 @@ function goToTransaction(id) {
             <th class="sticky top-0 bg-white z-10 px-2 py-2 font-medium">Amount</th>
             <th class="sticky top-0 bg-white z-10 px-2 py-2 font-medium">Quantity</th>
             <th class="sticky top-0 bg-white z-10 px-2 py-2 font-medium">Discount</th>
-            <th></th>
+            <th>Return</th>
           </tr>
         </thead>
         <tbody class="text-sm">
@@ -110,10 +110,10 @@ function goToTransaction(id) {
             <td class="p-2 py-3">{{ formatCurrency(transaction.totalAmount) }}</td>
             <td class="p-2 py-3">{{ transaction.totalQuantity }}</td>
             <td class="p-2 py-3">{{ formatCurrency(transaction.totalDiscount) }}</td>
-            <td v-if="transaction.hasReturned" class="p-2 py-3">
-              <span class="material-symbols-outlined">
-amend
-</span>
+            <td v-if="transaction.hasReturned" class="">
+              <div class="bg-red-200 w-fit px-2 py-1 rounded">
+                <small class="text-red-700 font-medium">INITIATED</small>
+              </div>
             </td>
           </tr>
         </tbody>
