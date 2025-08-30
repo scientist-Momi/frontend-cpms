@@ -13,6 +13,7 @@ const { formatCurrency, getCustomerInitials, formatDateLongWithTimeBy } = useFun
 const { fetchTransaction } = useTransaction()
 const route = useRoute()
 const modal = useModalStore()
+const loading = ref(false)
 const transactionId = computed(() => route.params.id)
 
 const transaction = ref(null)
@@ -23,8 +24,10 @@ async function loadTransaction() {
 }
 
 onMounted(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 2500))
+  // await new Promise((resolve) => setTimeout(resolve, 2500))
+  loading.value = true
   await loadTransaction()
+  loading.value = false
 })
 
 function getTotalReturns(transactions) {
@@ -36,62 +39,72 @@ function getTotalReturns(transactions) {
 
 const totalReturns = computed(() => getTotalReturns(transaction.value))
 
-watch(() => modal.refreshNeeded, (newVal) => {
-  if (newVal) {
-    loadTransaction()
-    modal.refreshNeeded = false 
-  }
-})
-
+watch(
+  () => modal.refreshNeeded,
+  (newVal) => {
+    if (newVal) {
+      loadTransaction()
+      modal.refreshNeeded = false
+    }
+  },
+)
 </script>
 
 <template>
-  <div v-if="transaction">
-    <div class="border border-gray-200 bg-white p-4 flex gap-8 mb-4">
-      <div
-        class="rounded bg-red-500 flex items-center justify-center p-6 text-3xl font-semibold min-w-[7rem] text-white"
-      >
-        {{ getCustomerInitials(transaction.customerName) }}
-      </div>
+  <div v-if="loading">
+    <PageLoader />
+  </div>
+  <div v-else>
+    <div v-if="transaction">
+      <div class="border border-gray-200 bg-white p-4 flex gap-8 mb-4">
+        <div
+          class="rounded bg-red-500 flex items-center justify-center p-6 text-3xl font-semibold min-w-[7rem] text-white"
+        >
+          {{ getCustomerInitials(transaction.customerName) }}
+        </div>
 
-      <div class="flex-1">
-        <router-link :to="{ name: 'CustomerView', params: { id: transaction.customerId } }">
-          <h1 class="text-xl font-semibold mb-2 hover:underline">{{ transaction.customerName }}</h1>
-        </router-link>
-        <p class="mb-4">
-          Purchase was made on {{ formatDateLongWithTimeBy(transaction.createdAt) }}
-        </p>
-        <div class="flex gap-10">
-          <div>
-            <small class="text-xs">Total Amount</small>
-            <p class="font-medium text-xl">{{ formatCurrency(transaction.totalAmount) }}</p>
-          </div>
-          <div>
-            <small class="text-xs">Total Quantity</small>
-            <p class="font-medium text-xl">{{ transaction.totalQuantity }}</p>
-          </div>
-          <div>
-            <small class="text-xs">Total Return</small>
-            <p class="font-medium text-xl">{{ totalReturns }}</p>
-          </div>
-          <div>
-            <small class="text-xs">Total Discount</small>
-            <p class="font-medium text-xl">{{ formatCurrency(transaction.totalDiscount) }}</p>
+        <div class="flex-1">
+          <router-link :to="{ name: 'CustomerView', params: { id: transaction.customerId } }">
+            <h1 class="text-xl font-semibold mb-2 hover:underline">
+              {{ transaction.customerName }}
+            </h1>
+          </router-link>
+          <p class="mb-4">
+            Purchase was made on {{ formatDateLongWithTimeBy(transaction.createdAt) }}
+          </p>
+          <div class="flex gap-10">
+            <div>
+              <small class="text-xs">Total Amount</small>
+              <p class="font-medium text-xl">{{ formatCurrency(transaction.totalAmount) }}</p>
+            </div>
+            <div>
+              <small class="text-xs">Total Quantity</small>
+              <p class="font-medium text-xl">{{ transaction.totalQuantity }}</p>
+            </div>
+            <div>
+              <small class="text-xs">Total Return</small>
+              <p class="font-medium text-xl">{{ totalReturns }}</p>
+            </div>
+            <div>
+              <small class="text-xs">Total Discount</small>
+              <p class="font-medium text-xl">{{ formatCurrency(transaction.totalDiscount) }}</p>
+            </div>
           </div>
         </div>
+        <div class="flex items-start gap-2 ml-auto">
+          <SecondaryButton @click="modal.open('return_transaction', transactionId)"
+            >Initiate Return</SecondaryButton
+          >
+          <PrimaryButton>Edit Transaction</PrimaryButton>
+        </div>
       </div>
-      <div class="flex items-start gap-2 ml-auto">
-        <SecondaryButton @click="modal.open('return_transaction', transactionId)"
-          >Initiate Return</SecondaryButton
-        >
-        <PrimaryButton>Edit Transaction</PrimaryButton>
+      <div class="border border-gray-200 bg-white p-4">
+        <TransactionDetailsTable :purchase-transactions="transaction.transactionDetails" />
       </div>
     </div>
-    <div class="border border-gray-200 bg-white p-4">
-      <TransactionDetailsTable :purchase-transactions="transaction.transactionDetails" />
+    <div v-else class="flex flex-col items-center justify-center">
+      <span class="material-symbols-outlined"> release_alert </span>
+      <p class="text-sm">Something went wrong.</p>
     </div>
-  </div>
-  <div class="" v-else>
-    <PageLoader />
   </div>
 </template>
