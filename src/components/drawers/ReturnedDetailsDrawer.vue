@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useTransaction } from '@/composables/useTransaction'
 import { useRoute } from 'vue-router'
 import { useFunction } from '@/composables/useFunction'
+import PageLoader from '../PageLoader.vue'
 // Uncomment and use a formatter if desired
 
 const { fetchTransactionReturns } = useTransaction()
@@ -13,6 +14,7 @@ const route = useRoute()
 const transactionId = computed(() => route.params.id)
 
 onMounted(async () => {
+  loading.value = true
   const res = await fetchTransactionReturns(transactionId.value)
   returns.value = res.data
   loading.value = false
@@ -21,7 +23,10 @@ onMounted(async () => {
 
 <template>
   <div class="bg-white min-h-screen">
-    <div>
+    <div v-if="loading">
+      <PageLoader />
+    </div>
+    <div v-else>
       <div v-if="returns && returns.length">
         <div class="text-3xl font-semibold text-red-500 mb-4 flex items-baseline">
           <p></p>
