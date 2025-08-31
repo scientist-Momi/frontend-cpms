@@ -18,14 +18,17 @@ const customerId = computed(() => route.params.id)
 
 const customer = ref(null)
 const allTransactions = ref(null)
+const loading = ref(false)
 
 onMounted(async () => {
-  await new Promise((resolve) => setTimeout(resolve, 2500))
+  loading.value = true
+  // await new Promise((resolve) => setTimeout(resolve, 2500))
   const res = await fetchCustomerId(customerId.value)
   const res2 = await fetchAllTransactions(customerId.value)
   // await retrievePermissions()
   customer.value = res.data
   allTransactions.value = res2.data
+  loading.value = false
 })
 
 const activeTab = ref('product')
@@ -66,163 +69,172 @@ const walletTotals = computed(() => {
 </script>
 
 <template>
-  <div v-if="customer">
-    <div class="flex gap-4">
-      <div class="w-[70%]">
-        <div class="border border-gray-200 bg-white p-4 flex gap-4 mb-4">
-          <div class="w-[10%] flex items-center justify-center">
-            <div class="rounded-full bg-red-500 p-4 text-xl font-semibold">
-              {{ getCustomerInitials(customer.name) }}
-            </div>
-          </div>
-          <div class="w-[80%]">
-            <!-- <h1>{{ customer }}</h1> -->
-            <div class="flex items-center justify-between mb-2 gap-4">
-              <div class="border-b border-gray-200 w-full px-2 pb-2">
-                <small>Name</small>
-                <h1 class="text-base">{{ customer.name }}</h1>
-              </div>
-              <div class="border-b border-gray-200 w-full px-2 pb-2">
-                <small>Email</small>
-                <h1 class="text-base">{{ customer.email }}</h1>
-              </div>
-              <div class="border-b border-gray-200 w-full px-2 pb-2">
-                <small>Phone</small>
-                <h1 class="text-base">{{ customer.phone }}</h1>
-              </div>
-            </div>
-            <div class="flex items-center justify-between mb-2 gap-4">
-              <div class="border-b border-gray-200 w-full px-2 pb-2">
-                <small>Type</small>
-                <h1 class="text-base">{{ customer.customerType }}</h1>
-              </div>
-              <div class="border-b border-gray-200 w-full px-2 pb-2">
-                <small>Status</small>
-                <h1 class="text-base">{{ customer.status }}</h1>
-              </div>
-              <div class="border-b border-gray-200 w-full px-2 pb-2">
-                <small>Date created</small>
-                <h1 class="text-base">{{ formatDate(customer.createdAt) }}</h1>
-              </div>
-            </div>
-            <div class="flex items-center justify-between mb-2 gap-4">
-              <div class="border-b border-gray-200 w-full px-2 pb-2">
-                <small>Notes</small>
-                <h1 class="text-base">{{ customer.customerNotes }}</h1>
-              </div>
-              <div class="border-b border-gray-200 w-full px-2 pb-2">
-                <small>Address</small>
-                <h1 class="text-base">{{ customer.address }}</h1>
-              </div>
-            </div>
-          </div>
-          <div class="w-[10%] flex items-center justify-center">
-            <router-link :to="{ name: 'EditCustomer', params: { id: customer.customerId } }">
-              <SecondaryButton
-
-                class="flex items-center gap-2"
-                ><span class="material-symbols-outlined"> edit_square </span>
-                Edit
-              </SecondaryButton>
-            </router-link>
-          </div>
-        </div>
-        <div class="border-gray-200 border rounded p-2">
-          <BaseChart :series="chartSeries" title="Purchases" />
-        </div>
-      </div>
-      <div class="w-[30%]">
-        <div class="border border-gray-200 bg-white p-4 mb-4">
-          <div class="mb-4">
-            <small class="mb-2">Wallet Balance</small>
-            <p class="text-3xl">
-              {{
-                customer.customerWallet ? formatCurrency(customer.customerWallet.balance) : 'N/A'
-              }}
-            </p>
-          </div>
-          <div class="">
-            <SecondaryButton
-              @click="modal.open('new_deposit', customer.customerWallet.balance, customer)"
-              class="flex items-center gap-2"
-              ><span class="material-symbols-outlined"> mintmark </span>New Deposit</SecondaryButton
-            >
-          </div>
-        </div>
-        <div class="border border-gray-200 bg-white p-4 mb-4">
-          <div class="mb-4">
-            <small class="mb-2">Credit Limit</small>
-            <p class="text-3xl">
-              {{ customer ? formatCurrency(customer.creditLimit) : 'N/A' }}
-            </p>
-          </div>
-          <div class="">
-            <SecondaryButton @click="modal.open('credit_limit', null, customer)" class="flex items-center gap-2"
-              ><span class="material-symbols-outlined"> edit_square </span>Update
-              Limit</SecondaryButton
-            >
-          </div>
-        </div>
-        <div class="border border-gray-200 bg-white p-4 mb-4">
-          <div class="">
-            <small class="mb-4">Total Overtime Deposit</small>
-            <p class="text-3xl">
-              {{ formatCurrency(walletTotals.totalDeposits) }}
-            </p>
-          </div>
-        </div>
-        <div class="border border-gray-200 bg-white p-4">
-          <div class="">
-            <small class="mb-4">Total Overtime Purchases</small>
-            <p class="text-3xl">
-              {{ formatCurrency(walletTotals.totalPurchases) }}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="mt-4">
-      <div class="w-full">
-        <!-- Tab buttons -->
-        <div class="flex gap-2 mb-2">
-          <button
-            :class="[
-              'p-1 px-2 cursor-pointer rounded text-sm border',
-              activeTab === 'product'
-                ? 'border-gray-200 text-red-600 bg-blue-50'
-                : 'border-transparent text-gray-600 bg-white hover:bg-gray-50',
-            ]"
-            @click="activeTab = 'product'"
-          >
-            Product
-          </button>
-          <button
-            :class="[
-              'p-1 px-2 cursor-pointer text-sm rounded border',
-              activeTab === 'wallet'
-                ? 'border-gray-200 text-red-600 bg-blue-50'
-                : 'border-transparent text-gray-600 bg-white hover:bg-gray-50',
-            ]"
-            @click="activeTab = 'wallet'"
-          >
-            Wallet
-          </button>
-        </div>
-
-        <!-- Tab content -->
-        <div class="border border-gray-200 rounded bg-white p-6">
-          <div v-if="activeTab === 'product'">
-            <PurchasesTable :purchase-transactions="allTransactions" />
-          </div>
-          <div v-else>
-            <WalletTransactionsTable :wallet-transactions="customer.customerWallet.transactions" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="" v-else>
+  <div v-if="loading">
     <PageLoader />
+  </div>
+  <div v-else>
+    <div v-if="customer">
+      <div class="flex gap-4">
+        <div class="w-[70%]">
+          <div class="border border-gray-200 bg-white p-4 flex gap-4 mb-4">
+            <div class="w-[10%] flex items-center justify-center">
+              <div class="rounded-full bg-red-500 p-4 text-xl font-semibold">
+                {{ getCustomerInitials(customer.name) }}
+              </div>
+            </div>
+            <div class="w-[80%]">
+              <!-- <h1>{{ customer }}</h1> -->
+              <div class="flex items-center justify-between mb-2 gap-4">
+                <div class="border-b border-gray-200 w-full px-2 pb-2">
+                  <small>Name</small>
+                  <h1 class="text-base">{{ customer.name }}</h1>
+                </div>
+                <div class="border-b border-gray-200 w-full px-2 pb-2">
+                  <small>Email</small>
+                  <h1 class="text-base">{{ customer.email }}</h1>
+                </div>
+                <div class="border-b border-gray-200 w-full px-2 pb-2">
+                  <small>Phone</small>
+                  <h1 class="text-base">{{ customer.phone }}</h1>
+                </div>
+              </div>
+              <div class="flex items-center justify-between mb-2 gap-4">
+                <div class="border-b border-gray-200 w-full px-2 pb-2">
+                  <small>Type</small>
+                  <h1 class="text-base">{{ customer.customerType }}</h1>
+                </div>
+                <div class="border-b border-gray-200 w-full px-2 pb-2">
+                  <small>Status</small>
+                  <h1 class="text-base">{{ customer.status }}</h1>
+                </div>
+                <div class="border-b border-gray-200 w-full px-2 pb-2">
+                  <small>Date created</small>
+                  <h1 class="text-base">{{ formatDate(customer.createdAt) }}</h1>
+                </div>
+              </div>
+              <div class="flex items-center justify-between mb-2 gap-4">
+                <div class="border-b border-gray-200 w-full px-2 pb-2">
+                  <small>Notes</small>
+                  <h1 class="text-base">{{ customer.customerNotes }}</h1>
+                </div>
+                <div class="border-b border-gray-200 w-full px-2 pb-2">
+                  <small>Address</small>
+                  <h1 class="text-base">{{ customer.address }}</h1>
+                </div>
+              </div>
+            </div>
+            <div class="w-[10%] flex items-center justify-center">
+              <router-link :to="{ name: 'EditCustomer', params: { id: customer.customerId } }">
+                <SecondaryButton class="flex items-center gap-2"
+                  ><span class="material-symbols-outlined"> edit_square </span>
+                  Edit
+                </SecondaryButton>
+              </router-link>
+            </div>
+          </div>
+          <div class="border-gray-200 border rounded p-2">
+            <BaseChart :series="chartSeries" title="Purchases" />
+          </div>
+        </div>
+        <div class="w-[30%]">
+          <div class="border border-gray-200 bg-white p-4 mb-4">
+            <div class="mb-4">
+              <small class="mb-2">Wallet Balance</small>
+              <p class="text-3xl">
+                {{
+                  customer.customerWallet ? formatCurrency(customer.customerWallet.balance) : 'N/A'
+                }}
+              </p>
+            </div>
+            <div class="">
+              <SecondaryButton
+                @click="modal.open('new_deposit', customer.customerWallet.balance, customer)"
+                class="flex items-center gap-2"
+                ><span class="material-symbols-outlined"> mintmark </span>New
+                Deposit</SecondaryButton
+              >
+            </div>
+          </div>
+          <div class="border border-gray-200 bg-white p-4 mb-4">
+            <div class="mb-4">
+              <small class="mb-2">Credit Limit</small>
+              <p class="text-3xl">
+                {{ customer ? formatCurrency(customer.creditLimit) : 'N/A' }}
+              </p>
+            </div>
+            <div class="">
+              <SecondaryButton
+                @click="modal.open('credit_limit', null, customer)"
+                class="flex items-center gap-2"
+                ><span class="material-symbols-outlined"> edit_square </span>Update
+                Limit</SecondaryButton
+              >
+            </div>
+          </div>
+          <div class="border border-gray-200 bg-white p-4 mb-4">
+            <div class="">
+              <small class="mb-4">Total Overtime Deposit</small>
+              <p class="text-3xl">
+                {{ formatCurrency(walletTotals.totalDeposits) }}
+              </p>
+            </div>
+          </div>
+          <div class="border border-gray-200 bg-white p-4">
+            <div class="">
+              <small class="mb-4">Total Overtime Purchases</small>
+              <p class="text-3xl">
+                {{ formatCurrency(walletTotals.totalPurchases) }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="w-full">
+          <!-- Tab buttons -->
+          <div class="flex gap-2 mb-2">
+            <button
+              :class="[
+                'p-1 px-2 cursor-pointer rounded text-sm border',
+                activeTab === 'product'
+                  ? 'border-gray-200 text-red-600 bg-blue-50'
+                  : 'border-transparent text-gray-600 bg-white hover:bg-gray-50',
+              ]"
+              @click="activeTab = 'product'"
+            >
+              Product
+            </button>
+            <button
+              :class="[
+                'p-1 px-2 cursor-pointer text-sm rounded border',
+                activeTab === 'wallet'
+                  ? 'border-gray-200 text-red-600 bg-blue-50'
+                  : 'border-transparent text-gray-600 bg-white hover:bg-gray-50',
+              ]"
+              @click="activeTab = 'wallet'"
+            >
+              Wallet
+            </button>
+          </div>
+
+          <!-- Tab content -->
+          <div class="border border-gray-200 rounded bg-white p-6">
+            <div v-if="activeTab === 'product'">
+              <PurchasesTable :purchase-transactions="allTransactions" />
+            </div>
+            <div v-else>
+              <WalletTransactionsTable
+                :wallet-transactions="customer.customerWallet.transactions"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else class="flex flex-col items-center justify-center">
+      <span class="material-symbols-outlined"> release_alert </span>
+      <p class="text-sm">Something went wrong.</p>
+    </div>
   </div>
 </template>
 
