@@ -19,7 +19,6 @@ const emit = defineEmits(['editComplete'])
 
 onMounted(async () => {
   loading.value = true
-  await new Promise((resolve) => setTimeout(resolve, 2500))
   const res = await fetchTransaction(modal.data)
   transaction.value = res.data
   loading.value = false
