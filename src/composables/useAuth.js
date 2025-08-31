@@ -36,9 +36,10 @@ export const useAuth = () => {
   }
 
   const fetchUserInfo = async () => {
-    authStore.pageLoading = true
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2500))
+      authStore.pageLoading = true
+      // await new Promise((resolve) => setTimeout(resolve, 2500))
       const res = await fetchUser()
       console.log(res)
       authStore.setUser(res.data.data)

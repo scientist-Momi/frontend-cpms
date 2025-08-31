@@ -1,8 +1,10 @@
 import axios from 'axios';
 import router from '@/router';
-import { useAuthStore } from '@/stores/authStore';
+// import { useAuthStore } from '@/stores/authStore';
+// import { useAuth } from '@/composables/useAuth';
 
-const auth = useAuthStore()
+// const auth = useAuthStore()
+// const {logout} = useAuth()
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/v1',
@@ -19,7 +21,10 @@ instance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      auth.logout()
+      localStorage.removeItem('token')
+      localStorage.removeItem('permissions')
+      localStorage.removeItem('users')
+      delete axios.defaults.headers.common['Authorization']
       router.push('/login')
       return Promise.reject(error)
     }
