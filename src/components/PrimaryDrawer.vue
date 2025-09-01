@@ -11,10 +11,8 @@ function close() {
 
 <template>
   <div v-if="modal.isOpen" class="fixed inset-0 z-50 flex">
-    <!-- Backdrop -->
     <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="close"></div>
 
-    <!-- Drawer Panel -->
     <Transition
       enter-active-class="transition-transform duration-300"
       enter-from-class="translate-x-full"
@@ -27,7 +25,7 @@ function close() {
         v-show="modal.isOpen"
         class="fixed z-60 w-120 max-w-full h-full bg-white shadow-xl flex flex-col top-0 right-0"
       >
-        <!-- Header -->
+
         <header class="flex justify-between items-center font-medium text-gray-500 px-4 p-2 text-sm border-b bg-gray-100 border-gray-200">
           <slot name="header">Drawer Title</slot>
        <button
@@ -37,7 +35,6 @@ function close() {
           >&times;</button>
         </header>
 
-        <!-- Content -->
         <section class="p-4 overflow-y-auto flex-1">
           <slot> Drawer content goes here... </slot>
         </section>
