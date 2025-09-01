@@ -209,7 +209,8 @@ const dataToPass = ref({
   productOptions,
   rows,
   grandTotal,
-  payload
+  payload,
+  selectedCustomer
 })
 modal.open('confirm_purchase', dataToPass)
 

@@ -10,7 +10,8 @@ const variantsMap = dataReceived.variantsMap
 const productOptions = dataReceived.productOptions
 const rows = dataReceived.rows
 const grandTotal = dataReceived.grandTotal
-const payload = dataReceived.payload
+// const payload = dataReceived.payload
+const customer = dataReceived.selectedCustomer
 
 function getProductName(productId) {
   const productsArray = productOptions && (productOptions.value || productOptions)
@@ -36,34 +37,39 @@ function rowTotal(row) {
 </script>
 
 <template>
-  <div class="bg-white p-6 rounded shadow max-w-lg mx-auto">
+  <div class="bg-white p-6">
     <h2 class="text-xl font-semibold mb-4">Confirm Purchase</h2>
-    {{ payload }}
-
-    <table class="w-full border-collapse mb-4">
+{{ customer }}
+    <table class="w-full border-collapse mb-2">
       <thead>
         <tr>
-          <th class="border p-2 text-left">Product</th>
-          <th class="border p-2 text-left">Variant</th>
-          <th class="border p-2 text-left">Quantity</th>
+          <th class="py-2 font-semibold text-left text-sm">Product</th>
+          <th class="py-2 text-right"></th>
+          <!-- <th class="border p-2 text-left">Quantity</th>
           <th class="border p-2 text-left">Unit Price</th>
           <th class="border p-2 text-left">Discount</th>
-          <th class="border p-2 text-left">Total</th>
+          <th class="border p-2 text-left">Total</th> -->
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(row, idx) in rows" :key="idx" class="odd:bg-gray-50">
-          <td class="border p-2">{{ getProductName(row.productId) }}</td>
-          <td class="border p-2">{{ getVariantWeight(row.variantId) }}</td>
+        <tr v-for="(row, idx) in rows" :key="idx" class="border-b">
+          <td class="text-sm py-2">
+            {{ row.quantity }} x {{ getProductName(row.productId) }} -
+            {{ getVariantWeight(row.variantId) }}kg
+          </td>
+          <!-- <td class="border p-2">{{ getVariantWeight(row.variantId) }}</td>
           <td class="border p-2">{{ row.quantity }}</td>
           <td class="border p-2">{{ formatCurrencyTrans(row.unitPrice) }}</td>
-          <td class="border p-2">{{ formatCurrencyTrans(row.lineDiscount) }}</td>
-          <td class="border p-2">{{ formatCurrencyTrans(rowTotal(row)) }}</td>
+          <td class="border p-2">{{ formatCurrencyTrans(row.lineDiscount) }}</td> -->
+          <td class="text-sm text-right py-2">{{ formatCurrencyTrans(rowTotal(row)) }}</td>
         </tr>
       </tbody>
     </table>
 
-    <div class="text-right font-bold mb-4">Grand Total: {{ formatCurrencyTrans(grandTotal) }}</div>
+    <div class="text-right text-sm items-center font-semibold mb-4 flex justify-between">
+      <p>Total</p>
+      <p>{{ formatCurrencyTrans(grandTotal) }}</p>
+    </div>
 
     <div class="flex justify-end gap-4">
       <button @click="closeModal" class="px-4 py-2 border rounded">Cancel</button>
