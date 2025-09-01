@@ -6,7 +6,7 @@ import { useFunction } from '@/composables/useFunction'
 import PageLoader from '@/components/PageLoader.vue'
 import TransactionDetailsTable from '../components/TransactionDetailsTable.vue'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
-import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
+// import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import { useModalStore } from '@/stores/modalStore'
 
 const { formatCurrency, getCustomerInitials, formatDateLongWithTimeBy } = useFunction()
@@ -95,7 +95,7 @@ watch(
           <SecondaryButton @click="modal.open('return_transaction', transactionId)"
             >Initiate Return</SecondaryButton
           >
-          <PrimaryButton>Edit Transaction</PrimaryButton>
+          <!-- <PrimaryButton>Edit Transaction</PrimaryButton> -->
         </div>
       </div>
       <div class="border border-gray-200 bg-white p-4">

@@ -1,5 +1,5 @@
 <script setup>
-import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
+
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import TransactionsTable from '../components/TransactionsTable.vue'
 import { useRouter } from 'vue-router'
@@ -12,10 +12,6 @@ const router = useRouter()
       <div class="flex justify-between items-center mb-4">
         <h1 class="text-xl font-semibold">Customers Transaction Overview</h1>
         <div class="flex items-center gap-2">
-          <SecondaryButton class="flex items-center gap-2">
-            <span class="material-symbols-outlined"> undo </span>
-            Return Purchase
-          </SecondaryButton>
           <PrimaryButton
             @click="router.push({ name: 'NewTransaction' })"
             class="flex items-center gap-2"
