@@ -3,7 +3,7 @@ import { useModalStore } from '@/stores/modalStore'
 import { useFunction } from '@/composables/useFunction'
 
 const modal = useModalStore()
-const { formatCurrencyTrans } = useFunction()
+const { formatCurrencyTrans, getCustomerInitials } = useFunction()
 
 const dataReceived = modal.data
 const variantsMap = dataReceived.variantsMap
@@ -37,34 +37,43 @@ function rowTotal(row) {
 </script>
 
 <template>
-  <div class="bg-white p-6">
-    <h2 class="text-xl font-semibold mb-4">Confirm Purchase</h2>
-{{ customer }}
-    <table class="w-full border-collapse mb-2">
-      <thead>
-        <tr>
-          <th class="py-2 font-semibold text-left text-sm">Product</th>
-          <th class="py-2 text-right"></th>
-          <!-- <th class="border p-2 text-left">Quantity</th>
+      <div class="overflow-y-scroll max-h-fit">
+  <div class="bg-white p-6 px-6 py-3">
+    <div class="flex gap-2">
+      <div class="rounded-xs bg-red-500 p-4 text-xl text-white font-semibold">
+        {{ getCustomerInitials(customer.name) }}
+      </div>
+      <div class="">
+        <p class="text-xl font-semibold">{{ customer.name }}</p>
+      </div>
+    </div>
+
+
+      <table class="w-full border-collapse mb-2">
+        <thead>
+          <tr>
+            <th class="py-1 font-semibold text-left text-sm">Product</th>
+            <th class="py-2 text-right"></th>
+            <!-- <th class="border p-2 text-left">Quantity</th>
           <th class="border p-2 text-left">Unit Price</th>
           <th class="border p-2 text-left">Discount</th>
           <th class="border p-2 text-left">Total</th> -->
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(row, idx) in rows" :key="idx" class="border-b">
-          <td class="text-sm py-2">
-            {{ row.quantity }} x {{ getProductName(row.productId) }} -
-            {{ getVariantWeight(row.variantId) }}kg
-          </td>
-          <!-- <td class="border p-2">{{ getVariantWeight(row.variantId) }}</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, idx) in rows" :key="idx" class="border-b">
+            <td class="text-sm py-2">
+              {{ row.quantity }} x {{ getProductName(row.productId) }} -
+              {{ getVariantWeight(row.variantId) }}kg
+            </td>
+            <!-- <td class="border p-2">{{ getVariantWeight(row.variantId) }}</td>
           <td class="border p-2">{{ row.quantity }}</td>
           <td class="border p-2">{{ formatCurrencyTrans(row.unitPrice) }}</td>
           <td class="border p-2">{{ formatCurrencyTrans(row.lineDiscount) }}</td> -->
-          <td class="text-sm text-right py-2">{{ formatCurrencyTrans(rowTotal(row)) }}</td>
-        </tr>
-      </tbody>
-    </table>
+            <td class="text-sm text-right py-2">{{ formatCurrencyTrans(rowTotal(row)) }}</td>
+          </tr>
+        </tbody>
+      </table>
 
     <div class="text-right text-sm items-center font-semibold mb-4 flex justify-between">
       <p>Total</p>
@@ -78,4 +87,5 @@ function rowTotal(row) {
       </button>
     </div>
   </div>
+   </div>
 </template>
