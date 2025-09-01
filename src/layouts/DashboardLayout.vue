@@ -23,6 +23,7 @@ import LoadingModal from '@/components/LoadingModal.vue'
 import UpdatePriceModal from '@/components/modals/UpdatePriceModal.vue'
 import ReturnModal from '@/components/modals/ReturnModal.vue'
 import ReturnedDetailsDrawer from '@/components/drawers/ReturnedDetailsDrawer.vue'
+import PurchaseConfirmationModal from '@/components/modals/PurchaseConfirmationModal.vue'
 
 const modal = useModalStore()
 const auth = useAuthStore()
@@ -103,6 +104,10 @@ const auth = useAuthStore()
         <PrimaryModal v-if="modal.type === 'return_transaction'">
           <template #header>Return Product</template>
           <ReturnModal />
+        </PrimaryModal>
+        <PrimaryModal v-if="modal.type === 'confirm_purchase'">
+          <template #header>Confirm Products Purchase</template>
+          <PurchaseConfirmationModal />
         </PrimaryModal>
         <PrimaryDrawer v-if="modal.type === 'return_drawer'">
           <template #header>Returned Product Details</template>

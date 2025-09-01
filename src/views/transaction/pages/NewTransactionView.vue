@@ -143,6 +143,27 @@ function rowTotal(row) {
 
 const grandTotal = computed(() => rows.value.reduce((sum, row) => sum + rowTotal(row), 0))
 
+const proceedToConfirm = () => {
+    if (!customerId.value) {
+    toast.showToast({
+      message: 'Please, choose a customer.',
+      type: 'error',
+    })
+    return
+  }
+  for (const row of rows.value) {
+    if (!row.productId || !row.variantId || !row.quantity || !row.unitPrice) {
+      toast.showToast({
+      message: 'Fill all fields in each row.',
+      type: 'error',
+    })
+      return
+    }
+  }
+
+  modal.open("confirm_purchase")
+}
+
 const onSubmit = async () => {
   if (!customerId.value) {
     toast.showToast({
@@ -367,7 +388,7 @@ const onSubmit = async () => {
       </div>
     </div>
     <div class="mt-4 text-right">
-      <primary-button @click="onSubmit">Submit Transaction</primary-button>
+      <primary-button @click="proceedToConfirm">Submit Transaction</primary-button>
     </div>
   </div>
 </template>
