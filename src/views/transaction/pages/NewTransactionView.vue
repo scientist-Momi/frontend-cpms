@@ -13,7 +13,6 @@ import { useRouter } from 'vue-router'
 import { useModalStore } from '@/stores/modalStore'
 import { useCustomer } from '@/composables/useCustomer'
 
-
 const router = useRouter()
 const modal = useModalStore()
 const toast = useToastStore()
@@ -27,12 +26,14 @@ const allCustomers = computed(() => customers.customers || [])
 const { formatCurrency, formatCurrencyTrans } = useFunction()
 const { fetchVariants, fetchProducts } = useProduct()
 const { createTransaction, fetchTransactions } = useTransaction()
-const {fetchCustomers} = useCustomer()
+const { fetchCustomers } = useCustomer()
 
 const wrapperRef = ref()
 const dropdownOpen = ref(false)
 const search = ref('')
 const selectedCustomer = ref(null)
+const confirmStage = ref(false)
+const variantsMap = ref(new Map())
 
 const filteredCustomers = computed(() => {
   const s = search.value.toLowerCase()
@@ -69,7 +70,6 @@ const fetchProductVariants = async (productId) => {
     }
   }
 }
-
 
 const rows = ref([
   {
@@ -128,10 +128,42 @@ async function onProductSelect(row) {
   row.lineDiscount = 0
 }
 
-function onVariantSelect(row) {
-  const v = row.variants.find((v) => v.id === row.variantId)
-  row.variantWeight = v ? v.weight : null
+// function onVariantSelect(row) {
+//   const v = row.variants.find((v) => v.id === row.variantId)
+//   row.variantWeight = v ? v.weight : null
+// }
+
+async function onVariantSelect(row) {
+  if (!row.variantId) {
+    row.variantWeight = null
+    return
+  }
+
+  if (!variantsMap.value.has(row.variantId)) {
+    try {
+      // Find variant in existing loaded variants in the row if possible
+      let variant = row.variants.find((v) => v.id === row.variantId)
+
+      // If not found locally, you may want to fetch it from API
+      if (!variant) {
+        // Example fetchVariantById API call, implement accordingly
+        toast.showToast({
+        message: 'Variant not found',
+        type: 'error',
+      })
+      }
+
+      variantsMap.value.set(row.variantId, variant)
+    } catch (err) {
+      row.variantWeight = null
+      return err
+    }
+  }
+
+  const cachedVariant = variantsMap.value.get(row.variantId)
+  row.variantWeight = cachedVariant ? cachedVariant.weight : null
 }
+
 
 function rowTotal(row) {
   const w = +row.variantWeight || 0
@@ -144,7 +176,7 @@ function rowTotal(row) {
 const grandTotal = computed(() => rows.value.reduce((sum, row) => sum + rowTotal(row), 0))
 
 const proceedToConfirm = () => {
-    if (!customerId.value) {
+  if (!customerId.value) {
     toast.showToast({
       message: 'Please, choose a customer.',
       type: 'error',
@@ -154,14 +186,34 @@ const proceedToConfirm = () => {
   for (const row of rows.value) {
     if (!row.productId || !row.variantId || !row.quantity || !row.unitPrice) {
       toast.showToast({
-      message: 'Fill all fields in each row.',
-      type: 'error',
-    })
+        message: 'Fill all fields in each row.',
+        type: 'error',
+      })
       return
     }
   }
 
-  modal.open("confirm_purchase")
+    const payload = {
+    customerId: customerId.value,
+    transactionDetails: rows.value.map((row) => ({
+      productId: row.productId,
+      variantId: row.variantId,
+      quantity: +row.quantity,
+      unitPrice: +row.unitPrice,
+      lineDiscount: +row.lineDiscount,
+    })),
+  }
+
+const dataToPass = ref({
+  variantsMap,
+  productOptions,
+  rows,
+  grandTotal,
+  payload
+})
+modal.open('confirm_purchase', dataToPass)
+
+  // confirmStage.value = true
 }
 
 const onSubmit = async () => {
@@ -175,9 +227,9 @@ const onSubmit = async () => {
   for (const row of rows.value) {
     if (!row.productId || !row.variantId || !row.quantity || !row.unitPrice) {
       toast.showToast({
-      message: 'Fill all fields in each row.',
-      type: 'error',
-    })
+        message: 'Fill all fields in each row.',
+        type: 'error',
+      })
       return
     }
   }
@@ -193,9 +245,9 @@ const onSubmit = async () => {
     })),
   }
   const res = await createTransaction(payload)
-  modal.open("loadingState")
+  modal.open('loadingState')
   await new Promise((resolve) => setTimeout(resolve, 2500))
-  if(res.success){
+  if (res.success) {
     await fetchTransactions()
     await fetchCustomers()
     await fetchProducts()
@@ -204,8 +256,8 @@ const onSubmit = async () => {
       type: 'success',
     })
     modal.close()
-    router.push({name: 'Transactions'})
-  }else{
+    router.push({ name: 'Transactions' })
+  } else {
     toast.showToast({
       message: res.message || 'Failed to save transaction.',
       type: 'error',
@@ -213,6 +265,17 @@ const onSubmit = async () => {
     modal.close()
   }
 }
+
+function getProductName(productId) {
+  const product = productOptions.value.find((p) => p.id === productId)
+  return product ? product.name : 'Unknown Product'
+}
+
+function getVariantWeight(variantId) {
+  return variantsMap.value.get(variantId)?.weight || 'Unknown'
+}
+
+
 </script>
 
 <template>
@@ -300,95 +363,139 @@ const onSubmit = async () => {
     </div>
   </div>
 
-  <div v-if="selectedCustomer" class="bg-white rounded border border-gray-200 p-4">
-    <table class="w-full mb-4 border-t border-b">
-      <thead class="text-xs">
-        <tr>
-          <th class="py-2 text-left font-medium">Product</th>
-          <th class="py-2 text-left font-medium">Variant</th>
-          <th class="py-2 text-left font-medium">Unit Price</th>
-          <th class="py-2 text-left font-medium">Weight</th>
-          <th class="py-2 text-left font-medium">Quantity</th>
-          <th class="py-2 text-left font-medium">Discount</th>
-          <th class="py-2 text-left font-medium">Total</th>
-          <th class="py-2 text-left font-medium"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(row, idx) in rows" :key="idx" class="odd:bg-gray-50">
-          <td>
-            <select
-              v-model="row.productId"
-              @change="onProductSelect(row)"
-              class="p-1 border rounded w-full"
-            >
-              <option disabled value="">Pick product…</option>
-              <option v-for="p in productOptions" :key="p.id" :value="p.id">{{ p.name }}</option>
-            </select>
-          </td>
-          <td>
-            <select
-              v-model="row.variantId"
-              @change="onVariantSelect(row)"
-              class="p-1 border rounded w-full"
-              :disabled="!row.variants.length"
-            >
-              <option disabled value="">Pick variant…</option>
-              <option v-for="v in row.variants" :key="v.id" :value="v.id">
-                {{ v.name }} ({{ v.weight }}kg)
-              </option>
-            </select>
-          </td>
-          <td>
-            <span class="inline-block w-full">{{ formatCurrencyTrans(row.unitPriceDisplay) }}</span>
-          </td>
-          <td>
-            <span class="inline-block w-full">{{ row.variantWeight ?? '—' }}</span>
-          </td>
-          <td>
-            <input
-              type="number"
-              v-model.number="row.quantity"
-              min="1"
-              class="p-1 border rounded w-full"
-            />
-          </td>
-          <td>
-            <input
-              type="number"
-              v-model.number="row.lineDiscount"
-              min="0"
-              class="p-1 border rounded w-full"
-            />
-          </td>
-          <td>
-            <span class="font-semibold">{{ formatCurrencyTrans(rowTotal(row)) }}</span>
-          </td>
-          <td>
-            <secondary-button
-              @click="removeRow(idx)"
-              :disabled="rows.length === 1"
-              class="text-red-500"
-              ><span class="material-symbols-outlined"> close </span></secondary-button
-            >
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div v-if="selectedCustomer">
+    <div v-if="!confirmStage">
+      <div class="bg-white rounded border border-gray-200 p-4">
+        <table class="w-full mb-4 border-t border-b">
+          <thead class="text-xs">
+            <tr>
+              <th class="py-2 text-left font-medium">Product</th>
+              <th class="py-2 text-left font-medium">Variant</th>
+              <th class="py-2 text-left font-medium">Unit Price</th>
+              <th class="py-2 text-left font-medium">Weight</th>
+              <th class="py-2 text-left font-medium">Quantity</th>
+              <th class="py-2 text-left font-medium">Discount</th>
+              <th class="py-2 text-left font-medium">Total</th>
+              <th class="py-2 text-left font-medium"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, idx) in rows" :key="idx" class="odd:bg-gray-50">
+              <td>
+                <select
+                  v-model="row.productId"
+                  @change="onProductSelect(row)"
+                  class="p-1 border rounded w-full"
+                >
+                  <option disabled value="">Pick product…</option>
+                  <option v-for="p in productOptions" :key="p.id" :value="p.id">
+                    {{ p.name }}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <select
+                  v-model="row.variantId"
+                  @change="onVariantSelect(row)"
+                  class="p-1 border rounded w-full"
+                  :disabled="!row.variants.length"
+                >
+                  <option disabled value="">Pick variant…</option>
+                  <option v-for="v in row.variants" :key="v.id" :value="v.id">
+                    {{ v.name }} ({{ v.weight }}kg)
+                  </option>
+                </select>
+              </td>
+              <td>
+                <span class="inline-block w-full">{{
+                  formatCurrencyTrans(row.unitPriceDisplay)
+                }}</span>
+              </td>
+              <td>
+                <span class="inline-block w-full">{{ row.variantWeight ?? '—' }}</span>
+              </td>
+              <td>
+                <input
+                  type="number"
+                  v-model.number="row.quantity"
+                  min="1"
+                  class="p-1 border rounded w-full"
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  v-model.number="row.lineDiscount"
+                  min="0"
+                  class="p-1 border rounded w-full"
+                />
+              </td>
+              <td>
+                <span class="font-semibold">{{ formatCurrencyTrans(rowTotal(row)) }}</span>
+              </td>
+              <td>
+                <secondary-button
+                  @click="removeRow(idx)"
+                  :disabled="rows.length === 1"
+                  class="text-red-500"
+                  ><span class="material-symbols-outlined"> close </span></secondary-button
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-    <secondary-button @click="addRow" class="flex items-center">
-      <span class="material-symbols-outlined"> add </span>
-      Add Product</secondary-button
-    >
+        <secondary-button @click="addRow" class="flex items-center">
+          <span class="material-symbols-outlined"> add </span>
+          Add Product</secondary-button
+        >
 
-    <div class="text-right">
-      <div>
-        <small class="text-sm">Grand Total</small>
-        <p class="font-bold text-2xl">{{ formatCurrencyTrans(grandTotal) }}</p>
+        <div class="text-right">
+          <div>
+            <small class="text-sm">Grand Total</small>
+            <p class="font-bold text-2xl">{{ formatCurrencyTrans(grandTotal) }}</p>
+          </div>
+        </div>
+        <div class="mt-4 text-right">
+          <primary-button @click="proceedToConfirm">Submit Transaction</primary-button>
+        </div>
       </div>
     </div>
-    <div class="mt-4 text-right">
-      <primary-button @click="proceedToConfirm">Submit Transaction</primary-button>
+    <div v-else>
+      <div class="bg-white rounded border border-gray-200 p-4">
+        <h3 class="text-lg font-semibold mb-4">Confirm Your Choices</h3>
+        <table class="w-full border-collapse mb-4">
+          <thead>
+            <tr>
+              <th class="border p-2 text-left">Product</th>
+              <th class="border p-2 text-left">Variant</th>
+              <th class="border p-2 text-left">Quantity</th>
+              <th class="border p-2 text-left">Unit Price</th>
+              <th class="border p-2 text-left">Discount</th>
+              <th class="border p-2 text-left">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, idx) in rows" :key="idx" class="odd:bg-gray-50">
+              <td class="border p-2">{{ getProductName(row.productId) }}</td>
+              <td class="border p-2">{{ getVariantWeight(row.variantId) }}</td>
+              <td class="border p-2">{{ row.quantity }}</td>
+              <td class="border p-2">{{ formatCurrencyTrans(row.unitPrice) }}</td>
+              <td class="border p-2">{{ formatCurrencyTrans(row.lineDiscount) }}</td>
+              <td class="border p-2">{{ formatCurrencyTrans(rowTotal(row)) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="text-right font-bold mb-4">
+          Grand Total: {{ formatCurrencyTrans(grandTotal) }}
+        </div>
+
+        <div class="flex justify-end gap-4">
+          <secondary-button @click="confirmStage = false">Back</secondary-button>
+          <primary-button @click="onSubmit">Confirm Purchase</primary-button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
