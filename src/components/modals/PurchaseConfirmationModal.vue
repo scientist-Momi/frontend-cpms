@@ -37,17 +37,16 @@ function rowTotal(row) {
 </script>
 
 <template>
-      <div class="overflow-y-scroll max-h-fit">
-  <div class="bg-white p-6 px-6 py-3">
-    <div class="flex gap-2">
-      <div class="rounded-xs bg-red-500 p-4 text-xl text-white font-semibold">
-        {{ getCustomerInitials(customer.name) }}
+  <div class="overflow-y-scroll max-h-fit">
+    <div class="bg-white p-6 px-6 py-3">
+      <div class="flex gap-2">
+        <div class="rounded-xs bg-red-500 p-4 text-xl text-white font-semibold">
+          {{ getCustomerInitials(customer.name) }}
+        </div>
+        <div class="">
+          <p class="text-xl font-semibold">{{ customer.name }}</p>
+        </div>
       </div>
-      <div class="">
-        <p class="text-xl font-semibold">{{ customer.name }}</p>
-      </div>
-    </div>
-
 
       <table class="w-full border-collapse mb-2">
         <thead>
@@ -75,17 +74,17 @@ function rowTotal(row) {
         </tbody>
       </table>
 
-    <div class="text-right text-sm items-center font-semibold mb-4 flex justify-between">
-      <p>Total</p>
-      <p>{{ formatCurrencyTrans(grandTotal) }}</p>
-    </div>
+      <div class="text-right text-sm items-center font-semibold mb-4 flex justify-between">
+        <p>Total</p>
+        <p>{{ formatCurrencyTrans(grandTotal) }}</p>
+      </div>
 
-    <div class="flex justify-end gap-4">
-      <button @click="closeModal" class="px-4 py-2 border rounded">Cancel</button>
-      <button @click="confirmPurchase" class="px-4 py-2 bg-blue-600 text-white rounded">
-        Confirm
-      </button>
+      <div class="flex justify-end gap-4">
+        <button @click="closeModal" class="px-4 py-2 border rounded">Cancel</button>
+        <button @click="confirmPurchase" class="px-4 py-2 bg-blue-600 text-white rounded">
+          Confirm
+        </button>
+      </div>
     </div>
   </div>
-   </div>
 </template>
