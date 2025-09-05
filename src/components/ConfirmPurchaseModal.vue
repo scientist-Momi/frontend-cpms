@@ -18,6 +18,7 @@ function close() {
         <div
           v-show="modal.isOpen"
           class="bg-white rounded shadow-lg w-[60vw] h-fit mt-[15vh] flex flex-col"
+          @click.stop
         >
           <div class="px-4 pt-2 text-base font-semibold flex justify-end items-center">
             <button
