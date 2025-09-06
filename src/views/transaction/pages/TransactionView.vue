@@ -16,6 +16,7 @@ const modal = useModalStore()
 const loading = ref(false)
 const transactionId = computed(() => route.params.id)
 
+
 const transaction = ref(null)
 
 async function loadTransaction() {

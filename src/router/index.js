@@ -15,7 +15,7 @@ const Transactions = () => import('@/views/transaction/pages/TransactionsView.vu
 const Transaction = () => import('@/views/transaction/pages/TransactionView.vue')
 const NewTransaction = () => import('@/views/transaction/pages/NewTransactionView.vue')
 const Login = () => import('@/views/auth/pages/LoginView.vue')
-const Unauthorised = () => import('@/views/Unauthorised.vue')
+const Unauthorised = () => import('@/views/UnauthorisedView.vue')
 const Settings = () => import('@/views/analytics/pages/SettingsView.vue')
 const NewUser = () => import('@/views/user/pages/NewUserView.vue')
 const User = () => import('@/views/user/pages/UserView.vue')
@@ -25,15 +25,9 @@ const NewCustomer = () => import('@/views/customer/pages/NewCustomerView.vue')
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // { path: '/', component: LoginView },
-    // {
-    //   path: '/dashboard',
-    //   component: DashboardView,
-    //   meta: { requiresAuth: true },
-    // },
 
     {
-      path: '/login',
+      path: '/',
       component: AuthLayout,
       children: [
         {
@@ -186,7 +180,7 @@ router.beforeEach((to, from, next) => {
   const store = useAuthStore()
 
   if (to.meta.requiresAuth && !store.isAuthenticated) {
-    return next('/login')
+    return next('/')
   }
 
   if (to.meta.permission && !store.hasPermission(to.meta.permission)) {

@@ -10,7 +10,7 @@ const modal = useModalStore()
 const handleLogout = () => {
     logout()
     modal.close()
-    router.push("/login")
+    router.push("/")
 }
 
 </script>
