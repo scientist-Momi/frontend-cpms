@@ -64,7 +64,7 @@ function generateInvoice() {
   // --- Header ---
   doc.setFontSize(14)
   doc.setTextColor(40, 40, 40)
-  doc.text('Invoice from Google Design Inc.', marginLeft, y)
+  doc.text('Invoice from Qwaklan Inc.', marginLeft, y)
 
   doc.setFontSize(10)
   doc.setTextColor(120, 120, 120)
@@ -92,8 +92,8 @@ function generateInvoice() {
 
   doc.setFontSize(11)
   doc.setTextColor(40, 40, 40)
-  doc.text('Google Design Inc', marginLeft, y + 16)
-  doc.text('16/345 Palatial Avenue, South Mascot, 2026', marginLeft, y + 32)
+  doc.text('Qwaklan Inc', marginLeft, y + 16)
+  doc.text('25/385 Palatial Road, South Mascot, 2026', marginLeft, y + 32)
 
   doc.text(customer.name, marginLeft + 300, y + 16)
   doc.text(customer.email, marginLeft + 300, y + 32)
@@ -169,7 +169,6 @@ function closeModal() {
 }
 
 function showSummary() {
-  // Remove PDF preview and show product summary
   if (pdfPreviewUrl.value) {
     URL.revokeObjectURL(pdfPreviewUrl.value)
     pdfPreviewUrl.value = null
@@ -177,22 +176,10 @@ function showSummary() {
 }
 
 function finishAndSend() {
-  // TODO: Add logic to send invoice to customer here
-  // For now, just close the modal
   closeModal()
 }
 
 const handleSubmit = async () => {
-  // const payload = {
-  //   customerId: customerId.value,
-  //   transactionDetails: rows.value.map((row) => ({
-  //     productId: row.productId,
-  //     variantId: row.variantId,
-  //     quantity: +row.quantity,
-  //     unitPrice: +row.unitPrice,
-  //     lineDiscount: +row.lineDiscount,
-  //   })),
-  // }
   const res = await createTransaction(payload)
   // modal.open('loadingState')
   await new Promise((resolve) => setTimeout(resolve, 2500))
@@ -264,7 +251,7 @@ const handleSubmit = async () => {
 
         <div class="flex gap-4 mt-8">
           <SecondaryButton @click="closeModal" class="px-4 py-2 border rounded"
-            >Edit</SecondaryButton
+            >Edit Transaction</SecondaryButton
           >
           <PrimaryButton @click="confirmPurchase" class="px-4 py-2 bg-blue-600 text-white rounded">
             Proceed & Generate Invoice
