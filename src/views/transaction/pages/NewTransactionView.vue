@@ -5,15 +5,12 @@ import { useCustomerStore } from '@/stores/customerStore'
 import { useFunction } from '@/composables/useFunction'
 import { useProduct } from '@/composables/useProduct'
 import { useProductStore } from '@/stores/productStore'
-import { useTransaction } from '@/composables/useTransaction'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import { useToastStore } from '@/stores/toastStore'
-import { useRouter } from 'vue-router'
 import { useModalStore } from '@/stores/modalStore'
-import { useCustomer } from '@/composables/useCustomer'
 
-const router = useRouter()
+// const router = useRouter()
 const modal = useModalStore()
 const toast = useToastStore()
 const productStore = useProductStore()
@@ -24,9 +21,7 @@ const customerId = ref('')
 const allCustomers = computed(() => customers.customers || [])
 
 const { formatCurrency, formatCurrencyTrans } = useFunction()
-const { fetchVariants, fetchProducts } = useProduct()
-const { createTransaction, fetchTransactions } = useTransaction()
-const { fetchCustomers } = useCustomer()
+const { fetchVariants } = useProduct()
 
 const wrapperRef = ref()
 const dropdownOpen = ref(false)
@@ -128,11 +123,6 @@ async function onProductSelect(row) {
   row.lineDiscount = 0
 }
 
-// function onVariantSelect(row) {
-//   const v = row.variants.find((v) => v.id === row.variantId)
-//   row.variantWeight = v ? v.weight : null
-// }
-
 async function onVariantSelect(row) {
   if (!row.variantId) {
     row.variantWeight = null
@@ -141,16 +131,12 @@ async function onVariantSelect(row) {
 
   if (!variantsMap.value.has(row.variantId)) {
     try {
-      // Find variant in existing loaded variants in the row if possible
       let variant = row.variants.find((v) => v.id === row.variantId)
-
-      // If not found locally, you may want to fetch it from API
       if (!variant) {
-        // Example fetchVariantById API call, implement accordingly
         toast.showToast({
-        message: 'Variant not found',
-        type: 'error',
-      })
+          message: 'Variant not found',
+          type: 'error',
+        })
       }
 
       variantsMap.value.set(row.variantId, variant)
@@ -163,7 +149,6 @@ async function onVariantSelect(row) {
   const cachedVariant = variantsMap.value.get(row.variantId)
   row.variantWeight = cachedVariant ? cachedVariant.weight : null
 }
-
 
 function rowTotal(row) {
   const w = +row.variantWeight || 0
@@ -193,48 +178,6 @@ const proceedToConfirm = () => {
     }
   }
 
-    const payload = {
-    customerId: customerId.value,
-    transactionDetails: rows.value.map((row) => ({
-      productId: row.productId,
-      variantId: row.variantId,
-      quantity: +row.quantity,
-      unitPrice: +row.unitPrice,
-      lineDiscount: +row.lineDiscount,
-    })),
-  }
-
-const dataToPass = ref({
-  variantsMap,
-  productOptions,
-  rows,
-  grandTotal,
-  payload,
-  selectedCustomer
-})
-modal.open('confirm_purchase', dataToPass)
-
-  // confirmStage.value = true
-}
-
-const onSubmit = async () => {
-  if (!customerId.value) {
-    toast.showToast({
-      message: 'Please, choose a customer.',
-      type: 'error',
-    })
-    return
-  }
-  for (const row of rows.value) {
-    if (!row.productId || !row.variantId || !row.quantity || !row.unitPrice) {
-      toast.showToast({
-        message: 'Fill all fields in each row.',
-        type: 'error',
-      })
-      return
-    }
-  }
-
   const payload = {
     customerId: customerId.value,
     transactionDetails: rows.value.map((row) => ({
@@ -245,26 +188,16 @@ const onSubmit = async () => {
       lineDiscount: +row.lineDiscount,
     })),
   }
-  const res = await createTransaction(payload)
-  modal.open('loadingState')
-  await new Promise((resolve) => setTimeout(resolve, 2500))
-  if (res.success) {
-    await fetchTransactions()
-    await fetchCustomers()
-    await fetchProducts()
-    toast.showToast({
-      message: 'Transaction has been saved!',
-      type: 'success',
-    })
-    modal.close()
-    router.push({ name: 'Transactions' })
-  } else {
-    toast.showToast({
-      message: res.message || 'Failed to save transaction.',
-      type: 'error',
-    })
-    modal.close()
-  }
+
+  const dataToPass = ref({
+    variantsMap,
+    productOptions,
+    rows,
+    grandTotal,
+    payload,
+    selectedCustomer,
+  })
+  modal.open('confirm_purchase', dataToPass)
 }
 
 function getProductName(productId) {
@@ -275,8 +208,6 @@ function getProductName(productId) {
 function getVariantWeight(variantId) {
   return variantsMap.value.get(variantId)?.weight || 'Unknown'
 }
-
-
 </script>
 
 <template>

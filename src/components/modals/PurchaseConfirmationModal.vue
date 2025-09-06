@@ -4,19 +4,29 @@ import { useModalStore } from '@/stores/modalStore'
 import { useFunction } from '@/composables/useFunction'
 import PrimaryButton from '../buttons/PrimaryButton.vue'
 import SecondaryButton from '../buttons/SecondaryButton.vue'
+import { useCustomer } from '@/composables/useCustomer'
+import { useTransaction } from '@/composables/useTransaction'
+import { useProduct } from '@/composables/useProduct'
+import { useToastStore } from '@/stores/toastStore'
+import { useRouter } from 'vue-router'
 import jsPDF from 'jspdf'
 
 const pdfPreviewUrl = ref(null)
 
 const modal = useModalStore()
 const { formatCurrencyTrans, getCustomerInitials } = useFunction()
+const { createTransaction, fetchTransactions } = useTransaction()
+const { fetchCustomers } = useCustomer()
+const { fetchProducts } = useProduct()
+const toast = useToastStore()
+const router = useRouter()
 
 const dataReceived = modal.data
 const variantsMap = dataReceived.variantsMap
 const productOptions = dataReceived.productOptions
 const rows = dataReceived.rows
 const grandTotal = dataReceived.grandTotal
-// const payload = dataReceived.payload
+const payload = dataReceived.payload
 const customer = dataReceived.selectedCustomer
 
 function getProductName(productId) {
@@ -41,7 +51,12 @@ function rowTotal(row) {
   return w * p * q - d
 }
 
-function confirmPurchase() {
+function confirmPurchase(){
+  generateInvoice()
+  handleSubmit()
+}
+
+function generateInvoice() {
   const doc = new jsPDF('p', 'pt', 'a4')
   const marginLeft = 40
   let y = 60
@@ -152,24 +167,66 @@ function closeModal() {
   }
   modal.close()
 }
+
+function showSummary() {
+  // Remove PDF preview and show product summary
+  if (pdfPreviewUrl.value) {
+    URL.revokeObjectURL(pdfPreviewUrl.value)
+    pdfPreviewUrl.value = null
+  }
+}
+
+function finishAndSend() {
+  // TODO: Add logic to send invoice to customer here
+  // For now, just close the modal
+  closeModal()
+}
+
+const handleSubmit = async () => {
+  // const payload = {
+  //   customerId: customerId.value,
+  //   transactionDetails: rows.value.map((row) => ({
+  //     productId: row.productId,
+  //     variantId: row.variantId,
+  //     quantity: +row.quantity,
+  //     unitPrice: +row.unitPrice,
+  //     lineDiscount: +row.lineDiscount,
+  //   })),
+  // }
+  const res = await createTransaction(payload)
+  // modal.open('loadingState')
+  await new Promise((resolve) => setTimeout(resolve, 2500))
+  if (res.success) {
+    await fetchTransactions()
+    await fetchCustomers()
+    await fetchProducts()
+    toast.showToast({
+      message: 'Transaction has been saved!',
+      type: 'success',
+    })
+    // modal.close()
+    router.push({ name: 'Transactions' })
+  } else {
+    toast.showToast({
+      message: res.message || 'Failed to save transaction.',
+      type: 'error',
+    })
+    modal.close()
+  }
+}
 </script>
 
 <template>
   <div class="overflow-y-scroll max-h-fit">
     <div class="bg-white p-6 px-6 py-3">
-      <div v-if="pdfPreviewUrl" class="mt-6 border rounded " style="height: 600px">
-        <!-- <iframe :src="pdfPreviewUrl" width="100%" height="100%" style="border: none"></iframe> -->
-        <div class="flex justify-center items-center h-full">
+      <div v-if="pdfPreviewUrl" class="mt-6 border rounded" style="height: 600px">
+        <div class="flex justify-center items-center h-full overflow-hidden">
           <embed :src="pdfPreviewUrl" type="application/pdf" width="80%" height="100%" />
         </div>
-        <div class="flex gap-4 mt-8">
-          <SecondaryButton @click="closeModal" class="px-4 py-2 border rounded"
-            >Edit</SecondaryButton
-          >
-          <PrimaryButton @click="confirmPurchase" class="px-4 py-2 bg-blue-600 text-white rounded">
-            Proceed & Generate Invoice
-          </PrimaryButton>
-        </div>
+      </div>
+      <div v-if="pdfPreviewUrl" class="flex gap-4 mt-8">
+        <SecondaryButton @click="showSummary"> Back </SecondaryButton>
+        <PrimaryButton @click="finishAndSend"> Finish & Send to Customer </PrimaryButton>
       </div>
       <div v-else>
         <div class="flex gap-2">
@@ -187,10 +244,6 @@ function closeModal() {
             <tr>
               <th class="py-1 font-semibold text-left text-sm">Product summary</th>
               <th class="py-2 text-right"></th>
-              <!-- <th class="border p-2 text-left">Quantity</th>
-          <th class="border p-2 text-left">Unit Price</th>
-          <th class="border p-2 text-left">Discount</th>
-          <th class="border p-2 text-left">Total</th> -->
             </tr>
           </thead>
           <tbody>
@@ -199,10 +252,6 @@ function closeModal() {
                 {{ row.quantity }} x {{ getProductName(row.productId) }} -
                 {{ getVariantWeight(row.variantId) }}kg
               </td>
-              <!-- <td class="border p-2">{{ getVariantWeight(row.variantId) }}</td>
-          <td class="border p-2">{{ row.quantity }}</td>
-          <td class="border p-2">{{ formatCurrencyTrans(row.unitPrice) }}</td>
-          <td class="border p-2">{{ formatCurrencyTrans(row.lineDiscount) }}</td> -->
               <td class="text-sm text-right py-2">{{ formatCurrencyTrans(rowTotal(row)) }}</td>
             </tr>
           </tbody>
