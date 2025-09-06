@@ -23,7 +23,7 @@ const userPermissions = ref([])
 const permissionsLoading = ref(false)
 
 // Find the user from the auth store
-// const user = computed(() => 
+// const user = computed(() =>
 //   return auth.users.find((u) => u.id === userId.value)
 // })
 
@@ -134,7 +134,9 @@ const activeTab = ref('permissions')
               >
                 Active
               </div>
-              <SecondaryButton @click="modal.open('user_profile',null, user)">Edit Profile</SecondaryButton>
+              <SecondaryButton @click="modal.open('user_profile', null, user)"
+                >Edit Profile</SecondaryButton
+              >
             </div>
           </div>
 
@@ -267,7 +269,9 @@ const activeTab = ref('permissions')
       </div>
       <div>
         <div v-show="activeTab === 'permissions'" role="tabpanel">
-          <PageLoader v-if="!userPermissions || userPermissions.length === 0 || permissionsLoading"  />
+          <PageLoader
+            v-if="!userPermissions || userPermissions.length === 0 || permissionsLoading"
+          />
           <div v-else class="px-4">
             <PermissionBox v-model="userPermissions" :key="userId" />
             <p class="text-sm text-gray-400 mt-2 mb-6">Tap inside box to manage permissions.</p>
@@ -278,13 +282,12 @@ const activeTab = ref('permissions')
               >
                 Update Permissions
               </PrimaryButton>
-
               <SecondaryButton @click="retrievePermissions">Reset</SecondaryButton>
             </div>
           </div>
         </div>
-        <div v-show="activeTab === 'activities'" class="p-4" role="tabpanel">
-          <ActivitiesTab />
+        <div v-show="activeTab === 'activities'" class="pl-14 flex-1 overflow-auto" role="tabpanel">
+          <ActivitiesTab class="h-full" />
         </div>
       </div>
     </div>

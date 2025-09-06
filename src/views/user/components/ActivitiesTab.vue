@@ -91,9 +91,9 @@ onMounted(async () => {
 
 
 <template>
-  <div class="w-3/5">
+  <div class="h-full w-full flex flex-col">
     <slot></slot>
-    <div class="mt-4">
+    <div class="mt-2 flex-1 overflow-auto">
       <div class="relative ml-6">
         <!-- Vertical line -->
         <div class="absolute left-5 top-0 bottom-0 w-0.5 bg-gray-200"></div>
