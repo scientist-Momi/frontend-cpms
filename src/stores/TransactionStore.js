@@ -8,7 +8,7 @@ export const useTransactionStore = defineStore('Transaction', {
   actions: {
     setTransactions(transactions) {
       this.transactions = transactions
-      localStorage.setItem('transactionsss', JSON.stringify(transactions))
+      // localStorage.setItem('transactionsss', JSON.stringify(transactions))
     },
   },
 })

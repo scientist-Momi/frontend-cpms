@@ -8,7 +8,7 @@ export const useProductStore = defineStore('product', {
   actions: {
     setProducts(products) {
       this.products = products
-      localStorage.setItem('products', JSON.stringify(products))
+      // localStorage.setItem('products', JSON.stringify(products))
     },
   },
 })

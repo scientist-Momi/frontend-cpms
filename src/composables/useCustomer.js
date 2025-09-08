@@ -20,7 +20,7 @@ export const useCustomer = () => {
       return { success: true }
     } catch (err) {
       customerStore.setCustomers([])
-      console.log('Customers fetch failed', err)
+      // console.log('Customers fetch failed', err)
       return { success: false, message: err.response?.data.message || 'Customers fetch failed' }
     } finally {
       // authStore.pageLoading = false
@@ -30,10 +30,10 @@ export const useCustomer = () => {
   const createCustomer = async (payload) => {
     try {
       const res = await createNewCustomer(payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Creation failed', err)
+      // console.log('Creation failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Creation failed',
@@ -44,10 +44,10 @@ export const useCustomer = () => {
   const newDeposit = async (payload) => {
     try {
       const res = await createNewDeposit(payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res }
     } catch (err) {
-      console.log('Deposit failed', err)
+      // console.log('Deposit failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Deposit failed',
@@ -58,10 +58,10 @@ export const useCustomer = () => {
   const fetchCustomerId = async (payload) => {
     try {
       const res = await fetchCustomerById(payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Customer fetch failed', err)
+      // console.log('Customer fetch failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Customer fetch failed',
@@ -72,10 +72,10 @@ export const useCustomer = () => {
   const fetchAllTransactions = async (payload) => {
     try {
       const res = await fetchTransactions(payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Transaction fetch failed', err)
+      // console.log('Transaction fetch failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Transaction fetch failed',
@@ -87,30 +87,30 @@ export const useCustomer = () => {
     try {
       const res = await fetchAllCustomerTransactions()
       customerStore.setTransactions(res.data.data)
-      console.log(res)
+      // console.log(res)
       return { success: true }
     } catch (err) {
-      console.log('Update failed', err)
+      // console.log('Update failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Update failed',
       }
     }
-  };
+  }
 
   const updateCustomer = async (id, payload) => {
     try {
       const res = await updateCustomerById(id, payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res }
     } catch (err) {
-      console.log('Update failed', err)
+      // console.log('Update failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Update failed',
       }
     }
-  };
+  }
 
   return {
     fetchCustomers,

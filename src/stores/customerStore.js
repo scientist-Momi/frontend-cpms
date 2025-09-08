@@ -49,11 +49,11 @@ export const useCustomerStore = defineStore('customer', {
   actions: {
     setCustomers(customers) {
       this.customers = customers
-      localStorage.setItem('customers', JSON.stringify(customers))
+      // localStorage.setItem('customers', JSON.stringify(customers))
     },
     setTransactions(transactions){
       this.transactions = transactions
-      localStorage.setItem('transactions', JSON.stringify(transactions))
+      // localStorage.setItem('transactions', JSON.stringify(transactions))
     }
   },
 })

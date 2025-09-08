@@ -22,7 +22,7 @@ export const useProduct = () => {
       return { success: true }
     } catch (err) {
       productStore.setProducts([])
-      console.log('Product fetch failed', err)
+      // console.log('Product fetch failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Product fetch failed',
@@ -33,10 +33,10 @@ export const useProduct = () => {
   const createProduct = async (payload) => {
     try {
       const res = await createNewProduct(payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Creation failed', err)
+      // console.log('Creation failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Creation failed',
@@ -47,10 +47,10 @@ export const useProduct = () => {
   const updateProduct = async (id, payload) => {
     try {
       const res = await updateProductById(id, payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res }
     } catch (err) {
-      console.log('Update failed', err)
+      // console.log('Update failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Update failed',
@@ -61,10 +61,10 @@ export const useProduct = () => {
   const fetchProductId = async (payload) => {
     try {
       const res = await fetchProductById(payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Product fetch failed', err)
+      // console.log('Product fetch failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Product fetch failed',
@@ -75,10 +75,10 @@ export const useProduct = () => {
   const fetchProductTransactions = async (payload) => {
     try {
       const res = await fetchAllTransactionsOnAProduct(payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Transaction fetch failed', err)
+      // console.log('Transaction fetch failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Transaction fetch failed',
@@ -89,10 +89,10 @@ export const useProduct = () => {
   const fetchVariants = async (payload) => {
     try {
       const res = await fetchProductVariants(payload)
-      console.log('Variants fetched', res)
+      // console.log('Variants fetched', res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Variants fetch failed', err)
+      // console.log('Variants fetch failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Variants fetch failed',
@@ -103,10 +103,10 @@ export const useProduct = () => {
   const createVariant = async (id, payload) => {
     try {
       const res = await createNewProductVariant(id, payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Creation failed', err)
+      // console.log('Creation failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Creation failed',
@@ -117,10 +117,10 @@ export const useProduct = () => {
   const updateVariant = async (id, v_id, payload) => {
     try {
       const res = await updateProductVariant(id, v_id, payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Update failed', err)
+      // console.log('Update failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Update failed',
@@ -131,10 +131,10 @@ export const useProduct = () => {
   const deleteVariant = async (id, v_id) => {
     try {
       const res = await deleteProductVariant(id, v_id)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res }
     } catch (err) {
-      console.log('Delete failed', err)
+      // console.log('Delete failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Delete failed',
@@ -145,10 +145,10 @@ export const useProduct = () => {
   const updatePrice = async (id, payload) => {
     try {
       const res = await updateProductPrice(id, payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Update failed', err)
+      // console.log('Update failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Update failed',

@@ -14,6 +14,8 @@ export const createNewUser = (data) => apiClient.post('/auth/register', data)
 
 export const fetchUserPermissions = (id) => apiClient.get(`/user/${id}/permissions`)
 
+export const fetchUserPermission = () => apiClient.get('/user/me/permissions')
+
 export const updateUserPermissions = (id, data) =>
   apiClient.put(`/user/${id}/permission/update`, data)
 

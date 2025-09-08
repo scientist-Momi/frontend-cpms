@@ -17,7 +17,7 @@ export const useTransaction = () => {
       return { success: true }
     } catch (err) {
       transactionStore.setTransactions([])
-      console.log('Transactions fetch failed', err)
+      // console.log('Transactions fetch failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Transactions fetch failed',
@@ -28,10 +28,10 @@ export const useTransaction = () => {
   const fetchTransaction = async (payload) => {
     try {
       const res = await fetchATransaction(payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Transaction fetch failed', err)
+      // console.log('Transaction fetch failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Transaction fetch failed',
@@ -42,10 +42,10 @@ export const useTransaction = () => {
   const createTransaction = async (payload) => {
     try {
       const res = await createNewTransaction(payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Transaction creation failed', err)
+      // console.log('Transaction creation failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Transaction creation failed',
@@ -56,10 +56,10 @@ export const useTransaction = () => {
   const createReturn = async (payload) => {
     try {
       const res = await createNewReturn(payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('Return operation failed', err)
+      // console.log('Return operation failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'Return operation failed',
@@ -70,10 +70,10 @@ export const useTransaction = () => {
   const fetchTransactionReturns = async (payload) => {
     try {
       const res = await fetchAllTransactionReturns(payload)
-      console.log(res)
+      // console.log(res)
       return { success: true, data: res.data.data }
     } catch (err) {
-      console.log('fetch failed', err)
+      // console.log('fetch failed', err)
       return {
         success: false,
         message: err.response?.data?.message || 'fetch failed',
