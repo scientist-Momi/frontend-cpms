@@ -72,7 +72,7 @@ const displayedRanking = computed(() => {
               <th class="px-4 py-3 font-semibold text-sm text-gray-700">Quantity Total</th>
             </tr>
           </thead>
-          <tbody class="text-gray-700 text-sm">
+          <tbody v-if="displayedRanking.length" class="text-gray-700 text-sm">
             <tr
               v-for="(tx, index) in displayedRanking"
               :key="tx.customerId"
@@ -94,6 +94,14 @@ const displayedRanking = computed(() => {
               <td class="px-4 py-3 font-medium">{{ tx.customerName }}</td>
               <td class="px-4 py-3">{{ formatCurrency(tx.totalAmount) }}</td>
               <td class="px-4 py-3">{{ formatWithCommas(tx.totalQuantity) }}</td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <tr>
+              <td colspan="4" class="py-12 text-center text-gray-400">
+                <span class="material-symbols-outlined text-5xl mb-2">sentiment_dissatisfied</span>
+                <div>No customer ranking data available.</div>
+              </td>
             </tr>
           </tbody>
         </table>

@@ -31,7 +31,7 @@ const recentCustomers = computed(() => {
           <th class="px-4 py-3 font-semibold text-sm text-gray-700">Date Joined</th>
         </tr>
       </thead>
-      <tbody class="text-gray-700 text-sm">
+      <tbody v-if="recentCustomers.length" class="text-gray-700 text-sm">
         <tr
           v-for="(customer, index) in recentCustomers"
           :key="customer.id"
@@ -42,6 +42,14 @@ const recentCustomers = computed(() => {
           <td class="px-4 py-3">{{ customer.name }}</td>
           <td class="px-4 py-3">{{ customer.email }}</td>
           <td class="px-4 py-3">{{ new Date(customer.createdAt).toLocaleDateString() }}</td>
+        </tr>
+      </tbody>
+      <tbody v-else>
+        <tr>
+          <td colspan="4" class="py-12 text-center text-gray-400">
+            <span class="material-symbols-outlined text-5xl mb-2">person_off</span>
+            <div>No recent customers found.</div>
+          </td>
         </tr>
       </tbody>
     </table>

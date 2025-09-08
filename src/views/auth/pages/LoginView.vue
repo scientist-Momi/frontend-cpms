@@ -24,7 +24,7 @@ function autoLogin(type) {
   if (loading.value) return
   loggingInType.value = type
   if (type === 'major') {
-    form.email = 'momi.formal@gmail.com'
+    form.email = 'joeyrogan@gmail.com'
     form.password = 'password12345'
   } else if (type === 'minor') {
     form.email = 'momi.formal1@gmail.com'

@@ -23,7 +23,9 @@ const transactionsByRecency = computed(() => {
         <span class="material-symbols-outlined"> overview </span>
         <p class="font-semibold">Latest Transactions</p>
       </div>
-      <SecondaryButton @click="router.push({ name: 'Transactions' })"> View all transactions </SecondaryButton>
+      <SecondaryButton @click="router.push({ name: 'Transactions' })">
+        View all transactions
+      </SecondaryButton>
     </div>
     <table class="w-full text-left table-auto border-collapse">
       <thead class="bg-blue-50 sticky top-0 z-10">
@@ -35,7 +37,7 @@ const transactionsByRecency = computed(() => {
           <th class="px-4 py-3 font-semibold text-sm text-gray-700">Date</th>
         </tr>
       </thead>
-      <tbody class="text-gray-700 text-sm">
+      <tbody v-if="transactionsByRecency.length" class="text-gray-700 text-sm">
         <tr
           v-for="(tx, index) in transactionsByRecency"
           :key="tx.transactionId"
@@ -47,6 +49,14 @@ const transactionsByRecency = computed(() => {
           <td class="px-4 py-3">{{ formatCurrency(tx.totalAmount) }}</td>
           <td class="px-4 py-3">{{ formatWithCommas(tx.totalQuantity) }}</td>
           <td class="px-4 py-3">{{ new Date(tx.createdAt).toLocaleString() }}</td>
+        </tr>
+      </tbody>
+      <tbody v-else>
+        <tr>
+          <td colspan="5" class="py-12 text-center text-gray-400">
+            <span class="material-symbols-outlined text-5xl mb-2">receipt_long</span>
+            <div>No recent transactions found.</div>
+          </td>
         </tr>
       </tbody>
     </table>
