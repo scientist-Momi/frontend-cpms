@@ -18,6 +18,7 @@ function close() {
         <div
           v-show="modal.isOpen"
           class="bg-gray-100 rounded shadow-lg w-[50vw] h-fit mt-[25vh] flex flex-col"
+          @click.stop
         >
           <div
             class="border-b border-gray-200 px-4 py-3 text-base font-semibold flex justify-between items-center"

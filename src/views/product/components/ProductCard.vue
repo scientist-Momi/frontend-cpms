@@ -39,7 +39,7 @@ const { formatCurrency } = useFunction()
 
 <template>
   <div
-    class="border border-gray-200 rounded-lg p-4 bg-white shadow-sm hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+    class="border border-gray-200 p-4 bg-white shadow-sm hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer"
   >
     <div class="flex justify-between items-center mb-2">
       <p
@@ -48,7 +48,9 @@ const { formatCurrency } = useFunction()
       >
         {{ product.name }}
       </p>
-      <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded font-medium border border-blue-100">
+      <span
+        class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded font-medium border border-blue-100"
+      >
         {{ product.brand }}
       </span>
     </div>
@@ -57,7 +59,7 @@ const { formatCurrency } = useFunction()
     </div>
     <div class="flex gap-4 items-center text-sm">
       <div class="flex items-center gap-1">
-        <span class="material-symbols-outlined text-orange-400"> attach_money </span>
+        <span class="material-symbols-outlined text-red-700"> attach_money </span>
         <span class="font-semibold">{{ formatCurrency(product.latestPrice.price) }}</span>
       </div>
       <div class="flex items-center gap-1">
@@ -66,5 +68,6 @@ const { formatCurrency } = useFunction()
         <span class="text-gray-400">/ {{ product.inventory }}</span>
       </div>
     </div>
+
   </div>
 </template>

@@ -10,6 +10,7 @@ import { useProduct } from '@/composables/useProduct'
 import { useToastStore } from '@/stores/toastStore'
 import { useRouter } from 'vue-router'
 import jsPDF from 'jspdf'
+import PageLoader from '../PageLoader.vue'
 
 const pdfPreviewUrl = ref(null)
 
@@ -20,6 +21,7 @@ const { fetchCustomers } = useCustomer()
 const { fetchProducts } = useProduct()
 const toast = useToastStore()
 const router = useRouter()
+const loading = ref(false)
 
 const dataReceived = modal.data
 const variantsMap = dataReceived.variantsMap
@@ -51,10 +53,10 @@ function rowTotal(row) {
   return w * p * q - d
 }
 
-function confirmPurchase(){
-  generateInvoice()
-  handleSubmit()
-}
+// function confirmPurchase(){
+//   handleSubmit()
+//   generateInvoice()
+// }
 
 function generateInvoice() {
   const doc = new jsPDF('p', 'pt', 'a4')
@@ -177,13 +179,15 @@ function showSummary() {
 
 function finishAndSend() {
   closeModal()
+  router.push({ name: 'Transactions' })
 }
 
 const handleSubmit = async () => {
   const res = await createTransaction(payload)
-  // modal.open('loadingState')
+  loading.value = true
   await new Promise((resolve) => setTimeout(resolve, 2500))
   if (res.success) {
+    loading.value = false
     await fetchTransactions()
     await fetchCustomers()
     await fetchProducts()
@@ -191,20 +195,24 @@ const handleSubmit = async () => {
       message: 'Transaction has been saved!',
       type: 'success',
     })
-    // modal.close()
-    router.push({ name: 'Transactions' })
+    generateInvoice()
+    // router.push({ name: 'Transactions' })
   } else {
+    loading.value = false
     toast.showToast({
       message: res.message || 'Failed to save transaction.',
       type: 'error',
     })
-    modal.close()
+    showSummary()
   }
 }
 </script>
 
 <template>
-  <div class="overflow-y-scroll max-h-fit">
+  <div v-if="loading">
+    <PageLoader />
+  </div>
+  <div v-else class="overflow-y-scroll max-h-fit">
     <div class="bg-white p-6 px-6 py-3">
       <div v-if="pdfPreviewUrl" class="mt-6 border rounded" style="height: 600px">
         <div class="flex justify-center items-center h-full overflow-hidden">
@@ -253,7 +261,7 @@ const handleSubmit = async () => {
           <SecondaryButton @click="closeModal" class="px-4 py-2 border rounded"
             >Edit Transaction</SecondaryButton
           >
-          <PrimaryButton @click="confirmPurchase" class="px-4 py-2 bg-blue-600 text-white rounded">
+          <PrimaryButton @click="handleSubmit" class="px-4 py-2 bg-blue-600 text-white rounded">
             Proceed & Generate Invoice
           </PrimaryButton>
         </div>

@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import UsersTable from '../components/UsersTable.vue'
 import SecondaryStatsCard from '@/components/SecondaryStatsCard.vue'
 // import DateBar from '@/components/DateBar.vue';
-import VueDatePicker from '@vuepic/vue-datepicker'
+// import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
@@ -42,12 +42,13 @@ onMounted(() => {
   <div>
     <div v-if="$route.name === 'Users'">
       <div class="flex justify-between items-center mb-4">
-        <VueDatePicker
+        <h1 class="text-xl font-semibold">User Overview</h1>
+        <!-- <VueDatePicker
           v-model="date"
           range
           class="max-w-[21.8%]"
           :enable-time-picker="false"
-        />
+        /> -->
         <div class="flex items-center gap-2">
           <SecondaryButton class="flex items-center gap-2">
             <span class="material-symbols-outlined"> file_save </span>
