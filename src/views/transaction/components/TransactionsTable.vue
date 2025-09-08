@@ -21,9 +21,7 @@ const filteredTransactions = computed(() => {
   let arr = transactions.value
   if (search.value.trim()) {
     const s = search.value.toLowerCase()
-    arr = arr.filter((t) =>
-      t.customerName?.toLowerCase().includes(s)
-    )
+    arr = arr.filter((t) => t.customerName?.toLowerCase().includes(s))
   }
   return arr
 })
@@ -66,7 +64,6 @@ watch([search], () => {
 function goToTransaction(id) {
   router.push({ name: 'TransactionView', params: { id } })
 }
-
 </script>
 
 <template>
@@ -91,7 +88,7 @@ function goToTransaction(id) {
             <th>Return</th>
           </tr>
         </thead>
-        <tbody class="text-sm">
+        <tbody v-if="paginatedTransactions.length" class="text-sm">
           <tr
             v-for="transaction in paginatedTransactions"
             :key="transaction.transactionId"
@@ -114,6 +111,14 @@ function goToTransaction(id) {
               <div class="bg-red-200 w-fit px-2 py-1 rounded">
                 <small class="text-red-700 font-medium">INITIATED</small>
               </div>
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr>
+            <td colspan="6" class="py-16 text-center text-gray-400">
+              <span class="material-symbols-outlined text-5xl mb-2">receipt_long</span>
+              <div>No transactions found.</div>
             </td>
           </tr>
         </tbody>
@@ -142,5 +147,3 @@ function goToTransaction(id) {
     </div>
   </div>
 </template>
-
-<style scoped></style>
