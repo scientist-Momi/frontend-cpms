@@ -208,9 +208,9 @@ watch([statusFilter, search], () => {
             <th class="sticky top-0 bg-white z-10 px-2 py-2 font-medium">Created At</th>
           </tr>
         </thead>
-        <tbody class="text-sm">
+        <tbody v-if="paginatedCustomers.length" class="text-sm">
           <tr
-            v-for="(customer, ) in paginatedCustomers"
+            v-for="customer in paginatedCustomers"
             :key="customer.customerId"
             class="border-b border-gray-100 hover:bg-gray-50 transition"
           >
@@ -280,9 +280,19 @@ watch([statusFilter, search], () => {
             <td class="px-2 py-2">{{ formatDate(customer.createdAt) }}</td>
           </tr>
         </tbody>
+        <tbody v-else>
+          <tr>
+            <td colspan="7" class="py-16 text-center text-gray-400">
+              <span class="material-symbols-outlined text-5xl mb-2">groups</span>
+              <div>No customers found.</div>
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
-    <div class="flex items-center justify-between text-sm text-gray-500 px-4 py-4 border-t border-gray-200">
+    <div
+      class="flex items-center justify-between text-sm text-gray-500 px-4 py-4 border-t border-gray-200"
+    >
       <div class="flex items-center gap-2">
         <span>Rows per page</span>
         <select

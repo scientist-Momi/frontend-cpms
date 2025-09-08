@@ -145,8 +145,15 @@ function formatDate(dateString) {
         class="border border-gray-200 rounded px-3 py-2 w-1/3 text-sm focus:outline-none focus:ring-0 shadow-xs"
       />
       <div class="flex gap-2">
-        <ReusableFilter label="Status" :options="statusFilterOptions" v-model="statusFilter" icon="arming_countdown" />
-        <PrimaryButton v-if="selected.length > 0" @click="modal.open('user_delete', null, selected)">Delete User(s)</PrimaryButton>
+        <ReusableFilter
+          label="Status"
+          :options="statusFilterOptions"
+          v-model="statusFilter"
+          icon="arming_countdown"
+        />
+        <PrimaryButton v-if="selected.length > 0" @click="modal.open('user_delete', null, selected)"
+          >Delete User(s)</PrimaryButton
+        >
       </div>
     </div>
     <div class="max-h-[30rem] overflow-y-auto">
@@ -169,7 +176,7 @@ function formatDate(dateString) {
             <th class="sticky top-0 bg-white z-10 px-2 py-2">Created At</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="paginatedUsers.length" class="text-sm">
           <tr
             v-for="(user, idx) in paginatedUsers"
             :key="user.email"
@@ -214,6 +221,14 @@ function formatDate(dateString) {
               </span>
             </td>
             <td class="px-2 py-2">{{ formatDate(user.createdAt) }}</td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr>
+            <td colspan="8" class="py-16 text-center text-gray-400">
+              <span class="material-symbols-outlined text-5xl mb-2">group_off</span>
+              <div>No users found.</div>
+            </td>
           </tr>
         </tbody>
       </table>
