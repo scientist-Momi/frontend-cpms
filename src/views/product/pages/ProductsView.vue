@@ -5,6 +5,7 @@ import SecondaryStatsCard from '@/components/SecondaryStatsCard.vue'
 import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import ProductsChart from '@/components/charts/ProductChart.vue'
+import ProductQuantityChart from '@/components/charts/ProductQuantityChart.vue'
 import ProductCard from '../components/ProductCard.vue'
 import { useFunction } from '@/composables/useFunction'
 import { useRouter } from 'vue-router'
@@ -64,7 +65,7 @@ const totalUnsold = computed(() => {
           class="w-full border border-gray-200 p-2 rounded"
           :products="product.products"
         />
-        <ProductsChart
+        <ProductQuantityChart
           class="w-full border border-gray-200 p-2 rounded"
           :products="product.products"
         />
@@ -72,9 +73,21 @@ const totalUnsold = computed(() => {
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4 border border-gray-200">
         <ProductCard v-for="product in product.products" :key="product.id" :product="product" />
-
+        <div
+          v-if="!product.products.length"
+          class="col-span-full flex flex-col items-center justify-center py-16 text-gray-400"
+        >
+          <span class="material-symbols-outlined text-6xl mb-2">inventory_2</span>
+          <div class="text-lg font-medium mb-2">No products found.</div>
+          <PrimaryButton
+            @click="router.push({ name: 'NewProduct' })"
+            class="flex items-center gap-2"
+          >
+            <span class="material-symbols-outlined"> box_add </span>
+            <p>New Product</p>
+          </PrimaryButton>
+        </div>
       </div>
-
     </div>
     <router-view />
   </div>
