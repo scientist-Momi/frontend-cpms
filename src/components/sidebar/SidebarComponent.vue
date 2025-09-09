@@ -41,7 +41,7 @@ const filteredRole = computed(() => {
       </div>
 
       <div v-if="!ui.sidebarCollapsed" class="flex-row transition-all duration-200">
-        <p class="text-sm font-semibold">Qweklin</p>
+        <p class="text-sm font-semibold">Qwaklan</p>
         <small>{{filteredRole}}</small>
       </div>
     </div>

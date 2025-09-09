@@ -4,29 +4,31 @@ const ui = useUIStore()
 </script>
 
 <template>
-    <div v-if="!ui.sidebarCollapsed" class="flex justify-between mb-5 items-center bg-gray-200 px-3 py-2 rounded">
-      <div class="flex gap-3">
-        <span class="material-symbols-outlined text-gray-400"> search </span>
-        <input
-          type="text"
-          placeholder="Search anything"
-          class="border-o focus:outline-none focus:ring-0 text-sm font-medium"
-        />
-      </div>
-
-      <div class="flex items-center">
-        <span class="material-symbols-outlined cmd text-gray-400"> keyboard_command_key </span>
-        <p class="text-gray-400">K</p>
-      </div>
-    </div>
+  <div v-if="!ui.sidebarCollapsed" class="flex justify-between mb-5 items-center py-2 rounded">
+    <button
+      type="button"
+      class="flex gap-2 items-center w-full justify-center py-2 rounded bg-white hover:bg-gray-100 transition cursor-not-allowed"
+      disabled
+      title="AI Agent (Coming Soon)"
+    >
+      <span class="material-symbols-outlined cmd text-yellow-400"> stars_2 </span>
+      <span class="font-medium whitespace-nowrap text-[0.9rem] transition-opacity duration-200"
+        >AI Agent</span
+      >
+      <span
+        class="ml-2 text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded border-[0.5px] border-gray-400 cmd1"
+        >Coming soon</span
+      >
+    </button>
+  </div>
 </template>
 
 <style scoped>
-.material-symbols-outlined {
-  font-size: 24px;
-}
-
 .cmd {
   font-size: 18px;
+}
+
+.cmd1 {
+  font-size: 10px;
 }
 </style>
