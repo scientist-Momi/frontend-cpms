@@ -12,8 +12,8 @@ const secretKey = import.meta.env.VITE_SECRET_KEY
 
 const instance = axios.create({
   baseURL:
-    // import.meta.env.VITE_API_BASE_URL || 'https://cpms-backend-app-aa2b15ff3bf7.herokuapp.com/v1',
-    import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/v1',
+    import.meta.env.VITE_API_BASE_URL || 'https://cpms-backend-app-aa2b15ff3bf7.herokuapp.com/v1',
+    // import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/v1',
 })
 
 instance.interceptors.request.use((config) => {
