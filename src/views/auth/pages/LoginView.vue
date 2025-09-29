@@ -34,15 +34,6 @@ function autoLogin(type) {
   handleLogin()
 }
 
-// const handleNext = () => {
-//   error.value = null
-//   if (!form.email.trim()) {
-//     error.value = 'Email is required'
-//     return
-//   }
-//   showPassword.value = true
-// }
-
 const handleLogin = async () => {
   error.value = null
   loading.value = true
