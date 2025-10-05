@@ -27,8 +27,8 @@ function autoLogin(type) {
     form.email = 'joeyrogan@gmail.com'
     form.password = 'password12345'
   } else if (type === 'minor') {
-    form.email = 'momi.formal1@gmail.com'
-    form.password = 'password12345'
+    form.email = 'gabbrown33@test.com'
+    form.password = 'password123456'
   }
   handleLogin()
 }
