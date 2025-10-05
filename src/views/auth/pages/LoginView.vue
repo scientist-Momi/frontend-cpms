@@ -30,7 +30,6 @@ function autoLogin(type) {
     form.email = 'momi.formal1@gmail.com'
     form.password = 'password12345'
   }
-
   handleLogin()
 }
 

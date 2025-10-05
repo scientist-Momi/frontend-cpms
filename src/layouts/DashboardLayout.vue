@@ -31,14 +31,14 @@ const auth = useAuthStore()
 </script>
 
 <template>
-  <div class="flex max-h-[100vh] bg-gray-100 text-gray-800">
+  <div class="flex h-screen overflow-hidden bg-gray-100 text-gray-800">
     <SidebarSkeleton v-if="auth.pageLoading" />
     <Sidebar v-else />
 
     <div class="bg-white flex-1 rounded-l-2xl border border-gray-200">
       <DashboardHead />
 
-      <main class="p-6 py-3 h-[92.5vh] overflow-auto">
+      <main class="p-6 py-3 overflow-y-auto flex-1">
         <template v-if="auth.pageLoading">
           <!-- Skeleton Loader -->
           <div class="animate-pulse space-y-4">

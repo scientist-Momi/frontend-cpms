@@ -202,7 +202,7 @@ function clearForm() {
                   <span class="material-symbols-outlined"> local_mall </span>
                 </div>
                 <div class="w-full text-lg font-semibold">Consumer</div>
-                <div class="w-full text-sm">A JavaScript library for building user interfaces.</div>
+                <div class="w-full text-sm">Individual customers who buy products for personal use.</div>
               </div>
             </label>
           </li>
@@ -227,7 +227,7 @@ function clearForm() {
                 </div>
                 <div class="w-full text-lg font-semibold">Retailer</div>
                 <div class="w-full text-sm">
-                  Vue.js is a model–view front end JavaScript framework.
+                  Business customers who buy products in small quantities to resell.
                 </div>
               </div>
             </label>
@@ -252,7 +252,7 @@ function clearForm() {
                   <span class="material-symbols-outlined"> delivery_truck_speed </span>
                 </div>
                 <div class="w-full text-lg font-semibold">Wholesaler</div>
-                <div class="w-full text-sm">A TypeScript-based web application framework.</div>
+                <div class="w-full text-sm">Business customers who buy products in bulk quantities.</div>
               </div>
             </label>
           </li>
