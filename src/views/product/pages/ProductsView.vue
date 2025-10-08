@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import SecondaryStatsCard from '@/components/SecondaryStatsCard.vue'
-import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
+// import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
 import ProductsChart from '@/components/charts/ProductChart.vue'
 import ProductQuantityChart from '@/components/charts/ProductQuantityChart.vue'
@@ -34,10 +34,10 @@ const totalUnsold = computed(() => {
       <div class="flex justify-between items-center mb-4">
         <h1 class="text-xl font-semibold">Product Overview</h1>
         <div class="flex items-center gap-2">
-          <SecondaryButton class="flex items-center gap-2">
+          <!-- <SecondaryButton class="flex items-center gap-2">
             <span class="material-symbols-outlined"> file_save </span>
             <p>Export</p>
-          </SecondaryButton>
+          </SecondaryButton> -->
           <PrimaryButton
             @click="router.push({ name: 'NewProduct' })"
             class="flex items-center gap-2"

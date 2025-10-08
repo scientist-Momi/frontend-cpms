@@ -6,7 +6,7 @@ import SecondaryStatsCard from '@/components/SecondaryStatsCard.vue'
 // import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
-import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
+// import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -50,10 +50,10 @@ onMounted(() => {
           :enable-time-picker="false"
         /> -->
         <div class="flex items-center gap-2">
-          <SecondaryButton class="flex items-center gap-2">
+          <!-- <SecondaryButton class="flex items-center gap-2">
             <span class="material-symbols-outlined"> file_save </span>
             <p>Export</p>
-          </SecondaryButton>
+          </SecondaryButton> -->
           <PrimaryButton @click="router.push({ name: 'NewUser' })" class="flex items-center gap-2">
             <span class="material-symbols-outlined"> person_add </span>
             <p>New User</p>

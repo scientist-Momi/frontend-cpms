@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import SecondaryStatsCard from '@/components/SecondaryStatsCard.vue'
 import PrimaryButton from '@/components/buttons/PrimaryButton.vue'
-import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
+// import SecondaryButton from '@/components/buttons/SecondaryButton.vue'
 // import CustomerChart from '@/components/charts/CustomerChart.vue'
 import CustomersTable from '../components/CustomersTable.vue'
 import { useCustomerStore } from '@/stores/customerStore'
@@ -81,10 +81,10 @@ const series = computed(() => {
       <div class="flex justify-between items-center mb-4">
         <h1 class="text-xl font-semibold">Customer Overview</h1>
         <div class="flex items-center gap-2">
-          <SecondaryButton class="flex items-center gap-2">
+          <!-- <SecondaryButton class="flex items-center gap-2">
             <span class="material-symbols-outlined"> file_save </span>
             <p>Export</p>
-          </SecondaryButton>
+          </SecondaryButton> -->
           <PrimaryButton
             @click="router.push({ name: 'NewCustomer' })"
             class="flex items-center gap-2"
