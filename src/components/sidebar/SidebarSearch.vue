@@ -13,7 +13,7 @@ const ui = useUIStore()
     >
       <span class="material-symbols-outlined cmd text-yellow-400"> stars_2 </span>
       <span class="font-medium whitespace-nowrap text-[0.9rem] transition-opacity duration-200"
-        >AI Agent</span
+        >AI Analysis</span
       >
       <span
         class="ml-2 text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded border-[0.5px] border-gray-400 cmd1"
